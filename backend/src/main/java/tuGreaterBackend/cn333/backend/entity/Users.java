@@ -14,7 +14,15 @@ public class Users {
     private String password;
     private String displayName;
     private String profileImageUrl;
+    private Role role;
 
+    public Role getRole() {
+        return this.role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
 
     public String getId() {
         return this.id;
@@ -66,3 +74,4 @@ public class Users {
 
 
 }
+
