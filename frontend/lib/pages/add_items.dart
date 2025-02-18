@@ -1,11 +1,12 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:frontend/components/toolbar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/services.dart';
 import 'package:frontend/pages/shop.dart';
 import 'package:http/http.dart' as http;
-// import 'package:image_picker/image_picker.dart';
+import 'package:image_picker/image_picker.dart';
 // import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class AddItems extends StatefulWidget {
@@ -27,15 +28,9 @@ class _AddItemsState extends State<AddItems> {
   List<String> tags = [];
   TextEditingController otherTagController = TextEditingController();
 
-  // // Image picker setup
-  // File? _image;
-  // String? _uploadedUrl;
-  // final ImagePicker _picker = ImagePicker();
-
-  // // Access environment variables
-  // final String cloudName = dotenv.env['CLOUDINARY_CLOUD_NAME'] ?? "";
-  // final String uploadPreset = dotenv.env['CLOUDINARY_UPLOAD_PRESET'] ?? "";
-  // final String backendUrl = dotenv.env['BACKEND_URL'] ?? "";
+  // Image related variables
+  File? _selectedImage;
+  String? _imageUrl;
 
   Future<void> createProduct() async {
     var url = "http://10.0.2.2:8080/shop/add";
@@ -62,15 +57,54 @@ class _AddItemsState extends State<AddItems> {
     }
   }
 
-  // // Pick Image from Gallery
-  // Future<void> pickImage() async {
-  //   final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-  //   if (pickedFile != null) {
-  //     setState(() {
-  //       _image = File(pickedFile.path);
-  //     });
-  //   }
-  // }
+  //image function
+  void _showImageSourceOptions(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return SafeArea(
+          child: Wrap(
+            children: <Widget>[
+              ListTile(
+                leading: Icon(Icons.photo_library),
+                title: Text('Photo Library'),
+                onTap: () {
+                  _pickImageFromGallery();
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.photo_camera),
+                title: Text('Camera'),
+                onTap: () {
+                  _pickImageFromCamera();
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future _pickImageFromGallery() async {
+    final returnedImage =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (returnedImage != null) {
+      setState(() {
+        _selectedImage = File(returnedImage.path);
+      });
+    }
+  }
+
+  Future _pickImageFromCamera() async {
+    final returnedImage =
+        await ImagePicker().pickImage(source: ImageSource.camera);
+    if (returnedImage != null) {
+      setState(() {
+        _selectedImage = File(returnedImage.path);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,22 +114,29 @@ class _AddItemsState extends State<AddItems> {
           child: Column(
             children: [
               Center(
-                child: Container(
-                  margin: EdgeInsets.all(16),
-                  width: 200,
-                  height: 200,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black54, width: 2),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SvgPicture.asset("assets/svg/upload.svg"),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      Text("Upload Images", style: TextStyle(fontSize: 16)),
-                    ],
+                child: GestureDetector(
+                  onTap: () {
+                    _showImageSourceOptions(context);
+                  },
+                  child: Container(
+                    margin: EdgeInsets.all(16),
+                    width: 200,
+                    height: 200,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.black54, width: 2),
+                    ),
+                    child: _selectedImage != null
+                        ? Image.file(File(_selectedImage!.path),
+                            width: 200, height: 200, fit: BoxFit.cover)
+                        : Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SvgPicture.asset("assets/svg/upload.svg"),
+                              SizedBox(height: 5),
+                              Text("Upload Images",
+                                  style: TextStyle(fontSize: 16)),
+                            ],
+                          ),
                   ),
                 ),
               ),
