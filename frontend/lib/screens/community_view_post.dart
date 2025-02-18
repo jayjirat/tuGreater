@@ -12,8 +12,6 @@ class CommunityViewpost extends ConsumerStatefulWidget {
 }
 
 class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
-  int localCount = 0;
-
   @override
   void initState() {
     super.initState();
@@ -26,11 +24,13 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
     final post = ref.read(communityProvider.notifier).post;
     final isLoading = ref.watch(communityProvider.notifier).isLoading;
 
+    final commentCtrl = TextEditingController();
+
     return Scaffold(
       appBar: AppBar(),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(20),
           child: isLoading
               ? Center(child: CircularProgressIndicator())
               : Column(
@@ -154,6 +154,32 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                 ),
         ),
       ),
+      bottomSheet: isLoading
+          ? null
+          : Padding(
+              padding: EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: commentCtrl,
+                      decoration: InputDecoration(
+                        hintText: "Write a public comment...",
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 8),
+                  InkWell(
+                    onTap: () {},
+                    child: Padding(
+                      padding: EdgeInsets.all(8),
+                      child: Icon(Icons.near_me, color: Colors.blue),
+                    ),
+                  ),
+                ],
+              ),
+            ),
     );
   }
 }
