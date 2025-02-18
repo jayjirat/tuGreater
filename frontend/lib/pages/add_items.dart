@@ -7,7 +7,8 @@ import 'package:flutter/services.dart';
 import 'package:frontend/pages/shop.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-// import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:file_picker/file_picker.dart';
 
 class AddItems extends StatefulWidget {
   const AddItems({super.key});
@@ -29,11 +30,12 @@ class _AddItemsState extends State<AddItems> {
   TextEditingController otherTagController = TextEditingController();
 
   // Image related variables
-  File? _selectedImage;
-  String? _imageUrl;
   List<File> _selectedImages = [];
 
   Future<void> createProduct() async {
+    // Upload images first
+    List<String> imageUrls = await _uploadImagesToCloudinary();
+
     var url = "http://10.0.2.2:8080/shop/add";
 
     var response = await http.post(Uri.parse(url),
@@ -41,7 +43,7 @@ class _AddItemsState extends State<AddItems> {
           "Content-Type": "application/json",
         },
         body: json.encode({
-          'productImageUrl': "test",
+          'productImageUrls': imageUrls, // Use uploaded image URLs
           'productName': nameController.text,
           'productPrice': double.parse(priceController.text),
           'productCategory': selectedCategory,
@@ -106,6 +108,37 @@ class _AddItemsState extends State<AddItems> {
             .add(File(returnedImage.path)); // Add selected image to list
       });
     }
+  }
+
+  Future<List<String>> _uploadImagesToCloudinary() async {
+    List<String> uploadedUrls = [];
+    String cloudName =
+        dotenv.env['CLOUDINARY_CLOUD_NAME'] ?? 'default_cloud_name';
+    final url =
+        Uri.parse('https://api.cloudinary.com/v1_1/$cloudName/image/upload');
+
+    for (var image in _selectedImages) {
+      var request = http.MultipartRequest('POST', url)
+        ..fields['upload_preset'] = 'FlutterImage' // Change to your preset
+        ..files.add(await http.MultipartFile.fromPath('file', image.path));
+
+      try {
+        var response = await request.send();
+
+        if (response.statusCode == 200) {
+          final responseData = await response.stream.bytesToString();
+          final jsonMap = jsonDecode(responseData);
+          uploadedUrls.add(jsonMap['secure_url']); // Store Cloudinary URL
+        } else {
+          print("Failed to upload image: ${response.statusCode}");
+          print(await response.stream.bytesToString());
+        }
+      } catch (e) {
+        print("Error uploading image: $e");
+      }
+    }
+
+    return uploadedUrls;
   }
 
   @override
@@ -426,6 +459,7 @@ class _AddItemsState extends State<AddItems> {
                     child: SizedBox(
                       child: FilledButton(
                         onPressed: () {
+                          _uploadImagesToCloudinary();
                           createProduct();
                           Navigator.push(context,
                               MaterialPageRoute(builder: (context) => Shop()));
