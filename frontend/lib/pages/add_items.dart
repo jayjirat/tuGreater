@@ -31,6 +31,7 @@ class _AddItemsState extends State<AddItems> {
   // Image related variables
   File? _selectedImage;
   String? _imageUrl;
+  List<File> _selectedImages = [];
 
   Future<void> createProduct() async {
     var url = "http://10.0.2.2:8080/shop/add";
@@ -69,7 +70,7 @@ class _AddItemsState extends State<AddItems> {
                 leading: Icon(Icons.photo_library),
                 title: Text('Photo Library'),
                 onTap: () {
-                  _pickImageFromGallery();
+                  _pickImagesFromGallery();
                 },
               ),
               ListTile(
@@ -86,12 +87,12 @@ class _AddItemsState extends State<AddItems> {
     );
   }
 
-  Future _pickImageFromGallery() async {
-    final returnedImage =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (returnedImage != null) {
+  Future _pickImagesFromGallery() async {
+    final returnedImages =
+        await ImagePicker().pickMultiImage(); // pickMultipleImages for gallery
+    if (returnedImages.isNotEmpty) {
       setState(() {
-        _selectedImage = File(returnedImage.path);
+        _selectedImages.addAll(returnedImages.map((e) => File(e.path)));
       });
     }
   }
@@ -101,7 +102,8 @@ class _AddItemsState extends State<AddItems> {
         await ImagePicker().pickImage(source: ImageSource.camera);
     if (returnedImage != null) {
       setState(() {
-        _selectedImage = File(returnedImage.path);
+        _selectedImages
+            .add(File(returnedImage.path)); // Add selected image to list
       });
     }
   }
@@ -120,14 +122,30 @@ class _AddItemsState extends State<AddItems> {
                   },
                   child: Container(
                     margin: EdgeInsets.all(16),
-                    width: 200,
-                    height: 200,
+                    width: 300,
+                    height: 300,
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.black54, width: 2),
                     ),
-                    child: _selectedImage != null
-                        ? Image.file(File(_selectedImage!.path),
-                            width: 200, height: 200, fit: BoxFit.cover)
+                    child: _selectedImages.isNotEmpty
+                        ? GridView.builder(
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 3,
+                              crossAxisSpacing: 4.0,
+                              mainAxisSpacing: 4.0,
+                            ),
+                            shrinkWrap: true,
+                            itemCount: _selectedImages.length,
+                            itemBuilder: (context, index) {
+                              return Image.file(
+                                _selectedImages[index],
+                                width: 100,
+                                height: 100,
+                                fit: BoxFit.cover,
+                              );
+                            },
+                          )
                         : Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
