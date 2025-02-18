@@ -4,14 +4,31 @@ import 'package:frontend/providers/community_provider.dart';
 import 'package:frontend/screens/community_manage_post.dart';
 import 'package:frontend/screens/community_view_post.dart';
 
-class Community extends ConsumerWidget {
+class Community extends ConsumerStatefulWidget {
   const Community({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    ref.watch(communityProvider.notifier).fetchPosts();
-    final posts = ref.watch(communityProvider);
+  CommunityState createState() => CommunityState();
+}
 
+class CommunityState extends ConsumerState<Community> {
+  List<bool> toggleStatus = [
+    true,
+    false,
+    false,
+    false,
+  ];
+  int currIndexToggleStatus = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    ref.read(communityProvider.notifier).fetchPosts();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final posts = ref.watch(communityProvider);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFFFF914D),
@@ -43,6 +60,23 @@ class Community extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: 16),
+            ToggleButtons(
+                isSelected: toggleStatus,
+                borderRadius: BorderRadius.circular(30),
+                onPressed: (index) {
+                  setState(() {
+                    toggleStatus[index] = true;
+                    toggleStatus[currIndexToggleStatus] = false;
+                    currIndexToggleStatus = index;
+                  });
+                },
+                children: [
+                  toggleElement("All"),
+                  toggleElement("General"),
+                  toggleElement("Course Review"),
+                  toggleElement("Lost & Found"),
+                ]),
+            const SizedBox(height: 16),
             Expanded(
               child: ListView.builder(
                 itemCount: posts.length,
@@ -69,13 +103,26 @@ class Community extends ConsumerWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  post.title,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18,
-                                    color: Colors.black87,
-                                  ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      post.title,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                        color: Colors.black87,
+                                      ),
+                                    ),
+                                    Text(
+                                      post.category,
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.black87,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 const SizedBox(height: 10),
                                 Text(
@@ -109,6 +156,23 @@ class Community extends ConsumerWidget {
         backgroundColor: Color(0xFFFF914D),
         child: Icon(Icons.add, color: Colors.white),
       ),
+    );
+  }
+
+  Widget toggleElement(String text) {
+    return Row(
+      children: [
+        const SizedBox(
+          width: 8,
+        ),
+        Text(
+          text,
+          style: TextStyle(fontSize: 16),
+        ),
+        const SizedBox(
+          width: 8,
+        ),
+      ],
     );
   }
 }
