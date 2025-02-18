@@ -8,17 +8,20 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
   CommunityNotifier() : super([]);
 
   CommuPost? post;
+  bool isLoading = false;
 
   Future<void> fetchPosts() async {
     final url =
         Uri.parse('https://67b44379392f4aa94faa1224.mockapi.io/commuPosts');
 
     try {
+      // isLoading = true;
       final response = await http.get(url);
       if (response.statusCode == 200) {
         final List<dynamic> data = jsonDecode(response.body);
         final posts = data.map((json) => CommuPost.fromJson(json)).toList();
         state = posts;
+        // isLoading = false;
       } else {
         throw Exception(
             'Failed to load posts. Status code: ${response.statusCode}');
@@ -33,10 +36,13 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
         Uri.parse('https://67b44379392f4aa94faa1224.mockapi.io/commuPosts/$id');
 
     try {
+      isLoading = true;
       final response = await http.get(url);
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         post = CommuPost.fromJson(data);
+        isLoading = false;
+        state = [...state];
       } else {
         throw Exception(
             'Failed to load posts. Status code: ${response.statusCode}');
