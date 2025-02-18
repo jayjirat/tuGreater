@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/providers/community_provider.dart';
+import 'package:frontend/screens/community_viewpost.dart';
 
 class Community extends ConsumerWidget {
   const Community({super.key});
@@ -36,7 +37,13 @@ class Community extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         InkWell(
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        CommunityViewpost(id: post.id)));
+                          },
                           child: Card(
                             elevation: 6,
                             shape: RoundedRectangleBorder(
