@@ -4,6 +4,7 @@ class CommuPost {
   final String id;
   final String title;
   final String description;
+  final String category;
   final int likeCount;
   final List<Comment> comments;
   final DateTime createdAt;
@@ -19,6 +20,7 @@ class CommuPost {
     required this.id,
     required this.title,
     required this.description,
+    required this.category,
     this.likeCount = 0,
     this.comments = const [],
     required this.createdAt,
@@ -37,6 +39,7 @@ class CommuPost {
       id: json['id'] as String,
       title: json['title'] as String,
       description: json['description'] as String,
+      category: json['category'] as String,
       likeCount: json['likeCount'] as int? ?? 0,
       comments: (json['comments'] as List<dynamic>?)
               ?.map((e) => Comment.fromJson(e as Map<String, dynamic>))

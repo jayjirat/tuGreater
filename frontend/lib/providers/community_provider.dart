@@ -52,14 +52,17 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
     }
   }
 
-  Future<void> createPost({String? title, String? description}) async {
+  Future<void> createPost(
+      {String? title, String? description, String? category}) async {
     final url = 'https://67b44379392f4aa94faa1224.mockapi.io/commuPosts';
     try {
       final Map<String, dynamic> newPost = {
         'title': title,
         'description': description ?? '',
+        'category': category,
         'likeCount': 0,
         'userId': '999', // Mock
+        'username': 'jay', // Mock
         'likedBy': [],
         'isEdited': false,
         'isPinned': false,
