@@ -13,7 +13,18 @@ class Community extends ConsumerWidget {
     final posts = ref.watch(communityProvider);
 
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        backgroundColor: Color(0xFFFF914D),
+        elevation: 2,
+        title: Text(
+          'Community',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+      backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -21,8 +32,14 @@ class Community extends ConsumerWidget {
             TextField(
               decoration: InputDecoration(
                 hintText: 'Search...',
-                prefixIcon: Icon(Icons.search),
-                border: OutlineInputBorder(),
+                hintStyle: TextStyle(color: Colors.grey),
+                prefixIcon: Icon(Icons.search, color: Colors.grey),
+                filled: true,
+                fillColor: Color(0xFFF4F4F4),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  borderSide: BorderSide(color: Color(0xFFF4F4F4)),
+                ),
               ),
             ),
             const SizedBox(height: 16),
@@ -43,9 +60,9 @@ class Community extends ConsumerWidget {
                                       CommunityViewpost(id: post.id)));
                         },
                         child: Card(
-                          elevation: 6,
+                          elevation: 4,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(12),
                           ),
                           child: Padding(
                             padding: EdgeInsets.all(20),
@@ -55,19 +72,24 @@ class Community extends ConsumerWidget {
                                 Text(
                                   post.title,
                                   style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                    color: Colors.black87,
+                                  ),
                                 ),
                                 const SizedBox(height: 10),
-                                Text(post.description)
+                                Text(
+                                  post.description,
+                                  style: TextStyle(
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
                               ],
                             ),
                           ),
                         ),
                       ),
-                      const SizedBox(
-                        height: 12,
-                      )
+                      const SizedBox(height: 12),
                     ],
                   );
                 },
@@ -84,7 +106,8 @@ class Community extends ConsumerWidget {
                 builder: (context) => CommunityManagePost(mode: "Add"),
               ));
         },
-        child: Icon(Icons.add),
+        backgroundColor: Color(0xFFFF914D),
+        child: Icon(Icons.add, color: Colors.white),
       ),
     );
   }

@@ -4,7 +4,6 @@ import 'package:frontend/providers/community_provider.dart';
 
 class CommunityViewpost extends ConsumerStatefulWidget {
   final String id;
-  final String username = "Jirat Charoenkaew";
   const CommunityViewpost({super.key, required this.id});
 
   @override
@@ -27,129 +26,155 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
     final commentCtrl = TextEditingController();
 
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        backgroundColor: Color(0xFFFF914D),
+        elevation: 2, // เล็กน้อยเพื่อให้แอปดูมีมิติ
+        title: Text(
+          post?.title ?? 'Loading...',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+      backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(16),
           child: isLoading
               ? Center(child: CircularProgressIndicator())
               : Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     ListTile(
-                      leading: Icon(
-                        Icons.account_circle,
-                        size: 50,
+                      leading: CircleAvatar(
+                        radius: 25,
+                        backgroundColor: Color(0xFFFF914D),
+                        child: Icon(
+                          Icons.account_circle,
+                          size: 40,
+                          color: Colors.white,
+                        ),
                       ),
-                      title: Text(widget.username),
-                      subtitle: Text(post!.createdAt.toString()),
-                      trailing: Icon(Icons.report_problem),
+                      title: Text(
+                        post!.username,
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      subtitle: Text(
+                        post.createdAt.toString(),
+                        style: TextStyle(color: Colors.grey[600]),
+                      ),
+                      trailing: Icon(
+                        Icons.report_problem,
+                        color: Colors.grey[600],
+                      ),
                     ),
                     const SizedBox(
-                      height: 16,
+                      height: 20,
                     ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Text(
-                          post.title,
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 20),
+                    Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      elevation: 6,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              post.title,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 22,
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                            Text(
+                              post.description,
+                              style: TextStyle(fontSize: 16),
+                            ),
+                            const SizedBox(height: 12),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: Image.network(
+                                "https://fastly.picsum.photos/id/67/200/200.jpg?hmac=sN5XCCMqqmBvgDbYmAowWy2VToCkSYP5igDL_iRxK3M",
+                                fit: BoxFit.cover,
+                                height: 200,
+                                width: double.infinity,
+                              ),
+                            ),
+                          ],
                         ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Text(post.description),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(20),
-                          child: Image.network(
-                            "https://fastly.picsum.photos/id/67/200/200.jpg?hmac=sN5XCCMqqmBvgDbYmAowWy2VToCkSYP5igDL_iRxK3M",
-                            fit: BoxFit.cover,
-                            scale: 10.0,
-                            // ยิ่งค่ามากยิ่งเล็กลง
-                          ),
-                        )
-                      ],
+                      ),
                     ),
                     const SizedBox(
-                      height: 16,
+                      height: 20,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Row(
-                          children: [
-                            InkWell(
-                                onTap: () {},
-                                child: Icon(Icons.thumb_up_alt_outlined)),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            Text("${post.likeCount}")
-                          ],
+                        _buildActionButton(
+                          icon: Icons.thumb_up_alt_outlined,
+                          label: "${post.likeCount}",
                         ),
-                        Row(
-                          children: [
-                            InkWell(
-                                onTap: () {},
-                                child: Icon(Icons.comment_outlined)),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            Text("${post.comments.length}")
-                          ],
+                        _buildActionButton(
+                          icon: Icons.comment_outlined,
+                          label: "${post.comments.length}",
                         ),
-                        InkWell(
-                          onTap: () {},
-                          child: Row(
-                            children: [
-                              Icon(Icons.share_outlined),
-                              const SizedBox(
-                                width: 5,
-                              ),
-                              Text("Share")
-                            ],
-                          ),
-                        )
+                        _buildActionButton(
+                          icon: Icons.share_outlined,
+                          label: "Share",
+                        ),
                       ],
                     ),
                     const SizedBox(
-                      height: 16,
+                      height: 20,
                     ),
-                    Column(
-                      children: post.comments.isEmpty
-                          ? [Text("No comments")]
-                          : [
-                              ListView.builder(
-                                shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
-                                itemCount: post.comments.length,
-                                itemBuilder: (context, index) {
-                                  return ListTile(
-                                    leading: Icon(
+                    post.comments.isEmpty
+                        ? Center(child: Text("No comments"))
+                        : ListView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: post.comments.length,
+                            itemBuilder: (context, index) {
+                              return Card(
+                                margin: EdgeInsets.only(bottom: 12),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                elevation: 4,
+                                child: ListTile(
+                                  contentPadding: EdgeInsets.all(12),
+                                  leading: CircleAvatar(
+                                    radius: 20,
+                                    backgroundColor: Color(0xFFFF914D),
+                                    child: Icon(
                                       Icons.account_circle,
-                                      size: 50,
+                                      size: 30,
+                                      color: Colors.white,
                                     ),
-                                    title: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(post.comments[index].username),
-                                        Text(
-                                          post.comments[index].createdAt
-                                              .toString(),
-                                          style: TextStyle(fontSize: 12),
-                                        )
-                                      ],
-                                    ),
-                                    subtitle: Text(post.comments[index].text),
-                                  );
-                                },
-                              ),
-                            ],
-                    )
+                                  ),
+                                  title: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(post.comments[index].username),
+                                      Text(
+                                        post.comments[index].createdAt
+                                            .toString(),
+                                        style: TextStyle(fontSize: 12),
+                                      ),
+                                    ],
+                                  ),
+                                  subtitle: Text(post.comments[index].text),
+                                ),
+                              );
+                            },
+                          ),
+                    const SizedBox(
+                      height: 20,
+                    ),
                   ],
                 ),
         ),
@@ -165,7 +190,12 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                       controller: commentCtrl,
                       decoration: InputDecoration(
                         hintText: "Write a public comment...",
-                        border: OutlineInputBorder(),
+                        filled: true,
+                        fillColor: Colors.grey[200],
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                          borderSide: BorderSide.none,
+                        ),
                       ),
                     ),
                   ),
@@ -174,12 +204,25 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                     onTap: () {},
                     child: Padding(
                       padding: EdgeInsets.all(8),
-                      child: Icon(Icons.near_me, color: Colors.blue),
+                      child: Icon(
+                        Icons.near_me,
+                        color: Color(0xFFFF914D),
+                      ),
                     ),
                   ),
                 ],
               ),
             ),
+    );
+  }
+
+  Widget _buildActionButton({required IconData icon, required String label}) {
+    return Row(
+      children: [
+        Icon(icon, color: Color(0xFFFF914D)),
+        const SizedBox(width: 8),
+        Text(label, style: TextStyle(color: Color(0xFFFF914D))),
+      ],
     );
   }
 }
