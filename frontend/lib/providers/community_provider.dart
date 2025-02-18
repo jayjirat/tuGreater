@@ -51,6 +51,40 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
       throw Exception('Error: $e');
     }
   }
+
+  Future<void> createPost({String? title, String? description}) async {
+    final url = 'https://67b44379392f4aa94faa1224.mockapi.io/commuPosts';
+    try {
+      final Map<String, dynamic> newPost = {
+        'title': title,
+        'description': description ?? '',
+        'likeCount': 0,
+        'userId': '999', // Mock
+        'likedBy': [],
+        'isEdited': false,
+        'isPinned': false,
+        'comments': [],
+        'createdAt': DateTime.now().toString(),
+        'updatedAt': DateTime.now().toString(),
+        'imageUrl': '' // Mock
+      };
+
+      final header = {'Content-Type': 'application/json'};
+
+      final response = await http.post(Uri.parse(url),
+          headers: header, body: jsonEncode(newPost));
+      if (response.statusCode == 201) {
+        final data = jsonDecode(response.body);
+        final newPostModel = CommuPost.fromJson(data);
+        state = [newPostModel, ...state];
+      } else {
+        throw Exception(
+            'Failed to create post. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
 }
 
 final communityProvider =
