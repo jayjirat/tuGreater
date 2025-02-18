@@ -9,6 +9,7 @@ class CommuPost {
   final DateTime createdAt;
   final DateTime? updatedAt;
   final String userId;
+  final String username;
   final List<String> likedBy;
   final bool isEdited;
   final String? imageUrl;
@@ -23,6 +24,7 @@ class CommuPost {
     required this.createdAt,
     this.updatedAt,
     required this.userId,
+    required this.username,
     this.likedBy = const [],
     this.isEdited = false,
     this.imageUrl,
@@ -47,6 +49,7 @@ class CommuPost {
           ? DateTime.parse(json['updatedAt'] as String)
           : null,
       userId: json['userId'] as String,
+      username: json['username'] as String,
       likedBy: List<String>.from(json['likedBy'] ?? []),
       isEdited: json['isEdited'] as bool? ?? false,
       imageUrl: json['imageUrl'] as String?,
