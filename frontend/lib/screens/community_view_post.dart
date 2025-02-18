@@ -28,9 +28,9 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFFFF914D),
-        elevation: 2, // เล็กน้อยเพื่อให้แอปดูมีมิติ
+        elevation: 2,
         title: Text(
-          post?.title ?? 'Loading...',
+          isLoading ? "Loading..." : post!.title,
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -64,10 +64,6 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                         post.createdAt.toString(),
                         style: TextStyle(color: Colors.grey[600]),
                       ),
-                      trailing: Icon(
-                        Icons.report_problem,
-                        color: Colors.grey[600],
-                      ),
                     ),
                     const SizedBox(
                       height: 20,
@@ -82,14 +78,26 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              post.title,
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 22,
-                              ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  post.title,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 22,
+                                  ),
+                                ),
+                                ElevatedButton(
+                                    onPressed: () {},
+                                    style: ElevatedButton.styleFrom(
+                                        backgroundColor: Color(0xFFE63946),
+                                        foregroundColor: Colors.white,
+                                        elevation: 2),
+                                    child: Text("Report post"))
+                              ],
                             ),
-                            const SizedBox(height: 12),
+                            const SizedBox(height: 4),
                             Text(
                               post.description,
                               style: TextStyle(fontSize: 16),
