@@ -5,7 +5,7 @@ class CommuPost {
   final String title;
   final String description;
   final int likeCount;
-  final List<Comment>? comments;
+  final List<Comment> comments;
   final DateTime createdAt;
   final DateTime? updatedAt;
   final String userId;
@@ -36,12 +36,11 @@ class CommuPost {
       title: json['title'] as String,
       description: json['description'] as String,
       likeCount: json['likeCount'] as int? ?? 0,
-      comments: json['comments'] != null
-          ? (json['comments'] as List)
-              .map((commentJson) => Comment.fromJson(commentJson))
-              .toList()
-          : null,
-      createdAt: json['updatedAt'] != null
+      comments: (json['comments'] as List<dynamic>?)
+              ?.map((e) => Comment.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [],
+      createdAt: json['createdAt'] != null
           ? DateTime.parse(json['createdAt'] as String)
           : DateTime.now(),
       updatedAt: json['updatedAt'] != null
