@@ -398,6 +398,74 @@ class _AddItemsState extends State<AddItems> {
                     Row(
                       children: [
                         Checkbox(
+                          value: isCheckedSecondHanded,
+                          onChanged: (value) {
+                            setState(() {
+                              isCheckedSecondHanded = value!;
+                              if (value!) {
+                                tags.add("สภาพดี");
+                              } else {
+                                tags.remove("สภาพดี");
+                              }
+                            });
+                          },
+                        ),
+                        Text("สภาพดี"),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  children: [
+                    // First checkbox with fixed text
+                    Row(
+                      children: [
+                        Checkbox(
+                          value: isCheckedFirstHanded,
+                          onChanged: (value) {
+                            setState(() {
+                              isCheckedFirstHanded = value!;
+                              if (value!) {
+                                tags.add("อร่อย");
+                              } else {
+                                tags.remove("อร่อย");
+                              }
+                            });
+                          },
+                        ),
+                        Text("อร่อย"),
+                      ],
+                    ),
+                    SizedBox(width: 19), // Spacing
+
+                    // Second checkbox with fixed text
+                    Row(
+                      children: [
+                        Checkbox(
+                          value: isCheckedSecondHanded,
+                          onChanged: (value) {
+                            setState(() {
+                              isCheckedSecondHanded = value!;
+                              if (value!) {
+                                tags.add("สะอาด");
+                              } else {
+                                tags.remove("สะอาด");
+                              }
+                            });
+                          },
+                        ),
+                        Text("สะอาด"),
+                      ],
+                    ),
+                    SizedBox(width: 11), // Spacing
+
+                    // Third checkbox with a text field
+                    Row(
+                      children: [
+                        Checkbox(
                           value: isCheckedOthers,
                           onChanged: (value) {
                             setState(() {
