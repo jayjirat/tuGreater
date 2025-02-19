@@ -28,6 +28,7 @@ class _AddItemsState extends State<AddItems> {
   TextEditingController descriptionController = TextEditingController();
   List<String> tags = [];
   TextEditingController otherTagController = TextEditingController();
+  FocusNode otherTagFocusNode = FocusNode();
 
   // Image related variables
   List<File> _selectedImages = [];
@@ -48,7 +49,7 @@ class _AddItemsState extends State<AddItems> {
           'productPrice': double.parse(priceController.text),
           'productCategory': selectedCategory,
           'productTags': tags,
-          'productDatePost': '2025-02-16T12:00:00',
+          'productDatePost': DateTime.now().toIso8601String(),
           'productDescription': descriptionController.text,
         }));
 
@@ -57,6 +58,30 @@ class _AddItemsState extends State<AddItems> {
     } else {
       print('Failed to create product. Status Code: ${response.statusCode}');
       print('Response body: ${response.body}');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    otherTagController.dispose();
+    otherTagFocusNode.dispose();
+    super.dispose();
+  }
+
+  void addTag() {
+    if (isCheckedOthers && otherTagController.text.isNotEmpty) {
+      String newTag = otherTagController.text.trim();
+      if (!tags.contains(newTag)) {
+        setState(() {
+          tags.add(newTag); // Add the final text to tags
+        });
+        otherTagController.clear(); // Clear the text field after adding
+      }
     }
   }
 
@@ -377,6 +402,11 @@ class _AddItemsState extends State<AddItems> {
                           onChanged: (value) {
                             setState(() {
                               isCheckedOthers = value!;
+                              if (!value!) {
+                                otherTagController.clear();
+                                tags.removeWhere(
+                                    (tag) => tag == otherTagController.text);
+                              }
                             });
                           },
                         ),
@@ -384,6 +414,7 @@ class _AddItemsState extends State<AddItems> {
                           width: 100, // Adjust width as needed
                           child: TextField(
                             controller: otherTagController,
+                            focusNode: otherTagFocusNode,
                             enabled:
                                 isCheckedOthers, // Enable only if checkbox is checked
                             decoration: InputDecoration(
@@ -459,10 +490,17 @@ class _AddItemsState extends State<AddItems> {
                     child: SizedBox(
                       child: FilledButton(
                         onPressed: () {
+                          // First, check if the "Others" checkbox is checked and the text field is not empty
+                          if (isCheckedOthers &&
+                              otherTagController.text.isNotEmpty) {
+                            addTag(); // Add the tag if valid
+                          }
                           _uploadImagesToCloudinary();
                           createProduct();
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => Shop()));
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => Shop()),
+                          );
                         },
                         style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all(
@@ -471,8 +509,9 @@ class _AddItemsState extends State<AddItems> {
                         child: Text(
                           "โพสต์เลย",
                           style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 18), // White text for contrast
+                            color: Colors.black,
+                            fontSize: 18, // Black text for contrast
+                          ),
                         ),
                       ),
                     ),

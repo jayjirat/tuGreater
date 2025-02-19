@@ -15,6 +15,9 @@ public class Products {
     private double productPrice;
     private LocalDateTime productDatePost;
     private List<String> productTags;
+    private String productDescription;
+    private String productCategory;
+
 
     public List<String> getProductImageUrls() {
         return productImageUrls;
@@ -45,9 +48,6 @@ public class Products {
     public void setId(String productId) {
         this.productId = productId;
     }
-
-    private String productDescription;
-    private String productCategory;
 
     public Products(){
 
