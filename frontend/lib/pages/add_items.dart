@@ -22,6 +22,9 @@ class _AddItemsState extends State<AddItems> {
   // final _formKey = GlobalKey<FormState>();
   bool isCheckedFirstHanded = false;
   bool isCheckedSecondHanded = false;
+  bool isCheckedThirdHanded = false;
+  bool isCheckedFourthHanded = false;
+  bool isCheckedFifthHanded = false;
   bool isCheckedOthers = false;
   String? selectedCategory;
   TextEditingController nameController = TextEditingController();
@@ -399,10 +402,10 @@ class _AddItemsState extends State<AddItems> {
                     Row(
                       children: [
                         Checkbox(
-                          value: isCheckedSecondHanded,
+                          value: isCheckedThirdHanded,
                           onChanged: (value) {
                             setState(() {
-                              isCheckedSecondHanded = value!;
+                              isCheckedThirdHanded = value!;
                               if (value!) {
                                 tags.add("สภาพดี");
                               } else {
@@ -425,10 +428,10 @@ class _AddItemsState extends State<AddItems> {
                     Row(
                       children: [
                         Checkbox(
-                          value: isCheckedFirstHanded,
+                          value: isCheckedFourthHanded,
                           onChanged: (value) {
                             setState(() {
-                              isCheckedFirstHanded = value!;
+                              isCheckedFourthHanded = value!;
                               if (value!) {
                                 tags.add("อร่อย");
                               } else {
@@ -446,10 +449,10 @@ class _AddItemsState extends State<AddItems> {
                     Row(
                       children: [
                         Checkbox(
-                          value: isCheckedSecondHanded,
+                          value: isCheckedFifthHanded,
                           onChanged: (value) {
                             setState(() {
-                              isCheckedSecondHanded = value!;
+                              isCheckedFifthHanded = value!;
                               if (value!) {
                                 tags.add("สะอาด");
                               } else {
@@ -566,10 +569,7 @@ class _AddItemsState extends State<AddItems> {
                           }
                           _uploadImagesToCloudinary();
                           createProduct();
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => MyApp()),
-                          );
+                          Navigator.pop(context, true);
                         },
                         style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all(

@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import tuGreaterBackend.cn333.backend.entity.Products;
 import tuGreaterBackend.cn333.backend.repository.ProductsRepository;
 
+import java.util.List;
+
 @Service
 public class ProductsService {
     @Autowired
@@ -17,4 +19,6 @@ public class ProductsService {
     public Products createProducts(Products product){
         return productsRepository.save(product);
     }
+
+    public List<Products> findAllProducts() {return productsRepository.findAll();}
 }
