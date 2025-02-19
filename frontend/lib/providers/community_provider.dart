@@ -15,12 +15,9 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
     try {
       // isLoading = true;
       final response = await http.get(url);
-      print("-----------------------${response.statusCode}");
       if (response.statusCode == 200) {
         final List<dynamic> data = jsonDecode(response.body);
-        print("pass1");
         final posts = data.map((json) => CommuPost.fromJson(json)).toList();
-        print("pass2");
         state = posts;
         // isLoading = false;
       } else {
@@ -83,6 +80,26 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
       } else {
         throw Exception(
             'Failed to create post. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
+
+  Future<void> filterPosts(String category) async {
+    final url =
+        Uri.parse('http://10.0.2.2:8080/community/filter/?category=$category');
+    try {
+      // isLoading = true;
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body);
+        final posts = data.map((json) => CommuPost.fromJson(json)).toList();
+        state = posts;
+        // isLoading = false;
+      } else {
+        throw Exception(
+            'Failed to load posts. Status code: ${response.statusCode}');
       }
     } catch (e) {
       throw Exception('Error: $e');

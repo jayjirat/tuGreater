@@ -69,6 +69,20 @@ class CommunityState extends ConsumerState<Community> {
                     toggleStatus[currIndexToggleStatus] = false;
                     currIndexToggleStatus = index;
                   });
+
+                  if (currIndexToggleStatus == 0) {
+                    ref.read(communityProvider.notifier).fetchPosts();
+                  } else if (currIndexToggleStatus == 1) {
+                    ref.read(communityProvider.notifier).filterPosts("General");
+                  } else if (currIndexToggleStatus == 2) {
+                    ref
+                        .read(communityProvider.notifier)
+                        .filterPosts("ReviewCourse");
+                  } else if (currIndexToggleStatus == 3) {
+                    ref
+                        .read(communityProvider.notifier)
+                        .filterPosts("Lost%26Found");
+                  }
                 },
                 children: [
                   toggleElement("All"),
