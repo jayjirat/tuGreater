@@ -11,5 +11,5 @@ import tuGreaterBackend.cn333.backend.entity.CommunityPost;
 public interface CommunityRepository extends MongoRepository<CommunityPost,String> {
     public List<CommunityPost> findByCategory(String category);
     public List<CommunityPost> findByTitleContainingIgnoreCase(String title);
-
+    public List<CommunityPost> findByUserId(String userId);
 }

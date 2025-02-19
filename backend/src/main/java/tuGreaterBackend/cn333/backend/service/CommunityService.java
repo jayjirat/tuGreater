@@ -117,4 +117,18 @@ public class CommunityService {
             throw new Exception("Unexpected error occurred while fetching post by query: " + query, e);
         }
     }
+
+    public List<CommunityPost> getUserPost(String userId) throws Exception {
+        try {
+            List<CommunityPost> userPosts = communityRepository.findByUserId(userId);
+            if(userPosts.isEmpty()){
+                throw new RuntimeException("No posts found for user: " + userId);
+            }
+            return userPosts;
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e.getMessage());
+        } catch (Exception e) {
+            throw new Exception("Unexpected error occurred while fetching user's posts by userId: " + userId, e);
+        }
+    }
 }
