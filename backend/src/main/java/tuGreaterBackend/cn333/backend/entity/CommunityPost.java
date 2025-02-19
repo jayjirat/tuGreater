@@ -1,6 +1,6 @@
 package tuGreaterBackend.cn333.backend.entity;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
@@ -16,26 +16,33 @@ public class CommunityPost {
     private String category;
     private int likeCount;
     private List<Comment> comments;
-    private Date createdAt;
-    private Date updatedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+
+    public String getUsername() {
+        return this.username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
     private String userId;
-
-    public List<Comment> getComments() {
-        return this.comments;
-    }
-
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
-    }
     private String username;
-    private List<String> likedBy;
     private boolean isEdited;
-    private String imageUrl;
-    private boolean isPinned;
-
-
     public String getId() {
         return this.id;
+    }
+
+    public boolean isIsEdited() {
+        return this.isEdited;
+    }
+
+    public boolean getIsEdited() {
+        return this.isEdited;
+    }
+
+    public void setIsEdited(boolean isEdited) {
+        this.isEdited = isEdited;
     }
 
     public void setId(String id) {
@@ -74,19 +81,27 @@ public class CommunityPost {
         this.likeCount = likeCount;
     }
 
-    public Date getCreatedAt() {
+    public List<Comment> getComments() {
+        return this.comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public LocalDateTime getCreatedAt() {
         return this.createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
-    public Date getUpdatedAt() {
+    public LocalDateTime getUpdatedAt() {
         return this.updatedAt;
     }
 
-    public void setUpdatedAt(Date updatedAt) {
+    public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 
@@ -98,52 +113,7 @@ public class CommunityPost {
         this.userId = userId;
     }
 
-    public String getUsername() {
-        return this.username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public List<String> getLikedBy() {
-        return this.likedBy;
-    }
-
-    public void setLikedBy(List<String> likedBy) {
-        this.likedBy = likedBy;
-    }
-
-    public boolean isIsEdited() {
-        return this.isEdited;
-    }
-
-    public boolean getIsEdited() {
-        return this.isEdited;
-    }
-
-    public void setIsEdited(boolean isEdited) {
-        this.isEdited = isEdited;
-    }
-
-    public String getImageUrl() {
-        return this.imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    public boolean isIsPinned() {
-        return this.isPinned;
-    }
-
-    public boolean getIsPinned() {
-        return this.isPinned;
-    }
-
-    public void setIsPinned(boolean isPinned) {
-        this.isPinned = isPinned;
-    }
+   
+   
 
 }

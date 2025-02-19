@@ -1,6 +1,6 @@
 package tuGreaterBackend.cn333.backend.service;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,7 +69,7 @@ public class CommunityService {
             existingPost.setDescription(communityPost.getDescription());
             existingPost.setTitle(communityPost.getTitle());
             existingPost.setIsEdited(true);
-            existingPost.setUpdatedAt(new Date());
+            existingPost.setUpdatedAt(LocalDateTime.now());
             return communityRepository.save(existingPost);
 
         } catch (RuntimeException e) {

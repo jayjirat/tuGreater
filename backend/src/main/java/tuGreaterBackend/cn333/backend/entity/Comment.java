@@ -1,6 +1,6 @@
 package tuGreaterBackend.cn333.backend.entity;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
@@ -12,14 +12,12 @@ public class Comment {
 
     private String text;
     private String username;
-    private Date createdAt;
+    private LocalDateTime createdAt;
     private String userId;
     private String parentCommentId;
     private int likeCount;
     private int replyCount;
     private List<String> likedBy;
-    private boolean isEdited;
-
 
     public String getId() {
         return this.id;
@@ -45,11 +43,11 @@ public class Comment {
         this.username = username;
     }
 
-    public Date getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return this.createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
@@ -91,18 +89,6 @@ public class Comment {
 
     public void setLikedBy(List<String> likedBy) {
         this.likedBy = likedBy;
-    }
-
-    public boolean isIsEdited() {
-        return this.isEdited;
-    }
-
-    public boolean getIsEdited() {
-        return this.isEdited;
-    }
-
-    public void setIsEdited(boolean isEdited) {
-        this.isEdited = isEdited;
     }
 
 }
