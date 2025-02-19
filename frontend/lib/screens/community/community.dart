@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/providers/community_provider.dart';
-import 'package:frontend/screens/community_manage_post.dart';
-import 'package:frontend/screens/community_view_post.dart';
+import 'package:frontend/screens/community/community_manage_post.dart';
+import 'package:frontend/screens/community/community_view_post.dart';
 
 class Community extends ConsumerStatefulWidget {
   const Community({super.key});

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:frontend/screens/community.dart';
+import 'package:frontend/screens/community/community.dart';
 
 void main() {
   runApp(ProviderScope(child: MyApp()));

@@ -89,7 +89,9 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                                   ),
                                 ),
                                 ElevatedButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      showReportPopup(context);
+                                    },
                                     style: ElevatedButton.styleFrom(
                                         backgroundColor: Color(0xFFE63946),
                                         foregroundColor: Colors.white,
@@ -231,6 +233,102 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
         const SizedBox(width: 8),
         Text(label, style: TextStyle(color: Color(0xFFFF914D))),
       ],
+    );
+  }
+
+  void showReportPopup(BuildContext ctx) {
+    bool isChecked1 = false;
+    bool isChecked2 = false;
+    bool isChecked3 = false;
+    bool isChecked4 = false;
+    final descriptionController = TextEditingController();
+
+    final post = ref.read(communityProvider.notifier).post;
+
+    showDialog(
+      context: ctx,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              title: Text(
+                "Report post: ${post!.title}",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CheckboxListTile(
+                      title: Text("Uses harsh or offensive language"),
+                      value: isChecked1,
+                      onChanged: (bool? value) {
+                        setState(() => isChecked1 = value!);
+                      },
+                    ),
+                    CheckboxListTile(
+                      title: Text("Causes misunderstandings or confusion"),
+                      value: isChecked2,
+                      onChanged: (bool? value) {
+                        setState(() => isChecked2 = value!);
+                      },
+                    ),
+                    CheckboxListTile(
+                      title: Text("Contains inappropriate images"),
+                      value: isChecked3,
+                      onChanged: (bool? value) {
+                        setState(() => isChecked3 = value!);
+                      },
+                    ),
+                    CheckboxListTile(
+                      title: Text("Others"),
+                      value: isChecked4,
+                      onChanged: (bool? value) {
+                        setState(() => isChecked4 = value!);
+                      },
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8.0),
+                      child: TextField(
+                        controller: descriptionController,
+                        maxLength: 200,
+                        maxLines: 5,
+                        decoration: InputDecoration(
+                          hintText: "Description",
+                          border: OutlineInputBorder(),
+                        ),
+                        keyboardType: TextInputType.multiline,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text("Cancel"),
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFFE63946),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text("Report"),
+                ),
+              ],
+            );
+          },
+        );
+      },
     );
   }
 }

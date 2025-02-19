@@ -40,7 +40,7 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
               TextFormField(
                 controller: titleCtrl,
                 decoration: InputDecoration(
-                  labelText: 'Title',
+                  hintText: 'Title',
                   filled: true,
                   fillColor: Color(0xFFF4F4F4),
                   border: OutlineInputBorder(
@@ -82,7 +82,7 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
               const SizedBox(height: 8),
               TextFormField(
                 decoration: InputDecoration(
-                  labelText: 'Image URL',
+                  hintText: 'Image URL',
                   filled: true,
                   fillColor: Color(0xFFF4F4F4),
                   border: OutlineInputBorder(
@@ -135,7 +135,7 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
               const SizedBox(height: 10),
               Text(
                 "Disclaimer: Posts containing inappropriate, offensive, or harmful content will be removed without prior notice. Please adhere to the community guidelines.",
-                style: TextStyle(fontSize: 12, color: Colors.red),
+                style: TextStyle(fontSize: 12, color: Color(0xFFE63946)),
               ),
               const SizedBox(height: 30),
               ElevatedButton(
@@ -159,7 +159,7 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
                 ),
                 child: Text(
                   "Post",
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: Colors.white, fontSize: 16),
                 ),
               ),
             ],
