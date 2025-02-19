@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/components/toolbar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/services.dart';
+import 'package:frontend/main.dart';
 import 'package:frontend/pages/shop.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
@@ -567,7 +568,7 @@ class _AddItemsState extends State<AddItems> {
                           createProduct();
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => Shop()),
+                            MaterialPageRoute(builder: (context) => MyApp()),
                           );
                         },
                         style: ButtonStyle(

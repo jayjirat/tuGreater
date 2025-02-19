@@ -3,6 +3,8 @@ package tuGreaterBackend.cn333.backend.entity;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
+
 @Document(collection="users")
 public class Users {
 
@@ -15,6 +17,7 @@ public class Users {
     private String displayName;
     private String profileImageUrl;
     private Role role;
+    private List<Products> products;
 
     public Role getRole() {
         return this.role;
@@ -30,6 +33,14 @@ public class Users {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public List<Products> getProducts() {
+        return products;
+    }
+
+    public void setProducts(List<Products> products) {
+        this.products = products;
     }
 
     public String getStudentId() {

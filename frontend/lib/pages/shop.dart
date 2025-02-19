@@ -14,6 +14,13 @@ class Shop extends StatefulWidget {
 
 class _ShopState extends State<Shop> {
   bool isClicked = false;
+  var iconCategoriesList = [
+    'assets/svg/food.svg',
+    'assets/svg/drink.svg',
+    'assets/svg/clothes.svg',
+    'assets/svg/dormitory.svg'
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -94,11 +101,11 @@ class _ShopState extends State<Shop> {
               padding: EdgeInsets.only(left: 5), //ที่ว่างขอบจอซ้าย
               child: Row(
                 children: [
-                  for (var i = 0; i < 7; i++)
+                  for (var i = 0; i < 4; i++)
                     Container(
                       //ช่องสี่เหลี่ยม
-                      height: 40,
-                      width: 65,
+                      height: 43,
+                      width: 48,
                       margin: EdgeInsets.all(8),
                       decoration: BoxDecoration(
                           color: Color.fromARGB(255, 254, 227, 121),
@@ -111,13 +118,8 @@ class _ShopState extends State<Shop> {
                             )
                           ]),
                       child: Padding(
-                        padding: EdgeInsets.all(6),
-                        child: Center(
-                            child: Text(
-                          "Category",
-                          style: TextStyle(fontSize: 12),
-                        )),
-                      ),
+                          padding: EdgeInsets.all(6),
+                          child: SvgPicture.asset(iconCategoriesList[i])),
                     )
                 ],
               ),
