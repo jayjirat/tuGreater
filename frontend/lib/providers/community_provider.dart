@@ -11,15 +11,16 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
   bool isLoading = false;
 
   Future<void> fetchPosts() async {
-    final url =
-        Uri.parse('https://67b44379392f4aa94faa1224.mockapi.io/commuPosts');
-
+    final url = Uri.parse('http://10.0.2.2:8080/community');
     try {
       // isLoading = true;
       final response = await http.get(url);
+      print("-----------------------${response.statusCode}");
       if (response.statusCode == 200) {
         final List<dynamic> data = jsonDecode(response.body);
+        print("pass1");
         final posts = data.map((json) => CommuPost.fromJson(json)).toList();
+        print("pass2");
         state = posts;
         // isLoading = false;
       } else {
@@ -32,8 +33,7 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
   }
 
   Future<void> fetchPost(String id) async {
-    final url =
-        Uri.parse('https://67b44379392f4aa94faa1224.mockapi.io/commuPosts/$id');
+    final url = Uri.parse('http://10.0.2.2:8080/community/$id');
 
     try {
       isLoading = true;
@@ -54,7 +54,7 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
 
   Future<void> createPost(
       {String? title, String? description, String? category}) async {
-    final url = 'https://67b44379392f4aa94faa1224.mockapi.io/commuPosts';
+    final url = 'http://10.0.2.2:8080/community';
     try {
       final Map<String, dynamic> newPost = {
         'title': title,
@@ -67,8 +67,8 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
         'isEdited': false,
         'isPinned': false,
         'comments': [],
-        'createdAt': DateTime.now().toString(),
-        'updatedAt': DateTime.now().toString(),
+        'createdAt': DateTime.now().toIso8601String(),
+        'updatedAt': DateTime.now().toIso8601String(),
         'imageUrl': '' // Mock
       };
 
