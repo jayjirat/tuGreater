@@ -4,6 +4,7 @@ import 'package:frontend/components/grid_items.dart';
 import 'package:frontend/components/toolbar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:frontend/pages/add_items.dart';
+import 'package:frontend/pages/item_detail.dart';
 
 class Shop extends StatefulWidget {
   const Shop({super.key});
