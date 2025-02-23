@@ -9,6 +9,7 @@ class Products {
   final List<String> productTags;
   final String productDescription;
   final String productCategory;
+  final String productOwner;
 
   Products({
     required this.productId,
@@ -19,6 +20,7 @@ class Products {
     required this.productTags,
     required this.productDescription,
     required this.productCategory,
+    required this.productOwner,
   });
 
   factory Products.fromJson(Map<String, dynamic> json) {
@@ -37,6 +39,8 @@ class Products {
           json['productDescription'] ?? '', // Provide a default empty string
       productCategory:
           json['productCategory'] ?? '', // Provide a default empty string
+      productOwner:
+          json['productOwner'] ?? '', // Provide a default empty string
     );
   }
 
@@ -51,6 +55,7 @@ class Products {
       'productTags': productTags,
       'productDescription': productDescription,
       'productCategory': productCategory,
+      'productOwner': productOwner,
     };
   }
 }

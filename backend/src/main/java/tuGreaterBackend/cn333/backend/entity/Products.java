@@ -17,7 +17,15 @@ public class Products {
     private List<String> productTags;
     private String productDescription;
     private String productCategory;
+    private String productOwner;
 
+    public String getProductOwner() {
+        return productOwner;
+    }
+
+    public void setProductOwner(String productOwner) {
+        this.productOwner = productOwner;
+    }
 
     public List<String> getProductImageUrls() {
         return productImageUrls;
@@ -38,10 +46,11 @@ public class Products {
                 ", productImageUrls=" + productImageUrls +
                 ", productName='" + productName + '\'' +
                 ", productPrice=" + productPrice +
-                ", productDescription='" + productDescription + '\'' +
-                ", productCategory='" + productCategory + '\'' +
                 ", productDatePost=" + productDatePost +
                 ", productTags=" + productTags +
+                ", productDescription='" + productDescription + '\'' +
+                ", productCategory='" + productCategory + '\'' +
+                ", productOwner='" + productOwner + '\'' +
                 '}';
     }
 
@@ -62,6 +71,7 @@ public class Products {
         this.productCategory = productCategory;
         this.productDatePost = productDatePost;
         this.productTags = productTags;
+        this.productOwner = productOwner;
     }
 
 

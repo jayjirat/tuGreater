@@ -55,6 +55,7 @@ class _AddItemsState extends State<AddItems> {
           'productTags': tags,
           'productDatePost': DateTime.now().toIso8601String(),
           'productDescription': descriptionController.text,
+          'productOwner': "Wernatraa"
         }));
 
     if (response.statusCode == 200) {
