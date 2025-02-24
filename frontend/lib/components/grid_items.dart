@@ -33,7 +33,8 @@ class GridItems extends ConsumerWidget {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => ItemDetail()));
+                              builder: (context) =>
+                                  ItemDetail(productId: product.productId)));
                     },
                     borderRadius: BorderRadius.circular(15),
                     child: Container(

@@ -5,3 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 final productProvider = FutureProvider<List<Products>>((ref) async {
   return ProductService().fetchProducts();
 });
+
+final productProviderById =
+    FutureProvider.family<Products, String>((ref, productId) async {
+  return ProductService().fetchProductDetail(productId);
+});

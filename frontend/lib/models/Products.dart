@@ -25,7 +25,7 @@ class Products {
 
   factory Products.fromJson(Map<String, dynamic> json) {
     return Products(
-      productId: json['productId'] ?? '', // Provide a default empty string
+      productId: json['id'] ?? '', // Provide a default empty string
       productImageUrls:
           List<String>.from(json['productImageUrls'] ?? []), // Handle null case
       productName: json['productName'] ?? '', // Provide a default empty string

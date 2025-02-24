@@ -11,8 +11,24 @@ class ProductService {
     final response = await http.get(Uri.parse(baseUrl));
 
     if (response.statusCode == 200) {
-      List<dynamic> jsonData = json.decode(response.body);
+      // Decode the response body with UTF-8
+      String decodedResponse = utf8.decode(response.bodyBytes);
+      List<dynamic> jsonData = json.decode(decodedResponse);
       return jsonData.map((json) => Products.fromJson(json)).toList();
+    } else {
+      throw Exception('Failed to load products');
+    }
+  }
+
+  // Fetch product by id
+  Future<Products> fetchProductDetail(String productId) async {
+    final response = await http.get(Uri.parse(baseUrl + "/${productId}"));
+
+    if (response.statusCode == 200) {
+      // Decode the response body with UTF-8
+      String decodedResponse = utf8.decode(response.bodyBytes);
+      final jsonData = json.decode(decodedResponse);
+      return Products.fromJson(jsonData);
     } else {
       throw Exception('Failed to load products');
     }
