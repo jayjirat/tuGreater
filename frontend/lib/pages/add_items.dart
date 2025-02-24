@@ -41,7 +41,7 @@ class _AddItemsState extends State<AddItems> {
     // Upload images first
     List<String> imageUrls = await _uploadImagesToCloudinary();
 
-    var url = "http://10.0.2.2:8080/shop/add";
+    var url = "http://10.0.2.2:8080/shop";
 
     var response = await http.post(Uri.parse(url),
         headers: {
