@@ -34,7 +34,8 @@ class ItemDetail extends ConsumerWidget {
                   child: Stack(
                     children: [
                       Center(
-                        child: ItemImageSlider(),
+                        child:
+                            ItemImageSlider(images: product.productImageUrls),
                       )
                     ],
                   ),
