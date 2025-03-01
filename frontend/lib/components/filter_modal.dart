@@ -83,8 +83,7 @@ class _FilterModalState extends State<FilterModal> {
                 SizedBox(
                   width: 150,
                   child: TextField(
-                    keyboardType:
-                        TextInputType.number, // Set keyboard to number
+                    keyboardType: TextInputType.number,
                     inputFormatters: [
                       FilteringTextInputFormatter.digitsOnly
                     ], // Allow only numbers
@@ -128,7 +127,7 @@ class _FilterModalState extends State<FilterModal> {
                     Text("มือหนึ่ง"),
                   ],
                 ),
-                SizedBox(width: 10), // Spacing
+                SizedBox(width: 10),
 
                 // Second checkbox with fixed text
                 Row(
@@ -144,7 +143,7 @@ class _FilterModalState extends State<FilterModal> {
                     Text("มือสอง"),
                   ],
                 ),
-                SizedBox(width: 10), // Spacing
+                SizedBox(width: 10),
               ],
             ),
             Row(
@@ -176,11 +175,9 @@ class _FilterModalState extends State<FilterModal> {
                       ),
                       shape: MaterialStateProperty.all(
                         RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                              20), // Optional: round corners
+                          borderRadius: BorderRadius.circular(20),
                           side: BorderSide(
-                              color: const Color.fromARGB(
-                                  255, 255, 140, 0)), // Optional: add border
+                              color: const Color.fromARGB(255, 255, 140, 0)),
                         ),
                       ),
                     ),
@@ -216,11 +213,9 @@ class _FilterModalState extends State<FilterModal> {
                       ),
                       shape: MaterialStateProperty.all(
                         RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                              20), // Optional: round corners
+                          borderRadius: BorderRadius.circular(20),
                           side: BorderSide(
-                              color: const Color.fromARGB(
-                                  255, 255, 140, 0)), // Optional: add border
+                              color: const Color.fromARGB(255, 255, 140, 0)),
                         ),
                       ),
                     ),
@@ -267,16 +262,14 @@ class _FilterModalState extends State<FilterModal> {
                       ),
                       shape: MaterialStateProperty.all(
                         RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                              20), // Optional: round corners
+                          borderRadius: BorderRadius.circular(20),
                           side: BorderSide(
-                              color: const Color.fromARGB(
-                                  255, 255, 140, 0)), // Optional: add border
+                              color: const Color.fromARGB(255, 255, 140, 0)),
                         ),
                       ),
                     ),
                     child: Align(
-                      alignment: Alignment.centerLeft, // Align text to the left
+                      alignment: Alignment.centerLeft,
                       child: Text(
                         "ใหม่สุดก่อน",
                         style: TextStyle(color: Colors.black), // Set text color
@@ -307,19 +300,17 @@ class _FilterModalState extends State<FilterModal> {
                       ),
                       shape: MaterialStateProperty.all(
                         RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                              20), // Optional: round corners
+                          borderRadius: BorderRadius.circular(20),
                           side: BorderSide(
-                              color: const Color.fromARGB(
-                                  255, 255, 140, 0)), // Optional: add border
+                              color: const Color.fromARGB(255, 255, 140, 0)),
                         ),
                       ),
                     ),
                     child: Align(
-                      alignment: Alignment.centerLeft, // Align text to the left
+                      alignment: Alignment.centerLeft,
                       child: Text(
                         "แนะนำ",
-                        style: TextStyle(color: Colors.black), // Set text color
+                        style: TextStyle(color: Colors.black),
                       ),
                     ),
                   ),

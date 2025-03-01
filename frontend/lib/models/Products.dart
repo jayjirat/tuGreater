@@ -23,28 +23,23 @@ class Products {
     required this.productOwner,
   });
 
+  // Convert JSON to Product object
   factory Products.fromJson(Map<String, dynamic> json) {
     return Products(
-      productId: json['id'] ?? '', // Provide a default empty string
-      productImageUrls:
-          List<String>.from(json['productImageUrls'] ?? []), // Handle null case
-      productName: json['productName'] ?? '', // Provide a default empty string
-      productPrice:
-          (json['productPrice'] ?? 0).toDouble(), // Provide a default value
-      productDatePost: DateTime.tryParse(json['productDatePost'] ?? '') ??
-          DateTime.now(), // Default to now if null
-      productTags:
-          List<String>.from(json['productTags'] ?? []), // Handle null case
-      productDescription:
-          json['productDescription'] ?? '', // Provide a default empty string
-      productCategory:
-          json['productCategory'] ?? '', // Provide a default empty string
-      productOwner:
-          json['productOwner'] ?? '', // Provide a default empty string
+      productId: json['id'] ?? '',
+      productImageUrls: List<String>.from(json['productImageUrls'] ?? []),
+      productName: json['productName'] ?? '',
+      productPrice: (json['productPrice'] ?? 0).toDouble(),
+      productDatePost:
+          DateTime.tryParse(json['productDatePost'] ?? '') ?? DateTime.now(),
+      productTags: List<String>.from(json['productTags'] ?? []),
+      productDescription: json['productDescription'] ?? '',
+      productCategory: json['productCategory'] ?? '',
+      productOwner: json['productOwner'] ?? '',
     );
   }
 
-  // Convert Product object to JSON (to send to backend)
+  // Convert Product object to JSON
   Map<String, dynamic> toJson() {
     return {
       'productId': productId,
