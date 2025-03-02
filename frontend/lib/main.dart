@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/uploadprofile_page.dart';
+import 'package:frontend/setting_page_folder/profile_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -48,7 +48,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: UploadProfilePage(),
+      home: ProfilePage(),
     );
   }
 }
