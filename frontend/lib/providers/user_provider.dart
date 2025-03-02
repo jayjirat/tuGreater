@@ -1,11 +1,16 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:frontend/models/role.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/models/user.dart';
 
 class UserNotifier extends StateNotifier<User?> {
   UserNotifier() : super(null);
+
+  Role parseRole(String role) {
+    return role == "admin" ? Role.admin : Role.user;
+  }
 
   Future<void> login(
       String username, String password, BuildContext context) async {
@@ -28,10 +33,10 @@ class UserNotifier extends StateNotifier<User?> {
         final usernameUrl = Uri.parse('$userDBUrl/$username');
 
         // Fetch user in db
-        final exitingUser = await http.get(usernameUrl);
+        final existingUser = await http.get(usernameUrl);
         final usernameNew = tuResponseData['displayname_en'];
         // User not found in db -> Create new user (First Login)
-        if (exitingUser.statusCode == 404) {
+        if (existingUser.statusCode == 404) {
           final userBody = json.encode({
             "studentId": username,
             "username": usernameNew,
@@ -45,6 +50,14 @@ class UserNotifier extends StateNotifier<User?> {
 
           if (createUserResponse.statusCode == 201) {
             if (context.mounted) {
+              final data = json.decode(createUserResponse.body);
+              state = User(
+                studentId: data['studentId'],
+                username: data['username'],
+                displayName: data['displayName'],
+                profileImageUrl: data['profileImageUrl'],
+                role: parseRole(data['role']),
+              );
               Navigator.pushReplacementNamed(context, '/set-display-name');
             }
           } else {
@@ -53,7 +66,15 @@ class UserNotifier extends StateNotifier<User?> {
           }
 
           // Found user in db -> Not first login
-        } else if (exitingUser.statusCode == 200) {
+        } else if (existingUser.statusCode == 200) {
+          final data = json.decode(existingUser.body);
+          state = User(
+            studentId: data['studentId'],
+            username: data['username'],
+            displayName: data['displayName'],
+            profileImageUrl: data['profileImageUrl'],
+            role: parseRole(data['role']),
+          );
           // TODO  push -> community screen
           print("Community screen");
         } else {
@@ -80,6 +101,8 @@ class UserNotifier extends StateNotifier<User?> {
       }
     }
   }
+
+  // Future<void> setDisplayName(String displayName) {}
 }
 
 final userProvider =
