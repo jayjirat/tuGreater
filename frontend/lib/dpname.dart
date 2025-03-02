@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/components/label_input.dart';
 import 'package:frontend/components/login_stack.dart';
+import 'package:frontend/providers/user_provider.dart';
 
-class ConfirmationPage extends StatelessWidget {
+class ConfirmationPage extends ConsumerWidget {
   ConfirmationPage({super.key});
   final displayNameController = TextEditingController();
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return loginStack(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -34,9 +36,9 @@ class ConfirmationPage extends StatelessWidget {
           SizedBox(height: 32.0),
           ElevatedButton(
             onPressed: () {
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text('Confirmed')));
+              ref
+                  .read(userProvider.notifier)
+                  .setDisplayName(displayNameController.text, context);
             },
             child: Text('CONFIRM'),
           ),

@@ -8,14 +8,20 @@ import 'package:frontend/models/user.dart';
 class UserNotifier extends StateNotifier<User?> {
   UserNotifier() : super(null);
 
-  Role parseRole(String role) {
+  Role parseStringtoRole(String role) {
     return role == "admin" ? Role.admin : Role.user;
   }
+
+  String parseRoletoString(Role role) {
+    return role == Role.admin ? "Admin" : "User";
+  }
+
+  final userDBUrl = "http://10.0.2.2:8080/users";
 
   Future<void> login(
       String username, String password, BuildContext context) async {
     final url = 'https://restapi.tu.ac.th/api/v1/auth/Ad/verify';
-    final userDBUrl = "http://10.0.2.2:8080/users";
+
     try {
       final tuResponse = await http.post(
         Uri.parse(url),
@@ -53,9 +59,9 @@ class UserNotifier extends StateNotifier<User?> {
               state = User(
                 studentId: data["user"]['studentId'],
                 username: data["user"]['username'],
-                displayName: data["user"]['displayName'] ?? "",
-                profileImageUrl: data["user"]['profileImageUrl'] ?? "",
-                role: parseRole(data["user"]['role']),
+                displayName: data["user"]['displayName'],
+                profileImageUrl: data["user"]['profileImageUrl'],
+                role: parseStringtoRole(data["user"]['role']),
               );
               Navigator.pushReplacementNamed(context, '/set-display-name');
             }
@@ -67,13 +73,12 @@ class UserNotifier extends StateNotifier<User?> {
           // Found user in db -> Not first login
         } else if (existingUser.statusCode == 200) {
           final data = json.decode(existingUser.body);
-          print(existingUser.body);
           state = User(
             studentId: data['studentId'],
             username: data['username'],
-            displayName: data['displayName'] ?? "",
-            profileImageUrl: data['profileImageUrl'] ?? "",
-            role: parseRole(data['role']),
+            displayName: data['displayName'],
+            profileImageUrl: data['profileImageUrl'],
+            role: parseStringtoRole(data['role']),
           );
           // TODO  push -> community screen
           print("Community screen");
@@ -102,7 +107,39 @@ class UserNotifier extends StateNotifier<User?> {
     }
   }
 
-  // Future<void> setDisplayName(String displayName) {}
+  Future<void> setDisplayName(String displayName, BuildContext context) async {
+    final id = state!.studentId;
+    Map<String, dynamic> editUser = {
+      "studentId": state!.studentId,
+      "username": state!.username,
+      "displayName": displayName,
+      "profileImageUrl": state!.profileImageUrl,
+      "role": parseRoletoString(state!.role),
+    };
+    try {
+      final response = await http.put(
+        Uri.parse("$userDBUrl/$id"),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(editUser),
+      );
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        state = User(
+          studentId: data['studentId'],
+          username: data['username'],
+          displayName: data['displayName'],
+          profileImageUrl: data['profileImageUrl'],
+          role: parseStringtoRole(data['role']),
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error: $e')));
+      }
+    }
+  }
 }
 
 final userProvider =
