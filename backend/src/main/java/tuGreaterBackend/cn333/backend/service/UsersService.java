@@ -66,7 +66,8 @@ public class UsersService {
                 existingUser.setProfileImageUrl(user.getProfileImageUrl());
                 existingUser.setRole(user.getRole());
                 existingUser.setStudentId(user.getStudentId());
-                return usersRepository.save(existingUser);
+                Users editedUser = usersRepository.save(existingUser);
+                return editedUser;
             }else{
                 return null;
             }
