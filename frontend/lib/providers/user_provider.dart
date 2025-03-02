@@ -9,13 +9,10 @@ class UserNotifier extends StateNotifier<User?> {
 
   Future<void> login(
       String username, String password, BuildContext context) async {
-    // URL ของ API สำหรับทำการล็อกอิน
-    String url =
-        'https://restapi.tu.ac.th/api/v1/auth/Ad/verify'; // เปลี่ยน URL เป็น API จริงของคุณ
-
-    // ทำการส่ง POST request ไปยัง API
+    final url = 'https://restapi.tu.ac.th/api/v1/auth/Ad/verify';
+    final userDBUrl = "http://10.0.2.2:8080/users";
     try {
-      final response = await http.post(
+      final tuResponse = await http.post(
         Uri.parse(url),
         body: json.encode({'UserName': username, 'PassWord': password}),
         headers: {
@@ -25,14 +22,47 @@ class UserNotifier extends StateNotifier<User?> {
         },
       );
 
-      // ตรวจสอบผลลัพธ์จาก API
-      if (response.statusCode == 200) {
-        // API ตอบกลับสำเร็จ (login ถูกต้อง)
-        final responseData = json.decode(response.body);
-        // สมมุติว่า API ส่งกลับ token สำหรับการใช้งาน
-        print(responseData['username']);
+      // Login success
+      if (tuResponse.statusCode == 200) {
+        final tuResponseData = json.decode(tuResponse.body);
+        final usernameUrl = Uri.parse('$userDBUrl/$username');
+
+        // Fetch user in db
+        final exitingUser = await http.get(usernameUrl);
+        final usernameNew = tuResponseData['displayname_en'];
+        // User not found in db -> Create new user (First Login)
+        if (exitingUser.statusCode == 404) {
+          final userBody = json.encode({
+            "studentId": username,
+            "username": usernameNew,
+            "displayName": "",
+            "profileImageUrl": "",
+            "role": "User"
+          });
+
+          final createUserResponse = await http.post(Uri.parse(userDBUrl),
+              headers: {"content-type": "application/json"}, body: userBody);
+
+          if (createUserResponse.statusCode == 201) {
+            if (context.mounted) {
+              Navigator.pushReplacementNamed(context, '/set-display-name');
+            }
+          } else {
+            print("error");
+            // TODO  Notify the error to user
+          }
+
+          // Found user in db -> Not first login
+        } else if (exitingUser.statusCode == 200) {
+          // TODO  push -> community screen
+          print("Community screen");
+        } else {
+          print("error");
+          // TODO  Notify the error to user
+        }
+
+        // Login unsuccessful
       } else {
-        // ถ้าการล็อกอินไม่สำเร็จ
         if (context.mounted) {
           {
             ScaffoldMessenger.of(
