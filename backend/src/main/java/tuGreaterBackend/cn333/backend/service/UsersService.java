@@ -5,6 +5,7 @@ import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 import tuGreaterBackend.cn333.backend.entity.Users;
 import tuGreaterBackend.cn333.backend.repository.UsersRepository;
 
@@ -13,6 +14,7 @@ public class UsersService {
 
     @Autowired
     private final UsersRepository usersRepository;
+
 
     public UsersService(UsersRepository usersRepository) {
         this.usersRepository = usersRepository;
@@ -60,7 +62,6 @@ public class UsersService {
             Users existingUser = usersRepository.findById(id).orElse(null);
             if (existingUser!= null) {
                 existingUser.setUsername(user.getUsername());
-                existingUser.setPassword(user.getPassword());
                 existingUser.setDisplayName(user.getDisplayName());
                 existingUser.setProfileImageUrl(user.getProfileImageUrl());
                 existingUser.setRole(user.getRole());

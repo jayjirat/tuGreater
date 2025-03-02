@@ -19,10 +19,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
 
 
-
-
-
-
 @RestController
 @RequestMapping("/users")
 public class UsersController {
@@ -31,7 +27,6 @@ public class UsersController {
     public UsersController(UsersService usersService) {
         this.usersService = usersService;
     }
-
     @GetMapping("")
     public ResponseEntity<?> getUsers() {
         try {
