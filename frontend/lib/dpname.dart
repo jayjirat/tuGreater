@@ -35,7 +35,7 @@ class ConfirmationPage extends StatelessWidget {
                 height: 8.0,
               ), // Space between the label and the input field
               // displayname TextField
-              Container(
+              SizedBox(
                 width: 300, // กำหนดความกว้างของกล่องกรอกข้อมูล
                 child: TextField(
                   decoration: InputDecoration(
