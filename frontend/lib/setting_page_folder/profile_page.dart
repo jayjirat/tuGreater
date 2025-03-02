@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/setting_page_folder/setting_page.dart';
 import 'package:frontend/setting_page_folder/uploadprofile_page.dart';
+import 'package:frontend/components/custom_bottom_navigation.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -97,34 +98,20 @@ class ProfilePage extends StatelessWidget {
                     style: TextStyle(color: Colors.black, fontSize: 20)),
               )),
               Center(
-                child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    padding: EdgeInsets.all(10),
-                    width: 350,
-                    height: 75,
-                    child: Center(
-                      child: Text(
-                        "SIGN OUT",
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    )),
-              ),
+                  child: ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.redAccent, // Button color
+                  minimumSize: Size(350, 75),
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                ),
+                child: Text("SIGN OUT",
+                    style: TextStyle(color: Colors.black, fontSize: 20)),
+              )),
             ],
           ),
         ),
-        // to be implement
-        bottomNavigationBar: BottomAppBar(
-          child: Padding(
-            padding: EdgeInsets.all(10),
-            child: Text("Bottom Navigation"),
-          ),
-        ),
+        bottomNavigationBar: CustomBottomNavigationBar(),
       ),
     );
   }

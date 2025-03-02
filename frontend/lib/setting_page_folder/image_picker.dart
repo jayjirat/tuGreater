@@ -18,7 +18,7 @@ class ProfileImagePicker extends StatefulWidget {
 final ButtonStyle raisedButtonStyle = ElevatedButton.styleFrom(
   foregroundColor: Colors.black87,
   backgroundColor: const Color.fromARGB(255, 231, 199, 14),
-  minimumSize: Size(100, 50),
+  minimumSize: Size(180, 70),
   padding: EdgeInsets.symmetric(horizontal: 16),
   shape: const RoundedRectangleBorder(
     borderRadius: BorderRadius.all(Radius.circular(15)),

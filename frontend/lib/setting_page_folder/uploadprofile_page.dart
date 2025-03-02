@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/setting_page_folder/image_picker.dart';
+import 'package:frontend/components/custom_bottom_navigation.dart';
 
 class UploadProfilePage extends StatefulWidget {
   const UploadProfilePage({super.key});
@@ -34,7 +35,6 @@ class _UploadProfilePageState extends State<UploadProfilePage> {
                     ProfileImagePicker(
                         existingImageUrl:
                             "https://static.vecteezy.com/system/resources/previews/020/765/399/non_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg"),
-                    SizedBox(height: 20),
                     Text(
                       "Name Surname",
                       style: TextStyle(color: Colors.black, fontSize: 20),
@@ -48,31 +48,20 @@ class _UploadProfilePageState extends State<UploadProfilePage> {
               ),
             ),
             Center(
-                child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    width: 350,
-                    height: 75,
-                    child: Center(
-                        child: Text(
-                      "Return to default profile picture",
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold),
-                    )))),
+                child: ElevatedButton(
+              onPressed: () {},
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.redAccent, // Button color
+                minimumSize: Size(350, 75),
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              ),
+              child: Text("Return to default picture",
+                  style: TextStyle(color: Colors.black, fontSize: 20)),
+            )),
           ],
         ),
       ),
-      // to be implement
-      bottomNavigationBar: BottomAppBar(
-        child: Padding(
-          padding: EdgeInsets.all(10),
-          child: Text("Bottom Navigation"),
-        ),
-      ),
+      bottomNavigationBar: CustomBottomNavigationBar(),
     );
   }
 }

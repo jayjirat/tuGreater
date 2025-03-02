@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/setting_page_folder/single_toggle_buttons.dart';
+import 'package:frontend/components/custom_bottom_navigation.dart';
 
 class SettingPage extends StatefulWidget {
   const SettingPage({super.key});
@@ -92,13 +93,7 @@ class _SettingPageState extends State<SettingPage> {
           ],
         ),
       ),
-      // to be implement
-      bottomNavigationBar: BottomAppBar(
-        child: Padding(
-          padding: EdgeInsets.all(10),
-          child: Text("Bottom Navigation"),
-        ),
-      ),
+      bottomNavigationBar: CustomBottomNavigationBar(),
     );
   }
 }
