@@ -47,16 +47,15 @@ class UserNotifier extends StateNotifier<User?> {
 
           final createUserResponse = await http.post(Uri.parse(userDBUrl),
               headers: {"content-type": "application/json"}, body: userBody);
-
           if (createUserResponse.statusCode == 201) {
             if (context.mounted) {
               final data = json.decode(createUserResponse.body);
               state = User(
-                studentId: data['studentId'],
-                username: data['username'],
-                displayName: data['displayName'],
-                profileImageUrl: data['profileImageUrl'],
-                role: parseRole(data['role']),
+                studentId: data["user"]['studentId'],
+                username: data["user"]['username'],
+                displayName: data["user"]['displayName'] ?? "",
+                profileImageUrl: data["user"]['profileImageUrl'] ?? "",
+                role: parseRole(data["user"]['role']),
               );
               Navigator.pushReplacementNamed(context, '/set-display-name');
             }
@@ -68,11 +67,12 @@ class UserNotifier extends StateNotifier<User?> {
           // Found user in db -> Not first login
         } else if (existingUser.statusCode == 200) {
           final data = json.decode(existingUser.body);
+          print(existingUser.body);
           state = User(
             studentId: data['studentId'],
             username: data['username'],
-            displayName: data['displayName'],
-            profileImageUrl: data['profileImageUrl'],
+            displayName: data['displayName'] ?? "",
+            profileImageUrl: data['profileImageUrl'] ?? "",
             role: parseRole(data['role']),
           );
           // TODO  push -> community screen
