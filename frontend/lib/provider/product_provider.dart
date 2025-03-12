@@ -10,3 +10,8 @@ final productProviderById =
     FutureProvider.family<Products, String>((ref, productId) async {
   return ProductService().fetchProductDetail(productId);
 });
+
+final productSearchProvider =
+    FutureProvider.family<List<Products>, String>((ref, query) async {
+  return ProductService().searchProducts(query);
+});
