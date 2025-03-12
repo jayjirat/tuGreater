@@ -52,6 +52,7 @@ class _ShopState extends ConsumerState<Shop> {
                   onChanged: (value) {
                     setState(() {
                       searchQuery = value;
+                      print('Search Query: $searchQuery');
                     });
                   },
                   decoration: InputDecoration(

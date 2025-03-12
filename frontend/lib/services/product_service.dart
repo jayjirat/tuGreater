@@ -39,7 +39,8 @@ class ProductService {
         await http.get(Uri.parse("$baseUrl/search?productName=$query"));
 
     if (response.statusCode == 200) {
-      List<dynamic> jsonList = json.decode(response.body);
+      String decodedResponse = utf8.decode(response.bodyBytes);
+      List<dynamic> jsonList = json.decode(decodedResponse);
       return jsonList.map((json) => Products.fromJson(json)).toList();
     } else {
       throw Exception('Failed to load products');
