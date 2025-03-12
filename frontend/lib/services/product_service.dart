@@ -35,7 +35,8 @@ class ProductService {
   }
 
   Future<List<Products>> searchProducts(String query) async {
-    final response = await http.get(Uri.parse("$baseUrl/search?name=$query"));
+    final response =
+        await http.get(Uri.parse("$baseUrl/search?productName=$query"));
 
     if (response.statusCode == 200) {
       List<dynamic> jsonList = json.decode(response.body);

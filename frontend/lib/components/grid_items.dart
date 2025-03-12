@@ -4,12 +4,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/provider/product_provider.dart';
 
 class GridItems extends ConsumerWidget {
-  const GridItems({super.key});
+  final String searchQuery;
+  const GridItems({super.key, required this.searchQuery});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final productsAsyncValue =
-        ref.watch(productProvider); // Use ref to watch the provider
+    final productsAsyncValue = searchQuery.isEmpty
+        ? ref.watch(productProvider)
+        : ref.watch(productSearchProvider(searchQuery));
 
     return Expanded(
       child: productsAsyncValue.when(

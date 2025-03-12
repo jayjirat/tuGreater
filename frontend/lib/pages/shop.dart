@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/components/filter_modal.dart';
 import 'package:frontend/components/grid_items.dart';
 import 'package:frontend/components/toolbar.dart';
@@ -6,14 +7,14 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:frontend/pages/add_items.dart';
 import 'package:frontend/pages/item_detail.dart';
 
-class Shop extends StatefulWidget {
+class Shop extends ConsumerStatefulWidget {
   const Shop({super.key});
 
   @override
-  State<Shop> createState() => _ShopState();
+  ConsumerState<Shop> createState() => _ShopState();
 }
 
-class _ShopState extends State<Shop> {
+class _ShopState extends ConsumerState<Shop> {
   bool isClicked = false;
   var iconCategoriesList = [
     'assets/svg/food.svg',
@@ -21,6 +22,8 @@ class _ShopState extends State<Shop> {
     'assets/svg/clothes.svg',
     'assets/svg/dormitory.svg'
   ];
+
+  String searchQuery = "";
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +49,11 @@ class _ShopState extends State<Shop> {
               Expanded(
                 flex: 5,
                 child: TextField(
+                  onChanged: (value) {
+                    setState(() {
+                      searchQuery = value;
+                    });
+                  },
                   decoration: InputDecoration(
                     hintText: "Search products...",
                     suffixIcon: Icon(Icons.search), // Search icon on the right
@@ -129,7 +137,7 @@ class _ShopState extends State<Shop> {
           SizedBox(
             height: 15,
           ),
-          GridItems(),
+          GridItems(searchQuery: searchQuery),
         ],
       ),
     );
