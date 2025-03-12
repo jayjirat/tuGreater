@@ -28,4 +28,9 @@ public class ProductsController {
     public Products getProductsById(@PathVariable String productId){
         return productsService.findProductById(productId);
     }
+
+    @GetMapping("/search")
+    public List<Products> searchProducts(@RequestParam String productName){
+        return productsService.searchProducts(productName);
+    }
 }

@@ -25,4 +25,8 @@ public class ProductsService {
     public Products findProductById(String productId){
         return productsRepository.findById(productId).get();
     }
+
+    public List<Products> searchProducts(String productName){
+        return productsRepository.findByNameRegex(productName);
+    }
 }
