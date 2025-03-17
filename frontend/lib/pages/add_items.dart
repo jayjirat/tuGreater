@@ -334,7 +334,7 @@ class _AddItemsState extends ConsumerState<AddItems> {
                     ),
                     value: selectedCategory,
                     hint: Text("Select Category"),
-                    items: ["Food", "Drink", "Dormitory", "Clothes"]
+                    items: ["Food", "Drink", "Dormitory", "Clothes", "Others"]
                         .map((category) {
                       return DropdownMenuItem(
                         value: category,
@@ -603,10 +603,8 @@ class _AddItemsState extends ConsumerState<AddItems> {
 
                             await _uploadImagesToCloudinary();
                             await createProduct();
-
+                            
                             ref.invalidate(productProvider);
-
-                            Navigator.pop(context);
                             Navigator.pop(context, true);
                           },
                           style: ButtonStyle(
