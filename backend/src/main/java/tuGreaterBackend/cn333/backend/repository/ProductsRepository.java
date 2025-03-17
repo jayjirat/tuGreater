@@ -9,4 +9,6 @@ import tuGreaterBackend.cn333.backend.entity.Products;
 public interface ProductsRepository extends MongoRepository<Products,String> {
     @Query("{ 'productName': { $regex: ?0, $options: 'i' } }")
     List<Products> findByNameRegex(String productName);
+
+    List<Products> findByCategory(String productCategory);
 }
