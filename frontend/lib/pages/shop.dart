@@ -20,10 +20,13 @@ class _ShopState extends ConsumerState<Shop> {
     'assets/svg/food.svg',
     'assets/svg/drink.svg',
     'assets/svg/clothes.svg',
-    'assets/svg/dormitory.svg'
+    'assets/svg/dormitory.svg',
+    'assets/svg/others.svg'
   ];
 
   String searchQuery = "";
+
+  int selectedIndex = -1;
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +55,6 @@ class _ShopState extends ConsumerState<Shop> {
                   onChanged: (value) {
                     setState(() {
                       searchQuery = value;
-                      print('Search Query: $searchQuery');
                     });
                   },
                   decoration: InputDecoration(
@@ -93,7 +95,7 @@ class _ShopState extends ConsumerState<Shop> {
                     colorFilter: ColorFilter.mode(
                       isClicked
                           ? const Color.fromARGB(255, 243, 221, 19)
-                          : Colors.black, // Change color
+                          : Colors.black,
                       BlendMode.srcIn,
                     ),
                   ),
@@ -104,21 +106,65 @@ class _ShopState extends ConsumerState<Shop> {
           SizedBox(
             height: 15,
           ),
-          SingleChildScrollView(
-            // Tag
-            scrollDirection: Axis.horizontal,
-            child: Padding(
-              padding: EdgeInsets.only(left: 5), //ที่ว่างขอบจอซ้าย
-              child: Row(
-                children: [
-                  for (var i = 0; i < 4; i++)
-                    Container(
-                      //ช่องสี่เหลี่ยม
-                      height: 43,
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 5),
+            child: Row(
+              children: [
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        selectedIndex = -1;
+                      });
+                    },
+                    child: Container(
+                      // ช่องสี่เหลี่ยม for "All"
+                      height: 45,
                       width: 48,
                       margin: EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                          color: Color.fromARGB(255, 254, 227, 121),
+                        color: selectedIndex == -1
+                            ? Colors.white
+                            : Color.fromARGB(255, 254, 227, 121),
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black26,
+                            blurRadius: 4,
+                            spreadRadius: 2,
+                          )
+                        ],
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.all(6),
+                        child: Center(
+                          child: Text("All",
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold)),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                for (var i = 0; i < 5; i++)
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          selectedIndex = i;
+                        });
+                      },
+                      child: Container(
+                        // ช่องสี่เหลี่ยม for categories
+                        height: 45,
+                        width: 48,
+                        margin: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: selectedIndex == i
+                              ? Colors.white
+                              : Color.fromARGB(255, 254, 227, 121),
                           borderRadius: BorderRadius.circular(10),
                           boxShadow: [
                             BoxShadow(
@@ -126,13 +172,16 @@ class _ShopState extends ConsumerState<Shop> {
                               blurRadius: 4,
                               spreadRadius: 2,
                             )
-                          ]),
-                      child: Padding(
+                          ],
+                        ),
+                        child: Padding(
                           padding: EdgeInsets.all(6),
-                          child: SvgPicture.asset(iconCategoriesList[i])),
-                    )
-                ],
-              ),
+                          child: SvgPicture.asset(iconCategoriesList[i]),
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
             ),
           ),
           SizedBox(
