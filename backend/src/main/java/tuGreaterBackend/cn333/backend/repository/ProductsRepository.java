@@ -12,4 +12,7 @@ public interface ProductsRepository extends MongoRepository<Products,String> {
 
     @Query("{ 'productCategory': ?0 }")
     List<Products> findByCategory(String productCategory);
+
+    @Query("{ 'productCategory': ?0, 'productName': { $regex: ?1, $options: 'i' } }")
+    List<Products> findByCategoryAndName(String productCategory, String productName);
 }

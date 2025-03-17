@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/models/Products.dart';
 import 'package:frontend/pages/item_detail.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/provider/product_provider.dart';
 
 class GridItems extends ConsumerWidget {
   final String searchQuery;
-  const GridItems({super.key, required this.searchQuery});
+  final int selectedCategory;
+  const GridItems(
+      {super.key, required this.searchQuery, required this.selectedCategory});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final productsAsyncValue = searchQuery.isEmpty
-        ? ref.watch(productProvider)
-        : ref.watch(productSearchProvider(searchQuery));
+    final productsAsyncValue = _getProducts(ref);
 
     return Expanded(
       child: productsAsyncValue.when(
@@ -108,5 +109,30 @@ class GridItems extends ConsumerWidget {
         error: (error, stack) => Center(child: Text('Error: $error')),
       ),
     );
+  }
+
+  AsyncValue<List<Products>> _getProducts(WidgetRef ref) {
+    if (searchQuery.isEmpty && selectedCategory == -1) {
+      return ref.watch(productProvider);
+    }
+
+    if (searchQuery.isNotEmpty && selectedCategory == -1) {
+      return ref.watch(productSearchProvider(searchQuery));
+    }
+
+    if (searchQuery.isEmpty && selectedCategory != -1) {
+      List<String> categories = [
+        'Food',
+        'Drink',
+        'Clothes',
+        'Dormitory',
+        'Others'
+      ];
+      String category = categories[selectedCategory];
+      return ref.watch(productSelectCategoryProvider(category));
+    }
+
+    return ref.watch(productSearchWithCategoryProvider(
+        {'searchQuery': searchQuery, 'categoryIndex': selectedCategory}));
   }
 }

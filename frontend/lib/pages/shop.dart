@@ -25,8 +25,7 @@ class _ShopState extends ConsumerState<Shop> {
   ];
 
   String searchQuery = "";
-
-  int selectedIndex = -1;
+  int selectedCategory = -1;
 
   @override
   Widget build(BuildContext context) {
@@ -114,7 +113,7 @@ class _ShopState extends ConsumerState<Shop> {
                   child: GestureDetector(
                     onTap: () {
                       setState(() {
-                        selectedIndex = -1;
+                        selectedCategory = -1;
                       });
                     },
                     child: Container(
@@ -123,7 +122,7 @@ class _ShopState extends ConsumerState<Shop> {
                       width: 48,
                       margin: EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: selectedIndex == -1
+                        color: selectedCategory == -1
                             ? Colors.white
                             : Color.fromARGB(255, 254, 227, 121),
                         borderRadius: BorderRadius.circular(10),
@@ -153,7 +152,7 @@ class _ShopState extends ConsumerState<Shop> {
                     child: GestureDetector(
                       onTap: () {
                         setState(() {
-                          selectedIndex = i;
+                          selectedCategory = i;
                         });
                       },
                       child: Container(
@@ -162,7 +161,7 @@ class _ShopState extends ConsumerState<Shop> {
                         width: 48,
                         margin: EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: selectedIndex == i
+                          color: selectedCategory == i
                               ? Colors.white
                               : Color.fromARGB(255, 254, 227, 121),
                           borderRadius: BorderRadius.circular(10),
@@ -187,7 +186,8 @@ class _ShopState extends ConsumerState<Shop> {
           SizedBox(
             height: 15,
           ),
-          GridItems(searchQuery: searchQuery),
+          GridItems(
+              searchQuery: searchQuery, selectedCategory: selectedCategory),
         ],
       ),
     );
