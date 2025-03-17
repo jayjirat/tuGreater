@@ -61,6 +61,8 @@ class ProductService {
 
   Future<List<Products>> searchWithCategory(
       String query, int categoryIndex) async {
+    query = query.trim();
+
     List<String> categories = [
       'Food',
       'Drink',
@@ -72,10 +74,8 @@ class ProductService {
 
     final response = await http.get(
       Uri.parse(
-          "$baseUrl/searchByCategoryAndName?name=$query&category=$category"),
+          "$baseUrl/searchByCategoryAndName?category=$category&name=$query"),
     );
-
-    print("Response body: ${response.body}");
 
     if (response.statusCode == 200) {
       String decodedResponse = utf8.decode(response.bodyBytes);
@@ -85,4 +85,5 @@ class ProductService {
       throw Exception('Failed to load products by category');
     }
   }
+
 }

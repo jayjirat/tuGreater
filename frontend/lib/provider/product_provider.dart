@@ -1,6 +1,7 @@
 import 'package:frontend/models/Products.dart';
 import 'package:frontend/services/product_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tuple/tuple.dart';
 
 final productProvider = FutureProvider<List<Products>>((ref) async {
   return ProductService().fetchProducts();
@@ -22,8 +23,8 @@ final productSelectCategoryProvider =
 });
 
 final productSearchWithCategoryProvider =
-    FutureProvider.family<List<Products>, Map<String, dynamic>>(
-        (ref, params) async {
-  return ProductService().searchWithCategory(
-      params['searchQuery'] as String, params['categoryIndex'] as int);
+    FutureProvider.family<List<Products>, Tuple2<String, int>>((ref, params) async {
+  return ProductService().searchWithCategory(params.item1, params.item2);
 });
+
+

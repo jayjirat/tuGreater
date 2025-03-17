@@ -11,7 +11,9 @@ class FilterModal extends StatefulWidget {
 class _FilterModalState extends State<FilterModal> {
   bool isCheckedFirstHanded = false;
   bool isCheckedSecondHanded = false;
-  bool isCheckedOthers = false;
+  bool isCheckedGood = false;
+  bool isCheckedDelicious = false;
+  bool isCheckedClean = false;
   bool isCheckedHighToLowPrice = false;
   bool isCheckedLowToHighPrice = false;
   bool isCheckedNewFirst = false;
@@ -144,6 +146,54 @@ class _FilterModalState extends State<FilterModal> {
                   ],
                 ),
                 SizedBox(width: 10),
+                Row(
+                  children: [
+                    Checkbox(
+                      value: isCheckedGood,
+                      onChanged: (value) {
+                        setState(() {
+                          isCheckedGood = value!;
+                        });
+                      },
+                    ),
+                    Text("สภาพดี"),
+                  ],
+                ),
+                SizedBox(width: 10),
+              ],
+            ),
+            Row(
+              children: [
+                // First checkbox with fixed text
+                Row(
+                  children: [
+                    Checkbox(
+                      value: isCheckedDelicious,
+                      onChanged: (value) {
+                        setState(() {
+                          isCheckedDelicious = value!;
+                        });
+                      },
+                    ),
+                    Text("อร่อย"),
+                  ],
+                ),
+                SizedBox(width: 19),
+
+                // Second checkbox with fixed text
+                Row(
+                  children: [
+                    Checkbox(
+                      value: isCheckedClean,
+                      onChanged: (value) {
+                        setState(() {
+                          isCheckedClean = value!;
+                        });
+                      },
+                    ),
+                    Text("สะอาด"),
+                  ],
+                ),
               ],
             ),
             Row(
@@ -282,40 +332,19 @@ class _FilterModalState extends State<FilterModal> {
             SizedBox(
               height: 10,
             ),
-            Row(
-              children: [
-                Expanded(
-                  child: FilledButton(
-                    onPressed: () {
-                      setState(() {
-                        isCheckedRecommend =
-                            !isCheckedRecommend; // Toggle color on click
-                      });
-                    },
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(
-                        isCheckedRecommend
-                            ? Colors.orange
-                            : Colors.white, // Change color on click
-                      ),
-                      shape: MaterialStateProperty.all(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                          side: BorderSide(
-                              color: const Color.fromARGB(255, 255, 140, 0)),
-                        ),
-                      ),
-                    ),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        "แนะนำ",
-                        style: TextStyle(color: Colors.black),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+            SizedBox(
+              height: 15,
+            ),
+            FilledButton(
+              onPressed: () {},
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(
+                    Color.fromARGB(255, 243, 221, 19)),
+              ),
+              child: Text(
+                "Apply",
+                style: TextStyle(color: Colors.black, fontSize: 18),
+              ),
             ),
           ],
         ),

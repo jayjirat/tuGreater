@@ -3,6 +3,7 @@ import 'package:frontend/models/Products.dart';
 import 'package:frontend/pages/item_detail.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/provider/product_provider.dart';
+import 'package:tuple/tuple.dart';
 
 class GridItems extends ConsumerWidget {
   final String searchQuery;
@@ -133,6 +134,6 @@ class GridItems extends ConsumerWidget {
     }
 
     return ref.watch(productSearchWithCategoryProvider(
-        {'searchQuery': searchQuery, 'categoryIndex': selectedCategory}));
+        Tuple2(searchQuery, selectedCategory)));
   }
 }
