@@ -46,11 +46,11 @@ class ItemDetail extends ConsumerWidget {
                     padding:
                         EdgeInsets.only(left: 5, top: 10), //ที่ว่างขอบจอซ้าย
                     child: Row(
+                      mainAxisSize: MainAxisSize.min,
                       children: product.productTags.map((tag) {
                         // Loop over tags
                         return Container(
                           height: 40,
-                          width: 65,
                           margin: EdgeInsets.all(8),
                           decoration: BoxDecoration(
                             color: Color.fromARGB(255, 254, 227, 121),
@@ -66,10 +66,9 @@ class ItemDetail extends ConsumerWidget {
                           child: Padding(
                             padding: EdgeInsets.all(6),
                             child: Center(
-                              child: Text(
-                                tag, // Display tag inside container
-                                style: TextStyle(fontSize: 16),
-                              ),
+                              child: Text(tag, // Display tag inside container
+                                  style: TextStyle(fontSize: 16),
+                                  textAlign: TextAlign.center),
                             ),
                           ),
                         );

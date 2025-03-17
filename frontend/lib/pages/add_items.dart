@@ -603,8 +603,9 @@ class _AddItemsState extends ConsumerState<AddItems> {
 
                             await _uploadImagesToCloudinary();
                             await createProduct();
-                            
+
                             ref.invalidate(productProvider);
+                            Navigator.pop(context);
                             Navigator.pop(context, true);
                           },
                           style: ButtonStyle(
