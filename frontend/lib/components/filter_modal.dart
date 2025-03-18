@@ -234,7 +234,7 @@ class _FilterModalState extends State<FilterModal> {
             Row(
               children: [
                 Text(
-                  "เรียงจากราคา",
+                  "เรียงสินค้า",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ],
@@ -248,8 +248,14 @@ class _FilterModalState extends State<FilterModal> {
                   child: FilledButton(
                     onPressed: () {
                       setState(() {
-                        isCheckedHighToLowPrice =
-                            !isCheckedHighToLowPrice; // Toggle color on click
+                        if (isCheckedHighToLowPrice) {
+                          isCheckedHighToLowPrice = false;
+                        } else {
+                          isCheckedHighToLowPrice = true;
+                          isCheckedLowToHighPrice = false;
+                          isCheckedNewFirst = false;
+                          isCheckedOldFirst = false;
+                        }
                       });
                     },
                     style: ButtonStyle(
@@ -286,8 +292,14 @@ class _FilterModalState extends State<FilterModal> {
                   child: FilledButton(
                     onPressed: () {
                       setState(() {
-                        isCheckedLowToHighPrice =
-                            !isCheckedLowToHighPrice; // Toggle color on click
+                        if (isCheckedLowToHighPrice) {
+                          isCheckedLowToHighPrice = false;
+                        } else {
+                          isCheckedLowToHighPrice = true;
+                          isCheckedHighToLowPrice = false;
+                          isCheckedNewFirst = false;
+                          isCheckedOldFirst = false;
+                        }
                       });
                     },
                     style: ButtonStyle(
@@ -320,23 +332,18 @@ class _FilterModalState extends State<FilterModal> {
             ),
             Row(
               children: [
-                Text(
-                  "เรียงจากวันที่",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Row(
-              children: [
                 Expanded(
                   child: FilledButton(
                     onPressed: () {
                       setState(() {
-                        isCheckedNewFirst =
-                            !isCheckedNewFirst; // Toggle color on click
+                        if (isCheckedNewFirst) {
+                          isCheckedNewFirst = false;
+                        } else {
+                          isCheckedNewFirst = true;
+                          isCheckedHighToLowPrice = false;
+                          isCheckedLowToHighPrice = false;
+                          isCheckedOldFirst = false;
+                        }
                       });
                     },
                     style: ButtonStyle(
@@ -373,8 +380,14 @@ class _FilterModalState extends State<FilterModal> {
                   child: FilledButton(
                     onPressed: () {
                       setState(() {
-                        isCheckedOldFirst =
-                            !isCheckedOldFirst; // Toggle color on click
+                        if (isCheckedOldFirst) {
+                          isCheckedOldFirst = false;
+                        } else {
+                          isCheckedOldFirst = true;
+                          isCheckedHighToLowPrice = false;
+                          isCheckedLowToHighPrice = false;
+                          isCheckedNewFirst = false;
+                        }
                       });
                     },
                     style: ButtonStyle(
