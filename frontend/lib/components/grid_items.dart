@@ -8,8 +8,24 @@ import 'package:tuple/tuple.dart';
 class GridItems extends ConsumerWidget {
   final String searchQuery;
   final int selectedCategory;
-  const GridItems(
-      {super.key, required this.searchQuery, required this.selectedCategory});
+  final double? minPrice;
+  final double? maxPrice;
+  final bool isCheckedHighToLowPrice;
+  final bool isCheckedLowToHighPrice;
+  final bool isCheckedNewFirst;
+  final List<String> selectedTags;
+
+  const GridItems({
+    super.key,
+    required this.searchQuery,
+    required this.selectedCategory,
+    this.minPrice,
+    this.maxPrice,
+    required this.isCheckedHighToLowPrice,
+    required this.isCheckedLowToHighPrice,
+    required this.isCheckedNewFirst,
+    required this.selectedTags,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

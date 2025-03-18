@@ -27,6 +27,13 @@ class _ShopState extends ConsumerState<Shop> {
   String searchQuery = "";
   int selectedCategory = -1;
 
+  double? minPrice;
+  double? maxPrice;
+  bool isCheckedHighToLowPrice = false;
+  bool isCheckedLowToHighPrice = false;
+  bool isCheckedNewFirst = false;
+  List<String> selectedTags = [];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,20 +78,43 @@ class _ShopState extends ConsumerState<Shop> {
               Expanded(
                 flex: 1,
                 child: GestureDetector(
-                  onTap: () {
+                  onTap: () async {
                     setState(() {
-                      isClicked = !isClicked; // Toggle color on click
-                      showModalBottomSheet(
-                          context: context,
-                          isScrollControlled: true, // Allow dynamic height
-                          builder: (context) {
-                            return FilterModal();
-                          }).whenComplete(() {
-                        // Reset the filter icon color when the modal is closed (dismissed)
-                        setState(() {
-                          isClicked = false; // Reset to original color (black)
-                        });
+                      isClicked = !isClicked;
+                      print("Opening the FilterModal...");
+                    });
+                    final filterData = await showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      builder: (context) {
+                        return FilterModal();
+                      },
+                    );
+
+                    if (filterData != null) {
+                      // Update the filters when the modal is closed
+                      setState(() {
+                        minPrice = filterData['minPrice'];
+                        maxPrice = filterData['maxPrice'];
+                        isCheckedHighToLowPrice =
+                            filterData['isCheckedHighToLowPrice'];
+                        isCheckedLowToHighPrice =
+                            filterData['isCheckedLowToHighPrice'];
+                        isCheckedNewFirst = filterData['isCheckedNewFirst'];
+                        selectedTags =
+                            List<String>.from(filterData['selectedTags'] ?? []);
                       });
+                    }
+
+                    if (filterData != null) {
+                      print("Filter data received from modal: $filterData");
+                    } else {
+                      print(
+                          "No filter data received (modal was dismissed or closed without data).");
+                    }
+
+                    setState(() {
+                      isClicked = false;
                     });
                   },
                   child: SvgPicture.asset(
@@ -187,7 +217,14 @@ class _ShopState extends ConsumerState<Shop> {
             height: 15,
           ),
           GridItems(
-              searchQuery: searchQuery, selectedCategory: selectedCategory),
+              searchQuery: searchQuery,
+              selectedCategory: selectedCategory,
+              minPrice: minPrice,
+              maxPrice: maxPrice,
+              isCheckedHighToLowPrice: isCheckedHighToLowPrice,
+              isCheckedLowToHighPrice: isCheckedLowToHighPrice,
+              isCheckedNewFirst: isCheckedNewFirst,
+              selectedTags: selectedTags),
         ],
       ),
     );

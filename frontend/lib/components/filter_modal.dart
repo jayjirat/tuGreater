@@ -17,7 +17,10 @@ class _FilterModalState extends State<FilterModal> {
   bool isCheckedHighToLowPrice = false;
   bool isCheckedLowToHighPrice = false;
   bool isCheckedNewFirst = false;
-  bool isCheckedRecommend = false;
+  double? minPrice;
+  double? maxPrice;
+
+  List<String> selectedTags = [];
 
   @override
   Widget build(BuildContext context) {
@@ -72,6 +75,9 @@ class _FilterModalState extends State<FilterModal> {
                       filled: true,
                       fillColor: Colors.grey[200],
                     ),
+                    onChanged: (value) {
+                      minPrice = double.tryParse(value);
+                    },
                   ),
                 ),
                 SizedBox(
@@ -98,6 +104,9 @@ class _FilterModalState extends State<FilterModal> {
                       filled: true,
                       fillColor: Colors.grey[200],
                     ),
+                    onChanged: (value) {
+                      maxPrice = double.tryParse(value);
+                    },
                   ),
                 ),
               ],
@@ -123,6 +132,11 @@ class _FilterModalState extends State<FilterModal> {
                       onChanged: (value) {
                         setState(() {
                           isCheckedFirstHanded = value!;
+                          if (value == true) {
+                            selectedTags.add("มือหนึ่ง");
+                          } else {
+                            selectedTags.remove("มือหนึ่ง");
+                          }
                         });
                       },
                     ),
@@ -139,6 +153,11 @@ class _FilterModalState extends State<FilterModal> {
                       onChanged: (value) {
                         setState(() {
                           isCheckedSecondHanded = value!;
+                          if (value == true) {
+                            selectedTags.add("มือสอง");
+                          } else {
+                            selectedTags.remove("มือสอง");
+                          }
                         });
                       },
                     ),
@@ -153,6 +172,11 @@ class _FilterModalState extends State<FilterModal> {
                       onChanged: (value) {
                         setState(() {
                           isCheckedGood = value!;
+                          if (value == true) {
+                            selectedTags.add("สภาพดี");
+                          } else {
+                            selectedTags.remove("สภาพดี");
+                          }
                         });
                       },
                     ),
@@ -172,6 +196,11 @@ class _FilterModalState extends State<FilterModal> {
                       onChanged: (value) {
                         setState(() {
                           isCheckedDelicious = value!;
+                          if (value == true) {
+                            selectedTags.add("อร่อย");
+                          } else {
+                            selectedTags.remove("อร่อย");
+                          }
                         });
                       },
                     ),
@@ -188,6 +217,11 @@ class _FilterModalState extends State<FilterModal> {
                       onChanged: (value) {
                         setState(() {
                           isCheckedClean = value!;
+                          if (value == true) {
+                            selectedTags.add("สะอาด");
+                          } else {
+                            selectedTags.remove("สะอาด");
+                          }
                         });
                       },
                     ),
@@ -336,7 +370,16 @@ class _FilterModalState extends State<FilterModal> {
               height: 15,
             ),
             FilledButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pop(context, {
+                  'minPrice': minPrice,
+                  'maxPrice': maxPrice,
+                  'isCheckedHighToLowPrice': isCheckedHighToLowPrice,
+                  'isCheckedLowToHighPrice': isCheckedLowToHighPrice,
+                  'isCheckedNewFirst': isCheckedNewFirst,
+                  'selectedTags': selectedTags,
+                });
+              },
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(
                     Color.fromARGB(255, 243, 221, 19)),
