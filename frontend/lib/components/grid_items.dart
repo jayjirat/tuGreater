@@ -4,6 +4,7 @@ import 'package:frontend/pages/item_detail.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/provider/product_provider.dart';
 import 'package:tuple/tuple.dart';
+import 'package:intl/intl.dart';
 
 class GridItems extends ConsumerWidget {
   final String searchQuery;
@@ -106,13 +107,13 @@ class GridItems extends ConsumerWidget {
                                 ),
                                 SizedBox(height: 10),
                                 Text(
-                                  "฿${product.productPrice.toStringAsFixed(2)}",
+                                  "฿ ${NumberFormat('#,###').format(product.productPrice)}",
                                   style: TextStyle(
                                     fontSize: 15,
                                     color: Colors.black,
                                     fontWeight: FontWeight.w500,
                                   ),
-                                ),
+                                )
                               ],
                             ),
                           ),

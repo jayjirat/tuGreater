@@ -5,6 +5,7 @@ import 'package:frontend/components/report_modal.dart';
 import 'package:frontend/components/toolbar.dart';
 import 'package:frontend/models/Products.dart';
 import 'package:frontend/provider/product_provider.dart';
+import 'package:intl/intl.dart';
 
 class ItemDetail extends ConsumerWidget {
   final String productId;
@@ -89,10 +90,10 @@ class ItemDetail extends ConsumerWidget {
                             fontSize: 25, fontWeight: FontWeight.bold),
                       ),
                       Text(
-                        "฿ ${product.productPrice.toInt()}",
+                        "฿ ${NumberFormat('#,###').format(product.productPrice.toInt())}",
                         style: TextStyle(
                             fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
+                      )
                     ],
                   ),
                 ),
