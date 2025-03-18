@@ -32,6 +32,7 @@ class _ShopState extends ConsumerState<Shop> {
   bool isCheckedHighToLowPrice = false;
   bool isCheckedLowToHighPrice = false;
   bool isCheckedNewFirst = false;
+  bool isCheckedOldFirst = false;
   List<String> selectedTags = [];
 
   @override
@@ -101,6 +102,7 @@ class _ShopState extends ConsumerState<Shop> {
                         isCheckedLowToHighPrice =
                             filterData['isCheckedLowToHighPrice'];
                         isCheckedNewFirst = filterData['isCheckedNewFirst'];
+                        isCheckedOldFirst = filterData['isCheckedOldFirst'];
                         selectedTags =
                             List<String>.from(filterData['selectedTags'] ?? []);
                       });
@@ -224,6 +226,7 @@ class _ShopState extends ConsumerState<Shop> {
               isCheckedHighToLowPrice: isCheckedHighToLowPrice,
               isCheckedLowToHighPrice: isCheckedLowToHighPrice,
               isCheckedNewFirst: isCheckedNewFirst,
+              isCheckedOldFirst: isCheckedOldFirst,
               selectedTags: selectedTags),
         ],
       ),

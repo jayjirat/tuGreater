@@ -13,6 +13,7 @@ class GridItems extends ConsumerWidget {
   final bool isCheckedHighToLowPrice;
   final bool isCheckedLowToHighPrice;
   final bool isCheckedNewFirst;
+  final bool isCheckedOldFirst;
   final List<String> selectedTags;
 
   const GridItems({
@@ -24,6 +25,7 @@ class GridItems extends ConsumerWidget {
     required this.isCheckedHighToLowPrice,
     required this.isCheckedLowToHighPrice,
     required this.isCheckedNewFirst,
+    required this.isCheckedOldFirst,
     required this.selectedTags,
   });
 
@@ -180,15 +182,17 @@ class GridItems extends ConsumerWidget {
       }).toList();
     }
 
-    // sorting price
+    // sorting price and date
     if (isCheckedHighToLowPrice) {
       filteredProducts.sort((a, b) => b.productPrice.compareTo(a.productPrice));
     } else if (isCheckedLowToHighPrice) {
       filteredProducts.sort((a, b) => a.productPrice.compareTo(b.productPrice));
     } else if (isCheckedNewFirst) {
-      // sorting date
       filteredProducts
           .sort((a, b) => b.productDatePost.compareTo(a.productDatePost));
+    } else if (isCheckedOldFirst) {
+      filteredProducts
+          .sort((a, b) => a.productDatePost.compareTo(b.productDatePost));
     }
 
     return filteredProducts;

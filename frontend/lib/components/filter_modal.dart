@@ -17,6 +17,7 @@ class _FilterModalState extends State<FilterModal> {
   bool isCheckedHighToLowPrice = false;
   bool isCheckedLowToHighPrice = false;
   bool isCheckedNewFirst = false;
+  bool isCheckedOldFirst = false;
   double? minPrice;
   double? maxPrice;
 
@@ -366,6 +367,44 @@ class _FilterModalState extends State<FilterModal> {
             SizedBox(
               height: 10,
             ),
+            Row(
+              children: [
+                Expanded(
+                  child: FilledButton(
+                    onPressed: () {
+                      setState(() {
+                        isCheckedOldFirst =
+                            !isCheckedOldFirst; // Toggle color on click
+                      });
+                    },
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(
+                        isCheckedOldFirst
+                            ? Colors.orange
+                            : Colors.white, // Change color on click
+                      ),
+                      shape: MaterialStateProperty.all(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                          side: BorderSide(
+                              color: const Color.fromARGB(255, 255, 140, 0)),
+                        ),
+                      ),
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "เก่าสุดก่อน",
+                        style: TextStyle(color: Colors.black), // Set text color
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 10,
+            ),
             SizedBox(
               height: 15,
             ),
@@ -377,6 +416,7 @@ class _FilterModalState extends State<FilterModal> {
                   'isCheckedHighToLowPrice': isCheckedHighToLowPrice,
                   'isCheckedLowToHighPrice': isCheckedLowToHighPrice,
                   'isCheckedNewFirst': isCheckedNewFirst,
+                  'isCheckedOldFirst': isCheckedOldFirst,
                   'selectedTags': selectedTags,
                 });
               },
