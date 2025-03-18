@@ -34,8 +34,9 @@ class GridItems extends ConsumerWidget {
     return Expanded(
       child: productsAsyncValue.when(
         data: (products) {
+          List<Products> filteredProducts = _applyFilters(products);
           return GridView.builder(
-            itemCount: products.length,
+            itemCount: filteredProducts.length,
             physics: AlwaysScrollableScrollPhysics(),
             shrinkWrap: true,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -43,7 +44,7 @@ class GridItems extends ConsumerWidget {
               crossAxisCount: 2,
             ),
             itemBuilder: (context, index) {
-              final product = products[index];
+              final product = filteredProducts[index];
               return Container(
                 margin: EdgeInsets.all(10),
                 child: Material(
@@ -151,5 +152,45 @@ class GridItems extends ConsumerWidget {
 
     return ref.watch(productSearchWithCategoryProvider(
         Tuple2(searchQuery, selectedCategory)));
+  }
+
+  List<Products> _applyFilters(List<Products> products) {
+    List<Products> filteredProducts = List.from(products);
+
+    // price range filter
+    if (minPrice != null || maxPrice != null) {
+      filteredProducts = filteredProducts.where((product) {
+        bool passesMinPrice =
+            minPrice == null || product.productPrice >= minPrice!;
+        bool passesMaxPrice =
+            maxPrice == null || product.productPrice <= maxPrice!;
+        return passesMinPrice && passesMaxPrice;
+      }).toList();
+    }
+
+    // tag filters
+    if (selectedTags.isNotEmpty) {
+      filteredProducts = filteredProducts.where((product) {
+        for (String tag in selectedTags) {
+          if (!product.productTags.contains(tag)) {
+            return false;
+          }
+        }
+        return true;
+      }).toList();
+    }
+
+    // sorting price
+    if (isCheckedHighToLowPrice) {
+      filteredProducts.sort((a, b) => b.productPrice.compareTo(a.productPrice));
+    } else if (isCheckedLowToHighPrice) {
+      filteredProducts.sort((a, b) => a.productPrice.compareTo(b.productPrice));
+    } else if (isCheckedNewFirst) {
+      // sorting date
+      filteredProducts
+          .sort((a, b) => b.productDatePost.compareTo(a.productDatePost));
+    }
+
+    return filteredProducts;
   }
 }

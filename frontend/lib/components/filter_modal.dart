@@ -320,7 +320,7 @@ class _FilterModalState extends State<FilterModal> {
             Row(
               children: [
                 Text(
-                  "ตัวเลือก",
+                  "เรียงจากวันที่",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ],
