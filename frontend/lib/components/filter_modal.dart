@@ -2,26 +2,84 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class FilterModal extends StatefulWidget {
-  const FilterModal({super.key});
+  final double? minPrice;
+  final double? maxPrice;
+  final bool isCheckedFirstHanded;
+  final bool isCheckedSecondHanded;
+  final bool isCheckedGood;
+  final bool isCheckedDelicious;
+  final bool isCheckedClean;
+  final bool isCheckedHighToLowPrice;
+  final bool isCheckedLowToHighPrice;
+  final bool isCheckedNewFirst;
+  final bool isCheckedOldFirst;
+  final List<String> selectedTags;
+
+  const FilterModal({
+    super.key,
+    this.minPrice,
+    this.maxPrice,
+    this.isCheckedFirstHanded = false,
+    this.isCheckedSecondHanded = false,
+    this.isCheckedGood = false,
+    this.isCheckedDelicious = false,
+    this.isCheckedClean = false,
+    this.isCheckedHighToLowPrice = false,
+    this.isCheckedLowToHighPrice = false,
+    this.isCheckedNewFirst = false,
+    this.isCheckedOldFirst = false,
+    this.selectedTags = const [],
+  });
 
   @override
   State<FilterModal> createState() => _FilterModalState();
 }
 
 class _FilterModalState extends State<FilterModal> {
-  bool isCheckedFirstHanded = false;
-  bool isCheckedSecondHanded = false;
-  bool isCheckedGood = false;
-  bool isCheckedDelicious = false;
-  bool isCheckedClean = false;
-  bool isCheckedHighToLowPrice = false;
-  bool isCheckedLowToHighPrice = false;
-  bool isCheckedNewFirst = false;
-  bool isCheckedOldFirst = false;
-  double? minPrice;
-  double? maxPrice;
+  late bool isCheckedFirstHanded;
+  late bool isCheckedSecondHanded;
+  late bool isCheckedGood;
+  late bool isCheckedDelicious;
+  late bool isCheckedClean;
+  late bool isCheckedHighToLowPrice;
+  late bool isCheckedLowToHighPrice;
+  late bool isCheckedNewFirst;
+  late bool isCheckedOldFirst;
+  late double? minPrice;
+  late double? maxPrice;
+  late TextEditingController minPriceController;
+  late TextEditingController maxPriceController;
+  late List<String> selectedTags;
 
-  List<String> selectedTags = [];
+  @override
+  void initState() {
+    super.initState();
+    isCheckedFirstHanded = widget.isCheckedFirstHanded;
+    isCheckedSecondHanded = widget.isCheckedSecondHanded;
+    isCheckedGood = widget.isCheckedGood;
+    isCheckedDelicious = widget.isCheckedDelicious;
+    isCheckedClean = widget.isCheckedClean;
+    isCheckedHighToLowPrice = widget.isCheckedHighToLowPrice;
+    isCheckedLowToHighPrice = widget.isCheckedLowToHighPrice;
+    isCheckedNewFirst = widget.isCheckedNewFirst;
+    isCheckedOldFirst = widget.isCheckedOldFirst;
+    minPrice = widget.minPrice;
+    maxPrice = widget.maxPrice;
+    minPriceController = TextEditingController(
+      text: minPrice?.toString() ?? '',
+    );
+    maxPriceController = TextEditingController(
+      text: maxPrice?.toString() ?? '',
+    );
+    selectedTags = List<String>.from(widget.selectedTags);
+  }
+
+  @override
+  void dispose() {
+    minPriceController.dispose();
+    maxPriceController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +87,7 @@ class _FilterModalState extends State<FilterModal> {
       height: 700,
       padding: EdgeInsets.all(24),
       child: Align(
-        alignment: Alignment.center, // Align to the left or center
+        alignment: Alignment.center,
         child: Column(
           children: [
             Text(
@@ -62,11 +120,9 @@ class _FilterModalState extends State<FilterModal> {
                 SizedBox(
                   width: 150,
                   child: TextField(
-                    keyboardType:
-                        TextInputType.number, // Set keyboard to number
-                    inputFormatters: [
-                      FilteringTextInputFormatter.digitsOnly
-                    ], // Allow only numbers
+                    controller: minPriceController,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     decoration: InputDecoration(
                       hintText: "Low",
                       border: OutlineInputBorder(
@@ -77,7 +133,7 @@ class _FilterModalState extends State<FilterModal> {
                       fillColor: Colors.grey[200],
                     ),
                     onChanged: (value) {
-                      minPrice = double.tryParse(value);
+                      minPrice = value.isEmpty ? null : double.tryParse(value);
                     },
                   ),
                 ),
@@ -92,10 +148,9 @@ class _FilterModalState extends State<FilterModal> {
                 SizedBox(
                   width: 150,
                   child: TextField(
+                    controller: maxPriceController,
                     keyboardType: TextInputType.number,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.digitsOnly
-                    ], // Allow only numbers
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     decoration: InputDecoration(
                       hintText: "High",
                       border: OutlineInputBorder(
@@ -106,7 +161,7 @@ class _FilterModalState extends State<FilterModal> {
                       fillColor: Colors.grey[200],
                     ),
                     onChanged: (value) {
-                      maxPrice = double.tryParse(value);
+                      maxPrice = value.isEmpty ? null : double.tryParse(value);
                     },
                   ),
                 ),
@@ -125,7 +180,6 @@ class _FilterModalState extends State<FilterModal> {
             ),
             Row(
               children: [
-                // First checkbox with fixed text
                 Row(
                   children: [
                     Checkbox(
@@ -145,8 +199,6 @@ class _FilterModalState extends State<FilterModal> {
                   ],
                 ),
                 SizedBox(width: 10),
-
-                // Second checkbox with fixed text
                 Row(
                   children: [
                     Checkbox(
@@ -189,7 +241,6 @@ class _FilterModalState extends State<FilterModal> {
             ),
             Row(
               children: [
-                // First checkbox with fixed text
                 Row(
                   children: [
                     Checkbox(
@@ -209,8 +260,6 @@ class _FilterModalState extends State<FilterModal> {
                   ],
                 ),
                 SizedBox(width: 19),
-
-                // Second checkbox with fixed text
                 Row(
                   children: [
                     Checkbox(
@@ -260,9 +309,7 @@ class _FilterModalState extends State<FilterModal> {
                     },
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(
-                        isCheckedHighToLowPrice
-                            ? Colors.orange
-                            : Colors.white, // Change color on click
+                        isCheckedHighToLowPrice ? Colors.orange : Colors.white,
                       ),
                       shape: MaterialStateProperty.all(
                         RoundedRectangleBorder(
@@ -273,10 +320,10 @@ class _FilterModalState extends State<FilterModal> {
                       ),
                     ),
                     child: Align(
-                      alignment: Alignment.centerLeft, // Align text to the left
+                      alignment: Alignment.centerLeft,
                       child: Text(
                         "ราคาสูงไปต่ำ",
-                        style: TextStyle(color: Colors.black), // Set text color
+                        style: TextStyle(color: Colors.black),
                       ),
                     ),
                   ),
@@ -304,9 +351,7 @@ class _FilterModalState extends State<FilterModal> {
                     },
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(
-                        isCheckedLowToHighPrice
-                            ? Colors.orange
-                            : Colors.white, // Change color on click
+                        isCheckedLowToHighPrice ? Colors.orange : Colors.white,
                       ),
                       shape: MaterialStateProperty.all(
                         RoundedRectangleBorder(
@@ -317,10 +362,10 @@ class _FilterModalState extends State<FilterModal> {
                       ),
                     ),
                     child: Align(
-                      alignment: Alignment.centerLeft, // Align text to the left
+                      alignment: Alignment.centerLeft,
                       child: Text(
                         "ราคาต่ำไปสูง",
-                        style: TextStyle(color: Colors.black), // Set text color
+                        style: TextStyle(color: Colors.black),
                       ),
                     ),
                   ),
@@ -348,9 +393,7 @@ class _FilterModalState extends State<FilterModal> {
                     },
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(
-                        isCheckedNewFirst
-                            ? Colors.orange
-                            : Colors.white, // Change color on click
+                        isCheckedNewFirst ? Colors.orange : Colors.white,
                       ),
                       shape: MaterialStateProperty.all(
                         RoundedRectangleBorder(
@@ -364,7 +407,7 @@ class _FilterModalState extends State<FilterModal> {
                       alignment: Alignment.centerLeft,
                       child: Text(
                         "ใหม่สุดก่อน",
-                        style: TextStyle(color: Colors.black), // Set text color
+                        style: TextStyle(color: Colors.black),
                       ),
                     ),
                   ),
@@ -392,9 +435,7 @@ class _FilterModalState extends State<FilterModal> {
                     },
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(
-                        isCheckedOldFirst
-                            ? Colors.orange
-                            : Colors.white, // Change color on click
+                        isCheckedOldFirst ? Colors.orange : Colors.white,
                       ),
                       shape: MaterialStateProperty.all(
                         RoundedRectangleBorder(
@@ -408,7 +449,7 @@ class _FilterModalState extends State<FilterModal> {
                       alignment: Alignment.centerLeft,
                       child: Text(
                         "เก่าสุดก่อน",
-                        style: TextStyle(color: Colors.black), // Set text color
+                        style: TextStyle(color: Colors.black),
                       ),
                     ),
                   ),
@@ -416,10 +457,7 @@ class _FilterModalState extends State<FilterModal> {
               ],
             ),
             SizedBox(
-              height: 10,
-            ),
-            SizedBox(
-              height: 15,
+              height: 25,
             ),
             FilledButton(
               onPressed: () {

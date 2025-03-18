@@ -82,18 +82,32 @@ class _ShopState extends ConsumerState<Shop> {
                   onTap: () async {
                     setState(() {
                       isClicked = !isClicked;
-                      print("Opening the FilterModal...");
                     });
+
                     final filterData = await showModalBottomSheet(
                       context: context,
                       isScrollControlled: true,
                       builder: (context) {
-                        return FilterModal();
+                        return FilterModal(
+                          minPrice: minPrice,
+                          maxPrice: maxPrice,
+                          isCheckedHighToLowPrice: isCheckedHighToLowPrice,
+                          isCheckedLowToHighPrice: isCheckedLowToHighPrice,
+                          isCheckedNewFirst: isCheckedNewFirst,
+                          isCheckedOldFirst: isCheckedOldFirst,
+                          isCheckedFirstHanded:
+                              selectedTags.contains('มือหนึ่ง'),
+                          isCheckedSecondHanded:
+                              selectedTags.contains('มือสอง'),
+                          isCheckedGood: selectedTags.contains('สภาพดี'),
+                          isCheckedDelicious: selectedTags.contains('อร่อย'),
+                          isCheckedClean: selectedTags.contains('สะอาด'),
+                          selectedTags: selectedTags,
+                        );
                       },
                     );
 
                     if (filterData != null) {
-                      // Update the filters when the modal is closed
                       setState(() {
                         minPrice = filterData['minPrice'];
                         maxPrice = filterData['maxPrice'];
@@ -106,13 +120,6 @@ class _ShopState extends ConsumerState<Shop> {
                         selectedTags =
                             List<String>.from(filterData['selectedTags'] ?? []);
                       });
-                    }
-
-                    if (filterData != null) {
-                      print("Filter data received from modal: $filterData");
-                    } else {
-                      print(
-                          "No filter data received (modal was dismissed or closed without data).");
                     }
 
                     setState(() {
