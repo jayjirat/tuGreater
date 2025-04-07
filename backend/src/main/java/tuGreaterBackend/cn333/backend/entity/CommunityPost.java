@@ -18,6 +18,9 @@ public class CommunityPost {
     private List<Comment> comments;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private String userId;
+    private String username;
+    private boolean isEdited;
 
     public String getUsername() {
         return this.username;
@@ -26,9 +29,6 @@ public class CommunityPost {
     public void setUsername(String username) {
         this.username = username;
     }
-    private String userId;
-    private String username;
-    private boolean isEdited;
     public String getId() {
         return this.id;
     }
