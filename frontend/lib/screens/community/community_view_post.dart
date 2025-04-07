@@ -81,11 +81,16 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
-                                  post.title,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 22,
+                                Expanded(
+                                  child: Text(
+                                    post.title,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                      color: Colors.black87,
+                                    ),
                                   ),
                                 ),
                                 ElevatedButton(
