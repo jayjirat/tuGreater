@@ -90,7 +90,7 @@ public class CommunityController {
         }
     }  
     
-    @GetMapping("/filter/")
+    @GetMapping("/filter")
     public ResponseEntity<?> getPostsByCategory(@RequestParam String category) {
         try {
             List<CommunityPost> communityPost = communityService.getCategoryPosts(category);
@@ -102,7 +102,7 @@ public class CommunityController {
         }
     }
     
-    @GetMapping("/search/")
+    @GetMapping("/search")
     public ResponseEntity<?> getPostsByQuery(@RequestParam String query) {
         try {
             List<CommunityPost> communityPost = communityService.getPostsByQueryTitle(query);

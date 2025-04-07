@@ -12,6 +12,8 @@ class Community extends ConsumerStatefulWidget {
 }
 
 class CommunityState extends ConsumerState<Community> {
+  final searchController = TextEditingController();
+
   List<bool> toggleStatus = [
     true,
     false,
@@ -47,6 +49,8 @@ class CommunityState extends ConsumerState<Community> {
         child: Column(
           children: [
             TextField(
+              controller: searchController,
+              textInputAction: TextInputAction.search,
               decoration: InputDecoration(
                 hintText: 'Search...',
                 hintStyle: TextStyle(color: Colors.grey),
@@ -58,6 +62,9 @@ class CommunityState extends ConsumerState<Community> {
                   borderSide: BorderSide(color: Color(0xFFF4F4F4)),
                 ),
               ),
+              onSubmitted: (value) => ref
+                  .read(communityProvider.notifier)
+                  .searchPosts(searchController.text),
             ),
             const SizedBox(height: 16),
             ToggleButtons(

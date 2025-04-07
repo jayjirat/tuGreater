@@ -88,7 +88,26 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
 
   Future<void> filterPosts(String category) async {
     final url =
-        Uri.parse('http://10.0.2.2:8080/community/filter/?category=$category');
+        Uri.parse('http://10.0.2.2:8080/community/filter?category=$category');
+    try {
+      // isLoading = true;
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body);
+        final posts = data.map((json) => CommuPost.fromJson(json)).toList();
+        state = posts;
+        // isLoading = false;
+      } else {
+        throw Exception(
+            'Failed to load posts. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
+
+  Future<void> searchPosts(String query) async {
+    final url = Uri.parse('http://10.0.2.2:8080/community/search?query=$query');
     try {
       // isLoading = true;
       final response = await http.get(url);
