@@ -75,9 +75,17 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                         post!.username,
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
-                      subtitle: Text(
-                        post.createdAt.toString(),
-                        style: TextStyle(color: Colors.grey[600]),
+                      subtitle: Row(
+                        children: [
+                          Text(
+                            post.createdAt.toString(),
+                            style: TextStyle(color: Colors.grey[600]),
+                          ),
+                          Text(
+                            post.isEdited ? " (edited)" : "",
+                            style: TextStyle(color: Colors.grey[600]),
+                          ),
+                        ],
                       ),
                     ),
                     const SizedBox(
@@ -99,8 +107,6 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                                 Expanded(
                                   child: Text(
                                     post.title,
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 1,
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 18,

@@ -107,6 +107,7 @@ class CommunityState extends ConsumerState<Community> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       InkWell(
+                        borderRadius: BorderRadius.circular(12),
                         onTap: () {
                           Navigator.push(
                               context,
@@ -136,9 +137,17 @@ class CommunityState extends ConsumerState<Community> {
                                   post.username,
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
-                                subtitle: Text(
-                                  post.createdAt.toString(),
-                                  style: TextStyle(color: Colors.grey[600]),
+                                subtitle: Row(
+                                  children: [
+                                    Text(
+                                      post.createdAt.toString(),
+                                      style: TextStyle(color: Colors.grey[600]),
+                                    ),
+                                    Text(
+                                      post.isEdited ? " (edited)" : "",
+                                      style: TextStyle(color: Colors.grey[600]),
+                                    ),
+                                  ],
                                 ),
                               ),
                               Padding(

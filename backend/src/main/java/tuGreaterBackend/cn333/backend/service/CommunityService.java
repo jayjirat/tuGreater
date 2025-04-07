@@ -21,7 +21,7 @@ public class CommunityService {
 
     public List<CommunityPost> getCommunityPosts() throws Exception{
         try {
-            List<CommunityPost> communityPosts = communityRepository.findAll();
+            List<CommunityPost> communityPosts = communityRepository.findAllByOrderByCreatedAtDesc();
 
             if (communityPosts.isEmpty()) {
                 throw new RuntimeException("No posts found. Please try again later.");
