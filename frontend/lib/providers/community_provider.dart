@@ -63,10 +63,7 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
         'likeCount': 0,
         'userId': '999', // Mock
         'username': 'jay', // Mock
-        'likedBy': [],
         'isEdited': false,
-        'isPinned': false,
-        'comments': [],
         'createdAt': DateTime.now().toIso8601String(),
         'updatedAt': DateTime.now().toIso8601String(),
         'imageUrl': imageUrl // Mock
@@ -83,6 +80,44 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
       } else {
         throw Exception(
             'Failed to create post. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
+
+  Future<void> editPost(
+      {required CommuPost oriPost,
+      required String title,
+      required String description,
+      required String category,
+      required String imageUrl}) async {
+    final url = 'http://10.0.2.2:8080/community/${oriPost.id}';
+    try {
+      final Map<String, dynamic> editPost = {
+        'title': title,
+        'description': description,
+        'category': category,
+        'likeCount': oriPost.likeCount,
+        'userId': oriPost.userId,
+        'username': oriPost.username,
+        'isEdited': true,
+        'createdAt': oriPost.createdAt.toIso8601String(),
+        'updatedAt': DateTime.now().toIso8601String(),
+        'imageUrl': imageUrl
+      };
+
+      final header = {'Content-Type': 'application/json'};
+
+      final response = await http.put(Uri.parse(url),
+          headers: header, body: jsonEncode(editPost));
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final newPostModel = CommuPost.fromJson(data);
+        state = [newPostModel, ...state];
+      } else {
+        throw Exception(
+            'Failed to edit post. Status code: ${response.statusCode}');
       }
     } catch (e) {
       throw Exception('Error: $e');

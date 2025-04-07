@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/providers/community_provider.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'package:crypto/crypto.dart';
+import 'package:frontend/screens/community/community_manage_post.dart';
 
 class CommunityViewpost extends ConsumerStatefulWidget {
   final String id;
@@ -140,7 +138,18 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                               Row(
                                 children: [
                                   ElevatedButton(
-                                      onPressed: () {}, child: Text("Edit")),
+                                      onPressed: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  CommunityManagePost(
+                                                mode: "Edit",
+                                                post: post,
+                                              ),
+                                            ));
+                                      },
+                                      child: Text("Edit")),
                                   ElevatedButton(
                                       onPressed: () async {
                                         await ref

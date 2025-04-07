@@ -4,23 +4,25 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 // import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:frontend/models/com_post.dart';
 import 'package:frontend/providers/community_provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 
 class CommunityManagePost extends ConsumerStatefulWidget {
   final String mode;
-  final String? id;
-  const CommunityManagePost({super.key, required this.mode, this.id});
+  final CommuPost? post;
+  const CommunityManagePost({super.key, required this.mode, this.post});
 
   @override
   CommunityManagePostState createState() => CommunityManagePostState();
 }
 
 class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
+  late final dynamic editPost;
   final _formKey = GlobalKey<FormState>();
-  final titleCtrl = TextEditingController();
-  final descriptionCtrl = TextEditingController();
+  late final TextEditingController titleCtrl;
+  late final TextEditingController descriptionCtrl;
   String? selectedValueDropdown;
   bool isLoading = false;
   File? image;
@@ -33,11 +35,34 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
   final String apiSecret = "iM5t7SaR6zhSM9xST3cHFmyK6ks";
   String imageUrl = "";
 
+  bool isChangeInEditMode = false;
+  @override
+  void initState() {
+    super.initState();
+    editPost = widget.post;
+    titleCtrl = TextEditingController(text: editPost?.title);
+    descriptionCtrl = TextEditingController(text: editPost?.description);
+    if (widget.mode == "Edit") {
+      selectedValueDropdown = editPost?.category;
+      if (editPost.imageUrl != "") {
+        setState(() {
+          imageUrl = editPost.imageUrl;
+        });
+      }
+    }
+  }
+
   Future<void> pickImage() async {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
         image = File(pickedFile.path);
+      });
+    }
+
+    if (widget.mode == "Edit") {
+      setState(() {
+        isChangeInEditMode = true;
       });
     }
   }
@@ -67,6 +92,7 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
         if (mounted) {
           setState(() {
             imageUrl = result['secure_url'];
+            print(imageUrl);
           });
         }
       }
@@ -138,29 +164,62 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
               const SizedBox(height: 16),
               labelText("Upload Image (Optional)"),
               const SizedBox(height: 8),
-              image == null
-                  ? ElevatedButton(
-                      onPressed: pickImage,
-                      child: Text('Select Image'),
-                    )
-                  : Column(
-                      children: [
-                        Image.file(
-                          image!,
-                          width: 200,
-                          height: 200,
-                          fit: BoxFit.cover,
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        ElevatedButton(
-                            onPressed: () => setState(() {
-                                  image = null;
-                                }),
-                            child: Text("Delete image"))
-                      ],
-                    ),
+              if (widget.mode == "Add")
+                image == null
+                    ? ElevatedButton(
+                        onPressed: pickImage,
+                        child: Text('Select Image'),
+                      )
+                    : Column(
+                        children: [
+                          Image.file(
+                            image!,
+                            width: 200,
+                            height: 200,
+                            fit: BoxFit.cover,
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          ElevatedButton(
+                              onPressed: () => setState(() {
+                                    image = null;
+                                  }),
+                              child: Text("Delete image"))
+                        ],
+                      ),
+              if (widget.mode == "Edit")
+                imageUrl == "" && image == null
+                    ? ElevatedButton(
+                        onPressed: pickImage,
+                        child: Text('Select Image'),
+                      )
+                    : Column(
+                        children: [
+                          isChangeInEditMode
+                              ? Image.file(
+                                  image!,
+                                  width: 200,
+                                  height: 200,
+                                  fit: BoxFit.cover,
+                                )
+                              : Image.network(
+                                  editPost.imageUrl,
+                                  width: 200,
+                                  height: 200,
+                                  fit: BoxFit.cover,
+                                ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          ElevatedButton(
+                              onPressed: () => setState(() {
+                                    imageUrl = "";
+                                    image = null;
+                                  }),
+                              child: Text("Delete image"))
+                        ],
+                      ),
               const SizedBox(height: 16),
               labelText("Select Category"),
               const SizedBox(height: 8),
@@ -213,21 +272,36 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
                   });
                   if (_formKey.currentState?.validate() ?? false) {
                     // ถ้าผ่านการตรวจสอบแล้ว
-                    if (image != null) {
-                      await uploadImage();
+                    if (widget.mode == "Add") {
+                      if (image != null) {
+                        await uploadImage();
+                      }
+                      await ref.read(communityProvider.notifier).createPost(
+                          title: titleCtrl.text,
+                          description: descriptionCtrl.text,
+                          category: selectedValueDropdown!,
+                          imageUrl: imageUrl);
+                    } else if (widget.mode == "Edit") {
+                      if (isChangeInEditMode) {
+                        await uploadImage();
+                      }
+                      await ref.read(communityProvider.notifier).editPost(
+                          oriPost: editPost,
+                          title: titleCtrl.text,
+                          description: descriptionCtrl.text,
+                          category: selectedValueDropdown!,
+                          imageUrl: imageUrl);
                     }
-                    await ref.read(communityProvider.notifier).createPost(
-                        title: titleCtrl.text,
-                        description: descriptionCtrl.text,
-                        category: selectedValueDropdown!,
-                        imageUrl: imageUrl);
+
                     setState(() {
                       isLoading = false;
                     });
                     titleCtrl.clear();
                     descriptionCtrl.clear();
                     if (context.mounted) {
-                      Navigator.pop(context);
+                      widget.mode == "Add"
+                          ? Navigator.pop(context)
+                          : Navigator.pushNamed(context, '/community');
                     }
                   }
                 },
@@ -240,7 +314,7 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "Post",
+                      widget.mode == "Add" ? "Post" : "Edit",
                       style: TextStyle(color: Colors.white, fontSize: 16),
                     ),
                     if (isLoading)
