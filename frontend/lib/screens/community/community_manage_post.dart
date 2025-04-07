@@ -22,7 +22,7 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
   final titleCtrl = TextEditingController();
   final descriptionCtrl = TextEditingController();
   String? selectedValueDropdown;
-
+  bool isLoading = false;
   File? image;
   final ImagePicker picker = ImagePicker();
   // final String cloudName = dotenv.env['CLOUDNAME']!;
@@ -208,6 +208,9 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
               const SizedBox(height: 30),
               ElevatedButton(
                 onPressed: () async {
+                  setState(() {
+                    isLoading = true;
+                  });
                   if (_formKey.currentState?.validate() ?? false) {
                     // ถ้าผ่านการตรวจสอบแล้ว
                     if (image != null) {
@@ -218,7 +221,9 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
                         description: descriptionCtrl.text,
                         category: selectedValueDropdown!,
                         imageUrl: imageUrl);
-
+                    setState(() {
+                      isLoading = false;
+                    });
                     titleCtrl.clear();
                     descriptionCtrl.clear();
                     if (context.mounted) {
@@ -231,9 +236,27 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
                   elevation: 2,
                   backgroundColor: Color(0xFFFF914D),
                 ),
-                child: Text(
-                  "Post",
-                  style: TextStyle(color: Colors.white, fontSize: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Post",
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
+                    if (isLoading)
+                      Row(
+                        children: [
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(),
+                          ),
+                        ],
+                      )
+                  ],
                 ),
               ),
             ],

@@ -39,7 +39,7 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
     final isLoading = ref.watch(communityProvider.notifier).isLoading;
 
     final commentCtrl = TextEditingController();
-
+    final commentFocusNode = FocusNode();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFFFF914D),
@@ -53,192 +53,203 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
         ),
       ),
       backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: isLoading
-              ? Center(child: CircularProgressIndicator())
-              : Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    ListTile(
-                      leading: CircleAvatar(
-                        radius: 25,
-                        backgroundColor: Color(0xFFFF914D),
-                        child: Icon(
-                          Icons.account_circle,
-                          size: 40,
-                          color: Colors.white,
+      body: ListView(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: isLoading
+                ? Center(child: CircularProgressIndicator())
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      ListTile(
+                        leading: CircleAvatar(
+                          radius: 25,
+                          backgroundColor: Color(0xFFFF914D),
+                          child: Icon(
+                            Icons.account_circle,
+                            size: 40,
+                            color: Colors.white,
+                          ),
                         ),
-                      ),
-                      title: Text(
-                        post!.username,
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      subtitle: Row(
-                        children: [
-                          Text(
-                            post.createdAt.toString(),
-                            style: TextStyle(color: Colors.grey[600]),
-                          ),
-                          Text(
-                            post.isEdited ? " (edited)" : "",
-                            style: TextStyle(color: Colors.grey[600]),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      elevation: 6,
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        title: Text(
+                          post!.username,
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        subtitle: Row(
                           children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    post.title,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18,
-                                      color: Colors.black87,
-                                    ),
-                                  ),
-                                ),
-                                ElevatedButton(
-                                    onPressed: () {
-                                      showReportPopup(context);
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                        backgroundColor: Color(0xFFE63946),
-                                        foregroundColor: Colors.white,
-                                        elevation: 2),
-                                    child: Text("Report post"))
-                              ],
-                            ),
-                            const SizedBox(height: 4),
                             Text(
-                              post.description,
-                              style: TextStyle(fontSize: 16),
+                              post.createdAt.toString(),
+                              style: TextStyle(color: Colors.grey[600]),
                             ),
-                            const SizedBox(height: 12),
-                            post.imageUrl != ""
-                                ? ClipRRect(
-                                    borderRadius: BorderRadius.circular(20),
-                                    child: Image.network(
-                                      post.imageUrl!,
-                                      fit: BoxFit.cover,
-                                      height: 200,
-                                      width: double.infinity,
-                                    ),
-                                  )
-                                : Container(),
+                            Text(
+                              post.isEdited ? " (edited)" : "",
+                              style: TextStyle(color: Colors.grey[600]),
+                            ),
                           ],
                         ),
                       ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        _buildActionButton(
-                          onTap: isLiked
-                              ? () {
-                                  ref
-                                      .read(communityProvider.notifier)
-                                      .unlikePost("999", post.id);
-                                  setState(() {
-                                    isLiked = false;
-                                    post.likeCount--;
-                                  });
-                                }
-                              : () {
-                                  ref
-                                      .read(communityProvider.notifier)
-                                      .likePost("999", post.id);
-                                  setState(() {
-                                    isLiked = true;
-                                    post.likeCount++;
-                                  });
-                                },
-                          icon: isLiked
-                              ? Icons.thumb_up
-                              : Icons.thumb_up_alt_outlined,
-                          label: "${post.likeCount}",
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
                         ),
-                        _buildActionButton(
-                          onTap: () {},
-                          icon: Icons.comment_outlined,
-                          label: "${post.comments.length}",
-                        ),
-                        _buildActionButton(
-                          onTap: () {},
-                          icon: Icons.share_outlined,
-                          label: "Share",
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    post.comments.isEmpty
-                        ? Center(child: Text("No comments"))
-                        : ListView.builder(
-                            shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
-                            itemCount: post.comments.length,
-                            itemBuilder: (context, index) {
-                              return Card(
-                                margin: EdgeInsets.only(bottom: 12),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                elevation: 4,
-                                child: ListTile(
-                                  contentPadding: EdgeInsets.all(12),
-                                  leading: CircleAvatar(
-                                    radius: 20,
-                                    backgroundColor: Color(0xFFFF914D),
-                                    child: Icon(
-                                      Icons.account_circle,
-                                      size: 30,
-                                      color: Colors.white,
+                        elevation: 6,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      post.title,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                        color: Colors.black87,
+                                      ),
                                     ),
                                   ),
-                                  title: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(post.comments[index].username),
-                                      Text(
-                                        post.comments[index].createdAt
-                                            .toString(),
-                                        style: TextStyle(fontSize: 12),
+                                  ElevatedButton(
+                                      onPressed: () {
+                                        showReportPopup(context);
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                          backgroundColor: Color(0xFFE63946),
+                                          foregroundColor: Colors.white,
+                                          elevation: 2),
+                                      child: Text("Report post"))
+                                ],
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                post.description,
+                                style: TextStyle(fontSize: 16),
+                              ),
+                              const SizedBox(height: 12),
+                              post.imageUrl != ""
+                                  ? ClipRRect(
+                                      borderRadius: BorderRadius.circular(20),
+                                      child: Image.network(
+                                        post.imageUrl!,
+                                        fit: BoxFit.cover,
+                                        // height: 200,
+                                        width: double.infinity,
                                       ),
-                                    ],
-                                  ),
-                                  subtitle: Text(post.comments[index].text),
-                                ),
-                              );
-                            },
+                                    )
+                                  : Container(),
+                            ],
                           ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                  ],
-                ),
-        ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          _buildActionButton(
+                            onTap: isLiked
+                                ? () {
+                                    ref
+                                        .read(communityProvider.notifier)
+                                        .unlikePost("999", post.id);
+                                    setState(() {
+                                      isLiked = false;
+                                      post.likeCount--;
+                                    });
+                                  }
+                                : () {
+                                    ref
+                                        .read(communityProvider.notifier)
+                                        .likePost("999", post.id);
+                                    setState(() {
+                                      isLiked = true;
+                                      post.likeCount++;
+                                    });
+                                  },
+                            icon: isLiked
+                                ? Icons.thumb_up
+                                : Icons.thumb_up_alt_outlined,
+                            label: "${post.likeCount}",
+                          ),
+                          _buildActionButton(
+                            onTap: () {
+                              FocusScope.of(context)
+                                  .requestFocus(commentFocusNode);
+                            },
+                            icon: Icons.comment_outlined,
+                            label: "${post.comments.length}",
+                          ),
+                          _buildActionButton(
+                            onTap: () {},
+                            icon: Icons.share_outlined,
+                            label: "Share",
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      post.comments.isEmpty
+                          ? Column(children: [
+                              Text("No comments"),
+                              const SizedBox(
+                                height: 60,
+                              )
+                            ])
+                          : ListView.builder(
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              itemCount: post.comments.length,
+                              itemBuilder: (context, index) {
+                                return Card(
+                                  margin: EdgeInsets.only(bottom: 12),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  elevation: 4,
+                                  child: ListTile(
+                                    contentPadding: EdgeInsets.all(12),
+                                    leading: CircleAvatar(
+                                      radius: 20,
+                                      backgroundColor: Color(0xFFFF914D),
+                                      child: Icon(
+                                        Icons.account_circle,
+                                        size: 30,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    title: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(post.comments[index].username),
+                                        Text(
+                                          post.comments[index].createdAt
+                                              .toString(),
+                                          style: TextStyle(fontSize: 12),
+                                        ),
+                                      ],
+                                    ),
+                                    subtitle: Text(post.comments[index].text),
+                                  ),
+                                );
+                              },
+                            ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                    ],
+                  ),
+          )
+        ],
       ),
       bottomSheet: isLoading
           ? null
@@ -248,6 +259,7 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                 children: [
                   Expanded(
                     child: TextField(
+                      focusNode: commentFocusNode,
                       controller: commentCtrl,
                       decoration: InputDecoration(
                         hintText: "Write a public comment...",
