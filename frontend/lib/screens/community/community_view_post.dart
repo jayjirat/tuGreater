@@ -11,10 +11,19 @@ class CommunityViewpost extends ConsumerStatefulWidget {
 }
 
 class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
+  bool isLiked = false;
   @override
   void initState() {
     super.initState();
-    ref.read(communityProvider.notifier).fetchPost(widget.id);
+
+    _initData();
+  }
+
+  void _initData() async {
+    await ref.read(communityProvider.notifier).fetchPost(widget.id);
+    isLiked =
+        await ref.read(communityProvider.notifier).isLiked("999", widget.id);
+    setState(() {});
   }
 
   @override
@@ -130,14 +139,37 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         _buildActionButton(
-                          icon: Icons.thumb_up_alt_outlined,
+                          onTap: isLiked
+                              ? () {
+                                  ref
+                                      .read(communityProvider.notifier)
+                                      .unlikePost("999", post.id);
+                                  setState(() {
+                                    isLiked = false;
+                                    post.likeCount--;
+                                  });
+                                }
+                              : () {
+                                  ref
+                                      .read(communityProvider.notifier)
+                                      .likePost("999", post.id);
+                                  setState(() {
+                                    isLiked = true;
+                                    post.likeCount++;
+                                  });
+                                },
+                          icon: isLiked
+                              ? Icons.thumb_up
+                              : Icons.thumb_up_alt_outlined,
                           label: "${post.likeCount}",
                         ),
                         _buildActionButton(
+                          onTap: () {},
                           icon: Icons.comment_outlined,
                           label: "${post.comments.length}",
                         ),
                         _buildActionButton(
+                          onTap: () {},
                           icon: Icons.share_outlined,
                           label: "Share",
                         ),
@@ -231,13 +263,23 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
     );
   }
 
-  Widget _buildActionButton({required IconData icon, required String label}) {
-    return Row(
-      children: [
-        Icon(icon, color: Color(0xFFFF914D)),
-        const SizedBox(width: 8),
-        Text(label, style: TextStyle(color: Color(0xFFFF914D))),
-      ],
+  Widget _buildActionButton(
+      {required IconData icon,
+      required String label,
+      required GestureTapCallback onTap}) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(30),
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.all(4),
+        child: Row(
+          children: [
+            Icon(icon, color: Color(0xFFFF914D)),
+            const SizedBox(width: 8),
+            Text(label, style: TextStyle(color: Color(0xFFFF914D))),
+          ],
+        ),
+      ),
     );
   }
 

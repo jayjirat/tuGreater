@@ -5,7 +5,7 @@ class CommuPost {
   final String title;
   final String description;
   final String category;
-  final int likeCount;
+  int likeCount;
   final List<Comment> comments;
   final DateTime createdAt;
   final DateTime? updatedAt;

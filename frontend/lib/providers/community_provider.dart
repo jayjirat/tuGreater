@@ -124,6 +124,58 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
       throw Exception('Error: $e');
     }
   }
+
+  Future<void> likePost(String userId, String postId) async {
+    final url = Uri.parse('http://10.0.2.2:8080/community/like');
+    try {
+      final likeBody = {'userId': userId, 'postId': postId};
+      final header = {'Content-Type': 'application/json'};
+      final response =
+          await http.post((url), headers: header, body: jsonEncode(likeBody));
+      if (response.statusCode == 200) {
+        fetchPosts();
+      } else {
+        throw Exception(
+            'Failed to like posts. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
+
+  Future<void> unlikePost(String userId, String postId) async {
+    final url = Uri.parse('http://10.0.2.2:8080/community/like');
+    try {
+      final likeBody = {'userId': userId, 'postId': postId};
+      final header = {'Content-Type': 'application/json'};
+      final response =
+          await http.delete((url), headers: header, body: jsonEncode(likeBody));
+      if (response.statusCode == 200) {
+        fetchPosts();
+      } else {
+        throw Exception(
+            'Failed to unlike posts. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
+
+  Future<bool> isLiked(String userId, String postId) async {
+    final url = Uri.parse(
+        'http://10.0.2.2:8080/community/like?userId=$userId&postId=$postId');
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        return response.body.contains('true');
+      } else {
+        throw Exception(
+            'Failed to check like status. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
 }
 
 final communityProvider =
