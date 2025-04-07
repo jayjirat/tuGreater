@@ -21,28 +21,10 @@ public class CommunityPost {
     private String userId;
     private String username;
     private boolean isEdited;
+    private String imageUrl;
 
-    public String getUsername() {
-        return this.username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
     public String getId() {
         return this.id;
-    }
-
-    public boolean isIsEdited() {
-        return this.isEdited;
-    }
-
-    public boolean getIsEdited() {
-        return this.isEdited;
-    }
-
-    public void setIsEdited(boolean isEdited) {
-        this.isEdited = isEdited;
     }
 
     public void setId(String id) {
@@ -113,7 +95,32 @@ public class CommunityPost {
         this.userId = userId;
     }
 
-   
-   
+    public String getUsername() {
+        return this.username;
+    }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public boolean isIsEdited() {
+        return this.isEdited;
+    }
+
+    public boolean getIsEdited() {
+        return this.isEdited;
+    }
+
+    public void setIsEdited(boolean isEdited) {
+        this.isEdited = isEdited;
+    }
+
+    public String getImageUrl() {
+        return this.imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+   
 }

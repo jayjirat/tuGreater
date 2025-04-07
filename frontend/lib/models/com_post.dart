@@ -11,10 +11,8 @@ class CommuPost {
   final DateTime? updatedAt;
   final String userId;
   final String username;
-  final List<String> likedBy;
   final bool isEdited;
   final String? imageUrl;
-  final bool isPinned;
 
   CommuPost({
     required this.id,
@@ -27,10 +25,8 @@ class CommuPost {
     this.updatedAt,
     required this.userId,
     required this.username,
-    this.likedBy = const [],
     this.isEdited = false,
     this.imageUrl,
-    this.isPinned = false,
   });
 
   // ฟังก์ชันแปลง JSON เป็น CommuPost
@@ -53,10 +49,8 @@ class CommuPost {
           : null,
       userId: json['userId'] as String,
       username: json['username'] as String,
-      likedBy: List<String>.from(json['likedBy'] ?? []),
       isEdited: json['isEdited'] as bool? ?? false,
       imageUrl: json['imageUrl'] as String?,
-      isPinned: json['isPinned'] as bool? ?? false,
     );
   }
 }

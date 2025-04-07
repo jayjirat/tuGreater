@@ -21,9 +21,15 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
 
   void _initData() async {
     await ref.read(communityProvider.notifier).fetchPost(widget.id);
-    isLiked =
+
+    bool liked =
         await ref.read(communityProvider.notifier).isLiked("999", widget.id);
-    setState(() {});
+
+    if (mounted) {
+      setState(() {
+        isLiked = liked;
+      });
+    }
   }
 
   @override
@@ -119,15 +125,17 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                               style: TextStyle(fontSize: 16),
                             ),
                             const SizedBox(height: 12),
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(20),
-                              child: Image.network(
-                                "https://fastly.picsum.photos/id/67/200/200.jpg?hmac=sN5XCCMqqmBvgDbYmAowWy2VToCkSYP5igDL_iRxK3M",
-                                fit: BoxFit.cover,
-                                height: 200,
-                                width: double.infinity,
-                              ),
-                            ),
+                            post.imageUrl != ""
+                                ? ClipRRect(
+                                    borderRadius: BorderRadius.circular(20),
+                                    child: Image.network(
+                                      post.imageUrl!,
+                                      fit: BoxFit.cover,
+                                      height: 200,
+                                      width: double.infinity,
+                                    ),
+                                  )
+                                : Container(),
                           ],
                         ),
                       ),

@@ -50,7 +50,10 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
   }
 
   Future<void> createPost(
-      {String? title, String? description, String? category}) async {
+      {required String title,
+      String? description,
+      required String category,
+      String? imageUrl}) async {
     final url = 'http://10.0.2.2:8080/community';
     try {
       final Map<String, dynamic> newPost = {
@@ -66,7 +69,7 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
         'comments': [],
         'createdAt': DateTime.now().toIso8601String(),
         'updatedAt': DateTime.now().toIso8601String(),
-        'imageUrl': '' // Mock
+        'imageUrl': imageUrl // Mock
       };
 
       final header = {'Content-Type': 'application/json'};
@@ -97,6 +100,8 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
         final posts = data.map((json) => CommuPost.fromJson(json)).toList();
         state = posts;
         // isLoading = false;
+      } else if (response.statusCode == 404) {
+        state = [];
       } else {
         throw Exception(
             'Failed to load posts. Status code: ${response.statusCode}');
@@ -116,6 +121,8 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
         final posts = data.map((json) => CommuPost.fromJson(json)).toList();
         state = posts;
         // isLoading = false;
+      } else if (response.statusCode == 404) {
+        state = [];
       } else {
         throw Exception(
             'Failed to load posts. Status code: ${response.statusCode}');
