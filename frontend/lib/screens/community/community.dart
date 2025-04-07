@@ -108,12 +108,15 @@ class CommunityState extends ConsumerState<Community> {
                     children: [
                       InkWell(
                         borderRadius: BorderRadius.circular(12),
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      CommunityViewpost(id: post.id)));
+                        onTap: () async {
+                          await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    CommunityViewpost(id: post.id)),
+                          );
+
+                          ref.read(communityProvider.notifier).fetchPosts();
                         },
                         child: Card(
                           elevation: 6,

@@ -29,7 +29,7 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
     }
   }
 
-  Future<void> fetchPost(String id) async {
+  Future<void> fetchPost({required String id}) async {
     final url = Uri.parse('http://10.0.2.2:8080/community/$id');
 
     try {
@@ -83,6 +83,19 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
       } else {
         throw Exception(
             'Failed to create post. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
+
+  Future<void> deletePost({required String id}) async {
+    final url = Uri.parse("http://10.0.2.2:8080/community/$id");
+    try {
+      final response = await http.delete(url);
+      if (response.statusCode != 200) {
+        throw Exception(
+            'Failed to delete post id: $id. Status code: ${response.statusCode}');
       }
     } catch (e) {
       throw Exception('Error: $e');

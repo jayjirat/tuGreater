@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/providers/community_provider.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:crypto/crypto.dart';
 
 class CommunityViewpost extends ConsumerStatefulWidget {
   final String id;
@@ -20,7 +23,7 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
   }
 
   void _initData() async {
-    await ref.read(communityProvider.notifier).fetchPost(widget.id);
+    await ref.read(communityProvider.notifier).fetchPost(id: widget.id);
 
     bool liked =
         await ref.read(communityProvider.notifier).isLiked("999", widget.id);
@@ -132,6 +135,26 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                                 post.description,
                                 style: TextStyle(fontSize: 16),
                               ),
+                              // TODO mock
+                              //! Mock and will delete soon !
+                              Row(
+                                children: [
+                                  ElevatedButton(
+                                      onPressed: () {}, child: Text("Edit")),
+                                  ElevatedButton(
+                                      onPressed: () async {
+                                        await ref
+                                            .read(communityProvider.notifier)
+                                            .deletePost(id: post.id);
+
+                                        if (context.mounted) {
+                                          Navigator.pop(context);
+                                        }
+                                      },
+                                      child: Text("Delete")),
+                                ],
+                              ),
+                              // !--------------------!
                               const SizedBox(height: 12),
                               post.imageUrl != ""
                                   ? ClipRRect(

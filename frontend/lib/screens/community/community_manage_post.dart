@@ -69,7 +69,7 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
             imageUrl = result['secure_url'];
           });
         }
-      } else {}
+      }
     } catch (e) {
       print('Error uploading image: $e');
     }
