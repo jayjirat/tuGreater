@@ -192,34 +192,62 @@ class _AddItemsState extends ConsumerState<AddItems> {
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.black54, width: 2),
                       ),
-                      child: _selectedImages.isNotEmpty
-                          ? GridView.builder(
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 3,
-                                crossAxisSpacing: 4.0,
-                                mainAxisSpacing: 4.0,
+                      child: Stack(
+                        children: [
+                          _selectedImages.isNotEmpty
+                              ? GridView.builder(
+                                  padding: EdgeInsets.all(8),
+                                  gridDelegate:
+                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 3,
+                                    crossAxisSpacing: 4.0,
+                                    mainAxisSpacing: 4.0,
+                                  ),
+                                  shrinkWrap: true,
+                                  itemCount: _selectedImages.length,
+                                  itemBuilder: (context, index) {
+                                    return Image.file(
+                                      _selectedImages[index],
+                                      width: 100,
+                                      height: 100,
+                                      fit: BoxFit.cover,
+                                    );
+                                  },
+                                )
+                              : Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      SvgPicture.asset("assets/svg/upload.svg"),
+                                      SizedBox(height: 5),
+                                      Text("Upload Images",
+                                          style: TextStyle(fontSize: 16)),
+                                    ],
+                                  ),
+                                ),
+                          if (_selectedImages.isNotEmpty)
+                            Positioned(
+                              top: 4,
+                              right: 4,
+                              child: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    _selectedImages.clear();
+                                  });
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.red,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  padding: EdgeInsets.all(4),
+                                  child: Icon(Icons.close,
+                                      color: Colors.white, size: 20),
+                                ),
                               ),
-                              shrinkWrap: true,
-                              itemCount: _selectedImages.length,
-                              itemBuilder: (context, index) {
-                                return Image.file(
-                                  _selectedImages[index],
-                                  width: 100,
-                                  height: 100,
-                                  fit: BoxFit.cover,
-                                );
-                              },
-                            )
-                          : Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                SvgPicture.asset("assets/svg/upload.svg"),
-                                SizedBox(height: 5),
-                                Text("Upload Images",
-                                    style: TextStyle(fontSize: 16)),
-                              ],
                             ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
