@@ -10,6 +10,7 @@ class Products {
   final String productDescription;
   final String productCategory;
   final String productOwner;
+  final String productOwnerId;
 
   Products({
     required this.productId,
@@ -21,6 +22,7 @@ class Products {
     required this.productDescription,
     required this.productCategory,
     required this.productOwner,
+    required this.productOwnerId,
   });
 
   // Convert JSON to Product object
@@ -36,6 +38,7 @@ class Products {
       productDescription: json['productDescription'] ?? '',
       productCategory: json['productCategory'] ?? '',
       productOwner: json['productOwner'] ?? '',
+      productOwnerId: json['productOwnerId'] ?? '',
     );
   }
 
@@ -51,6 +54,7 @@ class Products {
       'productDescription': productDescription,
       'productCategory': productCategory,
       'productOwner': productOwner,
+      'productOwnerId': productOwnerId
     };
   }
 }

@@ -17,7 +17,6 @@ public class Users {
     private String displayName;
     private String profileImageUrl;
     private Role role;
-    private List<Products> products;
 
     public Role getRole() {
         return this.role;
@@ -33,14 +32,6 @@ public class Users {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public List<Products> getProducts() {
-        return products;
-    }
-
-    public void setProducts(List<Products> products) {
-        this.products = products;
     }
 
     public String getStudentId() {
