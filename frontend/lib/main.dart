@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:frontend/components/custom_bottom_navigationbar.dart';
+import 'package:frontend/pages/manage_items.dart';
 import 'package:frontend/pages/shop.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -22,7 +23,8 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: Scaffold(
-        body: Shop(),
+        // body: Shop(),
+        body: ManageItems(),
         bottomNavigationBar: CustomBottomNavigationBar(),
       ),
     );
