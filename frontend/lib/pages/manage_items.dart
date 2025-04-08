@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/components/toolbar.dart';
+import 'package:frontend/pages/edit_items.dart';
 
 class ManageItems extends StatelessWidget {
   var pNames = [
@@ -12,7 +13,7 @@ class ManageItems extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: Toolbar(title: "Manage Items"),
+      appBar: Toolbar(title: "Manage Products"),
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.only(top: 20, left: 20, right: 20),
@@ -63,7 +64,13 @@ class ManageItems extends StatelessWidget {
                                       ),
                                     ),
                                     FilledButton(
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    EditItems()));
+                                      },
                                       style: FilledButton.styleFrom(
                                         backgroundColor:
                                             Colors.white.withOpacity(0.8),
