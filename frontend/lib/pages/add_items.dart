@@ -57,7 +57,8 @@ class _AddItemsState extends ConsumerState<AddItems> {
           'productTags': tags,
           'productDatePost': DateTime.now().toIso8601String(),
           'productDescription': descriptionController.text,
-          'productOwner': "Wernatraa"
+          'productOwner': "Wernatraa",
+          'productOwnerId': "88888888"
         }));
 
     if (response.statusCode == 200) {

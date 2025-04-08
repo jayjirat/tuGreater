@@ -85,5 +85,4 @@ class ProductService {
       throw Exception('Failed to load products by category');
     }
   }
-
 }
