@@ -52,6 +52,7 @@ class _AddItemsState extends ConsumerState<AddItems> {
         'productCategory': selectedCategory,
         'productTags': tags,
         'productDatePost': DateTime.now().toIso8601String(),
+        'productDateUpdate': DateTime.now().toIso8601String(),
         'productDescription': descriptionController.text,
         'productOwner': "Wernatraa", //mockup
         'productOwnerId': "888" //mockup

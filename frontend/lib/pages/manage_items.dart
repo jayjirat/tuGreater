@@ -22,7 +22,6 @@ class ManageItems extends ConsumerWidget {
             padding: EdgeInsets.only(top: 20, left: 20, right: 20),
             child: Column(
               children: [
-                // Your product list UI
                 ...products.map((product) {
                   return Container(
                     margin: EdgeInsets.symmetric(vertical: 5),
@@ -112,7 +111,6 @@ class ManageItems extends ConsumerWidget {
                                 ),
                               );
                               if (confirm == true) {
-                                // Perform deletion
                                 await ref.read(deleteProduct(Tuple2(
                                     product.productOwnerId,
                                     product.productId)));
@@ -122,7 +120,6 @@ class ManageItems extends ConsumerWidget {
                                 ref.refresh(productProviderByProductOwnerId(
                                     productOwnerId));
 
-                                // Show success message
                                 ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                         content: Text(

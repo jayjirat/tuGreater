@@ -6,6 +6,7 @@ class Products {
   final String productName;
   final double productPrice;
   final DateTime productDatePost;
+  final DateTime productDateUpdate;
   final List<String> productTags;
   final String productDescription;
   final String productCategory;
@@ -18,6 +19,7 @@ class Products {
     required this.productName,
     required this.productPrice,
     required this.productDatePost,
+    required this.productDateUpdate,
     required this.productTags,
     required this.productDescription,
     required this.productCategory,
@@ -34,6 +36,8 @@ class Products {
       productPrice: (json['productPrice'] ?? 0).toDouble(),
       productDatePost:
           DateTime.tryParse(json['productDatePost'] ?? '') ?? DateTime.now(),
+      productDateUpdate:
+          DateTime.tryParse(json['productDateUpdate'] ?? '') ?? DateTime.now(),
       productTags: List<String>.from(json['productTags'] ?? []),
       productDescription: json['productDescription'] ?? '',
       productCategory: json['productCategory'] ?? '',
@@ -50,6 +54,7 @@ class Products {
       'productName': productName,
       'productPrice': productPrice,
       'productDatePost': productDatePost.toIso8601String(),
+      'productDateUpdate': productDateUpdate.toIso8601String(),
       'productTags': productTags,
       'productDescription': productDescription,
       'productCategory': productCategory,

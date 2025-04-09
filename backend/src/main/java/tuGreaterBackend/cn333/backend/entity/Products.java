@@ -14,31 +14,12 @@ public class Products {
     private String productName;
     private double productPrice;
     private LocalDateTime productDatePost;
+    private LocalDateTime productDateUpdate;
     private List<String> productTags;
     private String productDescription;
     private String productCategory;
     private String productOwner;
     private String productOwnerId;
-
-    public String getProductOwner() {
-        return productOwner;
-    }
-
-    public void setProductOwner(String productOwner) {
-        this.productOwner = productOwner;
-    }
-
-    public List<String> getProductImageUrls() {
-        return productImageUrls;
-    }
-
-    public void setProductImageUrls(List<String> productImageUrls) {
-        this.productImageUrls = productImageUrls;
-    }
-
-    public String getId() {
-        return productId;
-    }
 
     @Override
     public String toString() {
@@ -48,6 +29,7 @@ public class Products {
                 ", productName='" + productName + '\'' +
                 ", productPrice=" + productPrice +
                 ", productDatePost=" + productDatePost +
+                ", productDateUpdate=" + productDateUpdate +
                 ", productTags=" + productTags +
                 ", productDescription='" + productDescription + '\'' +
                 ", productCategory='" + productCategory + '\'' +
@@ -64,7 +46,7 @@ public class Products {
 
     }
 
-    public Products(String productId, List<String> productImageUrls, String productName, double productPrice, String productDescription, String productCategory, LocalDateTime productDatePost, List<String> productTags) {
+    public Products(String productId, List<String> productImageUrls, String productName, double productPrice, String productDescription, String productCategory, LocalDateTime productDatePost,LocalDateTime productDateUpdate, List<String> productTags,String productOwner,String productOwnerId) {
         this.productId = productId;
         this.productImageUrls = productImageUrls;
         this.productName = productName;
@@ -72,6 +54,7 @@ public class Products {
         this.productDescription = productDescription;
         this.productCategory = productCategory;
         this.productDatePost = productDatePost;
+        this.productDateUpdate = productDateUpdate;
         this.productTags = productTags;
         this.productOwner = productOwner;
         this.productOwnerId = productOwnerId;
@@ -132,6 +115,34 @@ public class Products {
 
     public void setProductOwnerId(String productOwnerId) {
         this.productOwnerId = productOwnerId;
+    }
+
+    public LocalDateTime getProductDateUpdate() {
+        return productDateUpdate;
+    }
+
+    public void setProductDateUpdate(LocalDateTime productDateUpdate) {
+        this.productDateUpdate = productDateUpdate;
+    }
+
+    public String getProductOwner() {
+        return productOwner;
+    }
+
+    public void setProductOwner(String productOwner) {
+        this.productOwner = productOwner;
+    }
+
+    public List<String> getProductImageUrls() {
+        return productImageUrls;
+    }
+
+    public void setProductImageUrls(List<String> productImageUrls) {
+        this.productImageUrls = productImageUrls;
+    }
+
+    public String getId() {
+        return productId;
     }
 
 }
