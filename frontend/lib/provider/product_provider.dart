@@ -29,6 +29,6 @@ final productSearchWithCategoryProvider =
 });
 
 final productProviderByProductOwnerId =
-    FutureProvider.family<Products, String>((ref, productOwnerId) async {
-  return ProductService().fetchProductDetail(productOwnerId);
+    FutureProvider.family<List<Products>, String>((ref, productOwnerId) async {
+  return ProductService().fetchAllManageProducts(productOwnerId);
 });
