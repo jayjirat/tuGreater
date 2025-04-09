@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import tuGreaterBackend.cn333.backend.entity.CommunityPost;
 import tuGreaterBackend.cn333.backend.repository.CommunityRepository;
@@ -23,9 +24,6 @@ public class CommunityService {
         try {
             List<CommunityPost> communityPosts = communityRepository.findAllByOrderByCreatedAtDesc();
 
-            if (communityPosts.isEmpty()) {
-                throw new RuntimeException("No posts found. Please try again later.");
-            }
             return communityPosts;
         }catch (RuntimeException e){
             throw new RuntimeException(e.getMessage());
@@ -49,6 +47,7 @@ public class CommunityService {
         }
     }
 
+    @Transactional
     public CommunityPost createCommunityPost(CommunityPost communityPost) {
         try {
             return communityRepository.save(communityPost);
@@ -66,8 +65,10 @@ public class CommunityService {
                 throw new RuntimeException("Post not found by id: " + id);
             }
             
+            existingPost.setImageUrl(communityPost.getImageUrl());
             existingPost.setDescription(communityPost.getDescription());
             existingPost.setTitle(communityPost.getTitle());
+            existingPost.setCategory(communityPost.getCategory());
             existingPost.setIsEdited(true);
             existingPost.setUpdatedAt(LocalDateTime.now());
             return communityRepository.save(existingPost);
