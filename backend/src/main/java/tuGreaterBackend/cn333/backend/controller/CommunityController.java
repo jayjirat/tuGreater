@@ -115,12 +115,10 @@ public class CommunityController {
     }
 
     @GetMapping("/me/{userId}")
-    public ResponseEntity<?> getUserPosts(@RequestParam String userId) {
+    public ResponseEntity<?> getUserPosts(@PathVariable String userId) {
         try {
-            List<CommunityPost> userPost = communityService.getUserPost(userId);
+            List<CommunityPost> userPost = communityService.getUserPosts(userId);
             return ResponseEntity.ok(userPost);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
