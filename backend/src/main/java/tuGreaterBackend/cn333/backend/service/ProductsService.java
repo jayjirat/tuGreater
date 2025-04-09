@@ -37,4 +37,8 @@ public class ProductsService {
     public List<Products> searchProductsByCategoryAndName(String productCategory, String productName){
         return productsRepository.findByCategoryAndName(productCategory,productName);
     }
+
+    public List<Products> findProductByProductOwnerId(String productOwnerId){
+        return productsRepository.findByProductOwnerId(productOwnerId);
+    }
 }

@@ -85,4 +85,18 @@ class ProductService {
       throw Exception('Failed to load products by category');
     }
   }
+
+  Future<List<Products>> fetchAllManageProducts(String productOwnerId) async {
+    final response =
+        await http.get(Uri.parse(baseUrl + "/manage/${productOwnerId}"));
+
+    if (response.statusCode == 200) {
+      // Decode the response body with UTF-8
+      String decodedResponse = utf8.decode(response.bodyBytes);
+      List<dynamic> jsonData = json.decode(decodedResponse);
+      return jsonData.map((json) => Products.fromJson(json)).toList();
+    } else {
+      throw Exception('Failed to load products');
+    }
+  }
 }

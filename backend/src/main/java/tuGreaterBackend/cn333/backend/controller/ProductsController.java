@@ -44,4 +44,9 @@ public class ProductsController {
         return productsService.searchProductsByCategoryAndName(category, name);
     }
 
+    @GetMapping("/manage/{productOwnerId}")
+    public List<Products> getAllProductsByProductOwnerId(@PathVariable String productOwnerId){
+        return productsService.findProductByProductOwnerId(productOwnerId);
+    }
+
 }
