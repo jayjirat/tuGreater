@@ -32,6 +32,25 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
     }
   }
 
+  Future<void> fetchMyPosts(String userId) async {
+    final url = Uri.parse('$baseURL/community/me/$userId');
+    try {
+      // isLoading = true;
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body);
+        final posts = data.map((json) => CommuPost.fromJson(json)).toList();
+        state = posts;
+        // isLoading = false;
+      } else {
+        throw Exception(
+            'Failed to load posts. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
+
   Future<void> fetchPost({required String id}) async {
     final url = Uri.parse('$baseURL/community/$id');
 
