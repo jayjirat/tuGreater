@@ -26,12 +26,6 @@ class EditItems extends ConsumerStatefulWidget {
 }
 
 class _EditItemsState extends ConsumerState<EditItems> {
-  // final _formKey = GlobalKey<FormState>();
-  bool isCheckedFirstHanded = false;
-  bool isCheckedSecondHanded = false;
-  bool isCheckedThirdHanded = false;
-  bool isCheckedFourthHanded = false;
-  bool isCheckedFifthHanded = false;
   bool isCheckedOthers = false;
   String? selectedCategory;
   TextEditingController nameController = TextEditingController();
@@ -185,6 +179,10 @@ class _EditItemsState extends ConsumerState<EditItems> {
             otherTagController.text = otherTag;
             isCheckedOthers = otherTag.isNotEmpty;
             _hasInitialized = true;
+            nameController.text = product.productName;
+            priceController.text =
+                product.productPrice?.toInt().toString() ?? '';
+            descriptionController.text = product.productDescription;
           }
 
           return SingleChildScrollView(
@@ -346,8 +344,7 @@ class _EditItemsState extends ConsumerState<EditItems> {
                       child: SizedBox(
                         width: 200,
                         child: TextField(
-                          controller: nameController
-                            ..text = product.productName,
+                          controller: nameController,
                           decoration: InputDecoration(
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(25),
@@ -365,9 +362,7 @@ class _EditItemsState extends ConsumerState<EditItems> {
                       child: SizedBox(
                         width: 100,
                         child: TextField(
-                          controller: priceController
-                            ..text =
-                                product.productPrice?.round().toString() ?? '',
+                          controller: priceController,
                           keyboardType: TextInputType.number,
                           inputFormatters: [
                             FilteringTextInputFormatter.digitsOnly
@@ -637,8 +632,7 @@ class _EditItemsState extends ConsumerState<EditItems> {
                     child: SizedBox(
                       height: 150,
                       child: TextField(
-                        controller: descriptionController
-                          ..text = product.productDescription,
+                        controller: descriptionController,
                         maxLines: null,
                         minLines: 5,
                         decoration: InputDecoration(
@@ -699,10 +693,14 @@ class _EditItemsState extends ConsumerState<EditItems> {
                       },
                     );
 
-                    // Get image URLs
-                    List<String> imageUrls = await _uploadImagesToCloudinary();
+                    List<String> uploadedUrls =
+                        await _uploadImagesToCloudinary();
 
-                    // Prepare updated fields
+                    List<String> imageUrls = [
+                      ...product.productImageUrls,
+                      ...uploadedUrls,
+                    ];
+
                     final updatedFields = {
                       "productName": nameController.text,
                       "productPrice": double.tryParse(priceController.text),
@@ -722,8 +720,8 @@ class _EditItemsState extends ConsumerState<EditItems> {
                     ref.refresh(
                         productProviderByProductOwnerId(productOwnerId));
                     ref.refresh(productProviderById(productId));
-                    Navigator.pop(context); // Close loading dialog
-                    Navigator.pop(context, true); // Close current screen
+                    Navigator.pop(context);
+                    Navigator.pop(context, true);
                   },
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(Colors.orange),
