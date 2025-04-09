@@ -14,7 +14,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:file_picker/file_picker.dart';
 
 class EditItems extends ConsumerStatefulWidget {
-  const EditItems({super.key});
+  final String productId;
+  const EditItems({super.key, required this.productId});
 
   @override
   ConsumerState<EditItems> createState() => _EditItemsState();
@@ -35,6 +36,15 @@ class _EditItemsState extends ConsumerState<EditItems> {
   List<String> tags = [];
   TextEditingController otherTagController = TextEditingController();
   FocusNode otherTagFocusNode = FocusNode();
+  List<String> tagsOld = [];
+  final List<String> excludedTags = [
+    "มือหนึ่ง",
+    "อร่อย",
+    "สะอาด",
+    "มือสอง",
+    "สภาพดี"
+  ];
+  bool _hasInitialized = false;
 
   // Image related variables
   List<File> _selectedImages = [];
@@ -174,12 +184,30 @@ class _EditItemsState extends ConsumerState<EditItems> {
 
   @override
   Widget build(BuildContext context) {
+    final productId = widget.productId;
+    final productDetailsAsyncValue = ref.watch(productProviderById(productId));
+
     return Scaffold(
-        appBar: Toolbar(title: "Edit Product"),
-        body: Consumer(builder: (context, ref, child) {
+      appBar: Toolbar(title: "Edit Product"),
+      body: productDetailsAsyncValue.when(
+        data: (product) {
+          if (!_hasInitialized) {
+            tagsOld = product.productTags;
+
+            String? otherTag = tagsOld.firstWhere(
+              (tag) => !excludedTags.contains(tag),
+              orElse: () => "",
+            );
+
+            otherTagController.text = otherTag;
+            isCheckedOthers = otherTag.isNotEmpty;
+            _hasInitialized = true;
+          }
+
           return SingleChildScrollView(
             child: Column(
               children: [
+                // Product Image Section
                 Center(
                   child: GestureDetector(
                     onTap: () {
@@ -251,31 +279,26 @@ class _EditItemsState extends ConsumerState<EditItems> {
                     ),
                   ),
                 ),
+                // Product Name, Price and Category Section
                 Row(
                   children: [
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 20),
                       child: Align(
                         alignment: Alignment.centerLeft,
-                        child: Text(
-                          "Name",
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
+                        child: Text("Name",
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold)),
                       ),
                     ),
-                    SizedBox(
-                      width: 148,
-                    ),
+                    SizedBox(width: 148),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 20),
                       child: Align(
                         alignment: Alignment.centerLeft,
-                        child: Text(
-                          "Price",
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
+                        child: Text("Price",
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold)),
                       ),
                     ),
                   ],
@@ -285,21 +308,18 @@ class _EditItemsState extends ConsumerState<EditItems> {
                     Padding(
                       padding:
                           EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: SizedBox(
-                          width: 200,
-                          child: TextField(
-                            controller: nameController,
-                            decoration: InputDecoration(
-                              hintText: "Enter Name...",
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(25),
-                                borderSide: BorderSide.none,
-                              ),
-                              filled: true,
-                              fillColor: Colors.grey[200],
+                      child: SizedBox(
+                        width: 200,
+                        child: TextField(
+                          controller: nameController
+                            ..text = product.productName,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(25),
+                              borderSide: BorderSide.none,
                             ),
+                            filled: true,
+                            fillColor: Colors.grey[200],
                           ),
                         ),
                       ),
@@ -307,46 +327,40 @@ class _EditItemsState extends ConsumerState<EditItems> {
                     Padding(
                       padding:
                           EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: SizedBox(
-                          width: 100,
-                          child: TextField(
-                            controller: priceController,
-                            keyboardType:
-                                TextInputType.number, // Set keyboard to number
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly
-                            ], // Allow only numbers
-                            decoration: InputDecoration(
-                              hintText: "Baht",
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(25),
-                                borderSide: BorderSide.none,
-                              ),
-                              filled: true,
-                              fillColor: Colors.grey[200],
+                      child: SizedBox(
+                        width: 100,
+                        child: TextField(
+                          controller: priceController
+                            ..text =
+                                product.productPrice?.round().toString() ?? '',
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
+                          decoration: InputDecoration(
+                            hintText: "Baht",
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(25),
+                              borderSide: BorderSide.none,
                             ),
+                            filled: true,
+                            fillColor: Colors.grey[200],
                           ),
                         ),
                       ),
                     ),
-                    Text(
-                      "฿",
-                      style: TextStyle(
-                          fontSize: 20, fontWeight: FontWeight.normal),
-                    )
+                    Text("฿",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.normal)),
                   ],
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20),
                   child: Align(
                     alignment: Alignment.centerLeft,
-                    child: Text(
-                      "Category",
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
+                    child: Text("Category",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold)),
                   ),
                 ),
                 Padding(
@@ -358,10 +372,14 @@ class _EditItemsState extends ConsumerState<EditItems> {
                         borderSide: BorderSide.none,
                       ),
                       filled: true,
-                      fillColor: Colors.grey[200], // Background color
+                      fillColor: Colors.grey[200],
                     ),
-                    value: selectedCategory,
-                    hint: Text("Select Category"),
+                    value: product.productCategory.isEmpty
+                        ? null
+                        : product.productCategory,
+                    hint: product.productCategory.isEmpty
+                        ? Text("Select Category")
+                        : null,
                     items: ["Food", "Drink", "Dormitory", "Clothes", "Others"]
                         .map((category) {
                       return DropdownMenuItem(
@@ -376,33 +394,32 @@ class _EditItemsState extends ConsumerState<EditItems> {
                     },
                   ),
                 ),
+                // Tags Section (Checkboxes)
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20),
                   child: Align(
                     alignment: Alignment.centerLeft,
-                    child: Text(
-                      "Tag",
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
+                    child: Text("Tag",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold)),
                   ),
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20),
                   child: Row(
                     children: [
-                      // First checkbox with fixed text
                       Row(
                         children: [
                           Checkbox(
-                            value: isCheckedFirstHanded,
+                            value: tagsOld.contains("มือหนึ่ง"),
                             onChanged: (value) {
                               setState(() {
-                                isCheckedFirstHanded = value!;
                                 if (value!) {
-                                  tags.add("มือหนึ่ง");
+                                  if (!tagsOld.contains("มือหนึ่ง")) {
+                                    tagsOld.add("มือหนึ่ง");
+                                  }
                                 } else {
-                                  tags.remove("มือหนึ่ง");
+                                  tagsOld.remove("มือหนึ่ง");
                                 }
                               });
                             },
@@ -410,20 +427,19 @@ class _EditItemsState extends ConsumerState<EditItems> {
                           Text("มือหนึ่ง"),
                         ],
                       ),
-                      SizedBox(width: 10), // Spacing
-
-                      // Second checkbox with fixed text
+                      SizedBox(width: 10),
                       Row(
                         children: [
                           Checkbox(
-                            value: isCheckedSecondHanded,
+                            value: tagsOld.contains("มือสอง"),
                             onChanged: (value) {
                               setState(() {
-                                isCheckedSecondHanded = value!;
                                 if (value!) {
-                                  tags.add("มือสอง");
+                                  if (!tagsOld.contains("มือสอง")) {
+                                    tagsOld.add("มือสอง");
+                                  }
                                 } else {
-                                  tags.remove("มือสอง");
+                                  tagsOld.remove("มือสอง");
                                 }
                               });
                             },
@@ -431,20 +447,19 @@ class _EditItemsState extends ConsumerState<EditItems> {
                           Text("มือสอง"),
                         ],
                       ),
-                      SizedBox(width: 10), // Spacing
-
-                      // Third checkbox with a text field
+                      SizedBox(width: 10),
                       Row(
                         children: [
                           Checkbox(
-                            value: isCheckedThirdHanded,
+                            value: tagsOld.contains("สภาพดี"),
                             onChanged: (value) {
                               setState(() {
-                                isCheckedThirdHanded = value!;
                                 if (value!) {
-                                  tags.add("สภาพดี");
+                                  if (!tagsOld.contains("สภาพดี")) {
+                                    tagsOld.add("สภาพดี");
+                                  }
                                 } else {
-                                  tags.remove("สภาพดี");
+                                  tagsOld.remove("สภาพดี");
                                 }
                               });
                             },
@@ -463,14 +478,15 @@ class _EditItemsState extends ConsumerState<EditItems> {
                       Row(
                         children: [
                           Checkbox(
-                            value: isCheckedFourthHanded,
+                            value: tagsOld.contains("อร่อย"),
                             onChanged: (value) {
                               setState(() {
-                                isCheckedFourthHanded = value!;
                                 if (value!) {
-                                  tags.add("อร่อย");
+                                  if (!tagsOld.contains("อร่อย")) {
+                                    tagsOld.add("อร่อย");
+                                  }
                                 } else {
-                                  tags.remove("อร่อย");
+                                  tagsOld.remove("อร่อย");
                                 }
                               });
                             },
@@ -484,14 +500,15 @@ class _EditItemsState extends ConsumerState<EditItems> {
                       Row(
                         children: [
                           Checkbox(
-                            value: isCheckedFifthHanded,
+                            value: tagsOld.contains("สะอาด"),
                             onChanged: (value) {
                               setState(() {
-                                isCheckedFifthHanded = value!;
                                 if (value!) {
-                                  tags.add("สะอาด");
+                                  if (!tagsOld.contains("สะอาด")) {
+                                    tagsOld.add("สะอาด");
+                                  }
                                 } else {
-                                  tags.remove("สะอาด");
+                                  tagsOld.remove("สะอาด");
                                 }
                               });
                             },
@@ -499,6 +516,7 @@ class _EditItemsState extends ConsumerState<EditItems> {
                           Text("สะอาด"),
                         ],
                       ),
+
                       SizedBox(width: 11), // Spacing
 
                       // Third checkbox with a text field
@@ -508,22 +526,29 @@ class _EditItemsState extends ConsumerState<EditItems> {
                             value: isCheckedOthers,
                             onChanged: (value) {
                               setState(() {
-                                isCheckedOthers = value!;
-                                if (!value!) {
+                                isCheckedOthers = value ?? false;
+                                final text = otherTagController.text.trim();
+
+                                if (isCheckedOthers) {
+                                  if (text.isNotEmpty &&
+                                      !excludedTags.contains(text) &&
+                                      !tagsOld.contains(text)) {
+                                    tagsOld.add(text);
+                                  }
+                                } else {
+                                  tagsOld.removeWhere((tag) =>
+                                      !excludedTags.contains(tag) &&
+                                      tag == text);
                                   otherTagController.clear();
-                                  tags.removeWhere(
-                                      (tag) => tag == otherTagController.text);
                                 }
                               });
                             },
                           ),
                           SizedBox(
-                            width: 100, // Adjust width as needed
+                            width: 100,
                             child: TextField(
                               controller: otherTagController,
-                              focusNode: otherTagFocusNode,
-                              enabled:
-                                  isCheckedOthers, // Enable only if checkbox is checked
+                              enabled: isCheckedOthers,
                               decoration: InputDecoration(
                                 hintText: "อื่นๆ",
                                 border: OutlineInputBorder(
@@ -535,6 +560,22 @@ class _EditItemsState extends ConsumerState<EditItems> {
                                 contentPadding: EdgeInsets.symmetric(
                                     horizontal: 8, vertical: 4),
                               ),
+                              onChanged: (text) {
+                                if (isCheckedOthers) {
+                                  setState(() {
+                                    tagsOld.removeWhere((tag) =>
+                                        !excludedTags.contains(tag) &&
+                                        tag != text.trim() &&
+                                        tag.isNotEmpty);
+
+                                    final trimmedText = text.trim();
+                                    if (trimmedText.isNotEmpty &&
+                                        !tagsOld.contains(trimmedText)) {
+                                      tagsOld.add(trimmedText);
+                                    }
+                                  });
+                                }
+                              },
                             ),
                           ),
                         ],
@@ -546,11 +587,9 @@ class _EditItemsState extends ConsumerState<EditItems> {
                   padding: EdgeInsets.symmetric(horizontal: 20),
                   child: Align(
                     alignment: Alignment.centerLeft,
-                    child: Text(
-                      "Description",
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
+                    child: Text("Description",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold)),
                   ),
                 ),
                 Padding(
@@ -560,11 +599,11 @@ class _EditItemsState extends ConsumerState<EditItems> {
                     child: SizedBox(
                       height: 150,
                       child: TextField(
-                        controller: descriptionController,
+                        controller: descriptionController
+                          ..text = product.productDescription,
                         maxLines: null,
                         minLines: 5,
                         decoration: InputDecoration(
-                          hintText: "Enter Description...",
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(25),
                             borderSide: BorderSide.none,
@@ -589,6 +628,7 @@ class _EditItemsState extends ConsumerState<EditItems> {
                     ),
                   ),
                 ),
+                // Post Button
                 Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -616,12 +656,10 @@ class _EditItemsState extends ConsumerState<EditItems> {
                                       children: [
                                         CircularProgressIndicator(),
                                         SizedBox(height: 15),
-                                        Text(
-                                          "กำลังสร้างสินค้า...",
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold),
-                                        ),
+                                        Text("กำลังสร้างสินค้า...",
+                                            style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold)),
                                       ],
                                     ),
                                   ),
@@ -642,20 +680,21 @@ class _EditItemsState extends ConsumerState<EditItems> {
                                 MaterialStateProperty.all(Colors.orange),
                           ),
                           child: Text(
-                            "โพสต์เลย",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 18,
-                            ),
+                            "บันทึก",
+                            style: TextStyle(color: Colors.black, fontSize: 18),
                           ),
                         ),
                       ),
                     ),
                   ],
-                )
+                ),
               ],
             ),
           );
-        }));
+        },
+        loading: () => Center(child: CircularProgressIndicator()),
+        error: (error, stackTrace) => Center(child: Text('Error: $error')),
+      ),
+    );
   }
 }

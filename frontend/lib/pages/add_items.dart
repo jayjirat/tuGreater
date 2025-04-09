@@ -14,6 +14,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:file_picker/file_picker.dart';
 
 class AddItems extends ConsumerStatefulWidget {
+  final String productOwnerId = "888"; //mockup
   const AddItems({super.key});
 
   @override
@@ -175,6 +176,7 @@ class _AddItemsState extends ConsumerState<AddItems> {
 
   @override
   Widget build(BuildContext context) {
+    final productOwnerId = widget.productOwnerId;
     return Scaffold(
         appBar: Toolbar(title: "Add Product"),
         body: Consumer(builder: (context, ref, child) {
@@ -635,6 +637,9 @@ class _AddItemsState extends ConsumerState<AddItems> {
                             await createProduct(imageUrls);
 
                             ref.invalidate(productProvider);
+                            await Future.delayed(Duration(milliseconds: 100));
+                            ref.refresh(productProviderByProductOwnerId(
+                                productOwnerId));
                             Navigator.pop(context);
                             Navigator.pop(context, true);
                           },

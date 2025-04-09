@@ -65,11 +65,10 @@ class ManageItems extends ConsumerWidget {
                                 FilledButton(
                                   onPressed: () {
                                     Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => EditItems(),
-                                      ),
-                                    );
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => EditItems(
+                                                productId: product.productId)));
                                   },
                                   style: FilledButton.styleFrom(
                                     backgroundColor:
