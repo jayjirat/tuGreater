@@ -73,34 +73,67 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       ListTile(
-                        leading: CircleAvatar(
-                          radius: 25,
-                          backgroundColor: Color(0xFFFF914D),
-                          child: Icon(
-                            Icons.account_circle,
-                            size: 40,
-                            color: Colors.white,
+                          leading: CircleAvatar(
+                            radius: 25,
+                            backgroundColor: Color(0xFFFF914D),
+                            child: Icon(
+                              Icons.account_circle,
+                              size: 40,
+                              color: Colors.white,
+                            ),
                           ),
-                        ),
-                        title: Text(
-                          post!.username,
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        subtitle: Row(
-                          children: [
-                            Text(
-                              post.createdAt.toString(),
-                              style: TextStyle(color: Colors.grey[600]),
-                            ),
-                            Text(
-                              post.isEdited ? " (edited)" : "",
-                              style: TextStyle(color: Colors.grey[600]),
-                            ),
-                          ],
-                        ),
-                      ),
+                          title: Text(
+                            post!.username,
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          subtitle: Row(
+                            children: [
+                              Text(
+                                post.createdAt.toString(),
+                                style: TextStyle(color: Colors.grey[600]),
+                              ),
+                              Text(
+                                post.isEdited ? " (edited)" : "",
+                                style: TextStyle(color: Colors.grey[600]),
+                              ),
+                            ],
+                          ),
+                          trailing: post.userId == "999"
+                              ? PopupMenuButton(
+                                  onSelected: (value) async {
+                                    if (value == "edit") {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                CommunityManagePost(
+                                              mode: "Edit",
+                                              post: post,
+                                            ),
+                                          ));
+                                    } else if (value == "delete") {
+                                      await communityPostController.deletePost(
+                                          id: post.id);
+
+                                      if (context.mounted) {
+                                        Navigator.pop(context);
+                                      }
+                                    }
+                                  },
+                                  itemBuilder: (context) => [
+                                    PopupMenuItem<String>(
+                                      value: 'edit',
+                                      child: Text('Edit'),
+                                    ),
+                                    PopupMenuItem<String>(
+                                      value: 'delete',
+                                      child: Text('Delete'),
+                                    ),
+                                  ],
+                                )
+                              : null),
                       const SizedBox(
-                        height: 20,
+                        height: 12,
                       ),
                       Card(
                         shape: RoundedRectangleBorder(
@@ -126,15 +159,17 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                                       ),
                                     ),
                                   ),
-                                  ElevatedButton(
-                                      onPressed: () {
-                                        showReportPopup(context);
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                          backgroundColor: Color(0xFFE63946),
-                                          foregroundColor: Colors.white,
-                                          elevation: 2),
-                                      child: Text("Report post"))
+                                  if (post.userId !=
+                                      "999") // owner can't report own post
+                                    ElevatedButton(
+                                        onPressed: () {
+                                          showReportPopup(context);
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                            backgroundColor: Color(0xFFE63946),
+                                            foregroundColor: Colors.white,
+                                            elevation: 2),
+                                        child: Text("Report post"))
                                 ],
                               ),
                               const SizedBox(height: 4),
@@ -142,36 +177,6 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                                 post.description,
                                 style: TextStyle(fontSize: 16),
                               ),
-                              // TODO mock
-                              //! Mock and will delete soon !
-                              Row(
-                                children: [
-                                  ElevatedButton(
-                                      onPressed: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  CommunityManagePost(
-                                                mode: "Edit",
-                                                post: post,
-                                              ),
-                                            ));
-                                      },
-                                      child: Text("Edit")),
-                                  ElevatedButton(
-                                      onPressed: () async {
-                                        await communityPostController
-                                            .deletePost(id: post.id);
-
-                                        if (context.mounted) {
-                                          Navigator.pop(context);
-                                        }
-                                      },
-                                      child: Text("Delete")),
-                                ],
-                              ),
-                              // !--------------------!
                               const SizedBox(height: 12),
                               post.imageUrl != ""
                                   ? ClipRRect(
