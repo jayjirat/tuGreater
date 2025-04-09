@@ -1,11 +1,14 @@
 package tuGreaterBackend.cn333.backend.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tuGreaterBackend.cn333.backend.entity.Products;
 import tuGreaterBackend.cn333.backend.service.ProductsService;
 
 import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @RestController
@@ -61,4 +64,15 @@ public class ProductsController {
         }
     }
 
+    @PutMapping("/{productOwnerId}/{productId}")
+    public ResponseEntity<Products> updateProduct(@PathVariable String productOwnerId, @PathVariable String productId,@RequestBody Map<String, Object> updatedFields){
+        try {
+            Products updatedProduct = productsService.updateProduct(productOwnerId, productId, updatedFields);
+            return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
