@@ -2,16 +2,19 @@ import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/models/com_post.dart';
+import 'package:frontend/models/comment.dart';
 import 'package:http/http.dart' as http;
 
 class CommunityNotifier extends StateNotifier<List<CommuPost>> {
   CommunityNotifier() : super([]);
 
+  String baseURL = "http://10.0.2.2:8080";
   CommuPost? post;
+  List<Comment>? comments;
   bool isLoading = false;
 
   Future<void> fetchPosts() async {
-    final url = Uri.parse('http://10.0.2.2:8080/community');
+    final url = Uri.parse('$baseURL/community');
     try {
       // isLoading = true;
       final response = await http.get(url);
@@ -30,7 +33,7 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
   }
 
   Future<void> fetchPost({required String id}) async {
-    final url = Uri.parse('http://10.0.2.2:8080/community/$id');
+    final url = Uri.parse('$baseURL/community/$id');
 
     try {
       isLoading = true;
@@ -54,7 +57,7 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
       String? description,
       required String category,
       String? imageUrl}) async {
-    final url = 'http://10.0.2.2:8080/community';
+    final url = '$baseURL/community';
     try {
       final Map<String, dynamic> newPost = {
         'title': title,
@@ -92,7 +95,7 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
       required String description,
       required String category,
       required String imageUrl}) async {
-    final url = 'http://10.0.2.2:8080/community/${oriPost.id}';
+    final url = '$baseURL/community/${oriPost.id}';
     try {
       final Map<String, dynamic> editPost = {
         'title': title,
@@ -125,7 +128,7 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
   }
 
   Future<void> deletePost({required String id}) async {
-    final url = Uri.parse("http://10.0.2.2:8080/community/$id");
+    final url = Uri.parse("$baseURL/community/$id");
     try {
       final response = await http.delete(url);
       if (response.statusCode != 200) {
@@ -138,8 +141,7 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
   }
 
   Future<void> filterPosts(String category) async {
-    final url =
-        Uri.parse('http://10.0.2.2:8080/community/filter?category=$category');
+    final url = Uri.parse('$baseURL/community/filter?category=$category');
     try {
       // isLoading = true;
       final response = await http.get(url);
@@ -160,7 +162,7 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
   }
 
   Future<void> searchPosts(String query) async {
-    final url = Uri.parse('http://10.0.2.2:8080/community/search?query=$query');
+    final url = Uri.parse('$baseURL/community/search?query=$query');
     try {
       // isLoading = true;
       final response = await http.get(url);
@@ -181,14 +183,14 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
   }
 
   Future<void> likePost(String userId, String postId) async {
-    final url = Uri.parse('http://10.0.2.2:8080/community/like');
+    final url = Uri.parse('$baseURL/community/like');
     try {
       final likeBody = {'userId': userId, 'postId': postId};
       final header = {'Content-Type': 'application/json'};
       final response =
           await http.post((url), headers: header, body: jsonEncode(likeBody));
       if (response.statusCode == 200) {
-        fetchPosts();
+        state = [...state];
       } else {
         throw Exception(
             'Failed to like posts. Status code: ${response.statusCode}');
@@ -199,14 +201,14 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
   }
 
   Future<void> unlikePost(String userId, String postId) async {
-    final url = Uri.parse('http://10.0.2.2:8080/community/like');
+    final url = Uri.parse('$baseURL/community/like');
     try {
       final likeBody = {'userId': userId, 'postId': postId};
       final header = {'Content-Type': 'application/json'};
       final response =
           await http.delete((url), headers: header, body: jsonEncode(likeBody));
       if (response.statusCode == 200) {
-        fetchPosts();
+        state = [...state];
       } else {
         throw Exception(
             'Failed to unlike posts. Status code: ${response.statusCode}');
@@ -217,8 +219,8 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
   }
 
   Future<bool> isLiked(String userId, String postId) async {
-    final url = Uri.parse(
-        'http://10.0.2.2:8080/community/like?userId=$userId&postId=$postId');
+    final url =
+        Uri.parse('$baseURL/community/like?userId=$userId&postId=$postId');
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {

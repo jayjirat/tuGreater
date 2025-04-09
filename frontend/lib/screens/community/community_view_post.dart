@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:frontend/providers/comment_provider.dart';
 import 'package:frontend/providers/community_provider.dart';
 import 'package:frontend/screens/community/community_manage_post.dart';
 
@@ -22,7 +23,9 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
 
   void _initData() async {
     await ref.read(communityProvider.notifier).fetchPost(id: widget.id);
-
+    await ref
+        .read(commentProvider(widget.id).notifier)
+        .fetchCommentByPostId(widget.id);
     bool liked =
         await ref.read(communityProvider.notifier).isLiked("999", widget.id);
 
@@ -37,10 +40,12 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
   Widget build(BuildContext context) {
     final posts = ref.watch(communityProvider);
     final post = ref.read(communityProvider.notifier).post;
+    final comments = ref.watch(commentProvider(widget.id));
     final isLoading = ref.watch(communityProvider.notifier).isLoading;
 
     final commentCtrl = TextEditingController();
     final commentFocusNode = FocusNode();
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFFFF914D),
@@ -188,8 +193,8 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                         children: [
                           _buildActionButton(
                             onTap: isLiked
-                                ? () {
-                                    ref
+                                ? () async {
+                                    await ref
                                         .read(communityProvider.notifier)
                                         .unlikePost("999", post.id);
                                     setState(() {
@@ -197,8 +202,8 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                                       post.likeCount--;
                                     });
                                   }
-                                : () {
-                                    ref
+                                : () async {
+                                    await ref
                                         .read(communityProvider.notifier)
                                         .likePost("999", post.id);
                                     setState(() {
@@ -217,7 +222,7 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                                   .requestFocus(commentFocusNode);
                             },
                             icon: Icons.comment_outlined,
-                            label: "${post.comments.length}",
+                            label: "${post.commentCount}",
                           ),
                           _buildActionButton(
                             onTap: () {},
@@ -229,51 +234,62 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                       const SizedBox(
                         height: 20,
                       ),
-                      post.comments.isEmpty
+                      // post.commentCount == 0 &&
+                      comments.isEmpty
+                          // comments.length == post.commentCount
                           ? Column(children: [
                               Text("No comments"),
                               const SizedBox(
                                 height: 60,
                               )
                             ])
-                          : ListView.builder(
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              itemCount: post.comments.length,
-                              itemBuilder: (context, index) {
-                                return Card(
-                                  margin: EdgeInsets.only(bottom: 12),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15),
-                                  ),
-                                  elevation: 4,
-                                  child: ListTile(
-                                    contentPadding: EdgeInsets.all(12),
-                                    leading: CircleAvatar(
-                                      radius: 20,
-                                      backgroundColor: Color(0xFFFF914D),
-                                      child: Icon(
-                                        Icons.account_circle,
-                                        size: 30,
-                                        color: Colors.white,
+                          : Column(
+                              children: [
+                                ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: NeverScrollableScrollPhysics(),
+                                  itemCount: post.commentCount,
+                                  itemBuilder: (context, index) {
+                                    return Card(
+                                      margin: EdgeInsets.only(bottom: 12),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(15),
                                       ),
-                                    ),
-                                    title: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(post.comments[index].username),
-                                        Text(
-                                          post.comments[index].createdAt
-                                              .toString(),
-                                          style: TextStyle(fontSize: 12),
+                                      elevation: 4,
+                                      child: ListTile(
+                                        contentPadding: EdgeInsets.symmetric(
+                                            horizontal: 16, vertical: 4),
+                                        leading: CircleAvatar(
+                                          radius: 20,
+                                          backgroundColor: Color(0xFFFF914D),
+                                          child: Icon(
+                                            Icons.account_circle,
+                                            size: 30,
+                                            color: Colors.white,
+                                          ),
                                         ),
-                                      ],
-                                    ),
-                                    subtitle: Text(post.comments[index].text),
-                                  ),
-                                );
-                              },
+                                        title: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(comments[index].username),
+                                            Text(
+                                              comments[index]
+                                                  .createdAt
+                                                  .toString(),
+                                              style: TextStyle(fontSize: 12),
+                                            ),
+                                          ],
+                                        ),
+                                        subtitle: Text(comments[index].content),
+                                      ),
+                                    );
+                                  },
+                                ),
+                                const SizedBox(
+                                  height: 30,
+                                )
+                              ],
                             ),
                       const SizedBox(
                         height: 20,
@@ -306,7 +322,22 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                   ),
                   SizedBox(width: 8),
                   InkWell(
-                    onTap: () {},
+                    onTap: () async {
+                      if (commentCtrl.text.isNotEmpty) {
+                        await ref
+                            .read(commentProvider(widget.id).notifier)
+                            .addComment(post!.id, commentCtrl.text);
+
+                        setState(() {
+                          post.commentCount++;
+                        });
+
+                        commentCtrl.clear();
+                        if (context.mounted) {
+                          FocusScope.of(context).unfocus();
+                        }
+                      }
+                    },
                     child: Padding(
                       padding: EdgeInsets.all(8),
                       child: Icon(
