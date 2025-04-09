@@ -23,8 +23,12 @@ final productSelectCategoryProvider =
 });
 
 final productSearchWithCategoryProvider =
-    FutureProvider.family<List<Products>, Tuple2<String, int>>((ref, params) async {
+    FutureProvider.family<List<Products>, Tuple2<String, int>>(
+        (ref, params) async {
   return ProductService().searchWithCategory(params.item1, params.item2);
 });
 
-
+final productProviderByProductOwnerId =
+    FutureProvider.family<Products, String>((ref, productOwnerId) async {
+  return ProductService().fetchProductDetail(productOwnerId);
+});
