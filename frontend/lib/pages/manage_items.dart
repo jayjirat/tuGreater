@@ -85,7 +85,34 @@ class ManageItems extends ConsumerWidget {
                       Container(
                         padding: EdgeInsets.only(top: 8, right: 8),
                         child: IconButton(
-                          onPressed: () {},
+                          onPressed: () async {
+                            final confirm = await showDialog<bool>(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: Text("Confirm Deletion"),
+                                content: Text(
+                                    "Are you sure you want to delete this product?"),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.pop(context, false),
+                                    child: Text("Cancel"),
+                                  ),
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.pop(context, true),
+                                    child: Text(
+                                      "Delete",
+                                      style: TextStyle(color: Colors.red),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                            if (confirm == true) {
+                              print('Deleting product: ${product.productName}');
+                            }
+                          },
                           icon: Icon(Icons.delete),
                           color: Colors.redAccent,
                           tooltip: 'Delete',

@@ -39,26 +39,24 @@ class _EditItemsState extends ConsumerState<EditItems> {
   // Image related variables
   List<File> _selectedImages = [];
 
-  Future<void> createProduct() async {
-    // Upload images first
-    List<String> imageUrls = await _uploadImagesToCloudinary();
-
+  Future<void> createProduct(List<String> imageUrls) async {
     var url = "http://10.0.2.2:8080/shop";
 
-    var response = await http.post(Uri.parse(url),
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: json.encode({
-          'productImageUrls': imageUrls,
-          'productName': nameController.text,
-          'productPrice': double.parse(priceController.text),
-          'productCategory': selectedCategory,
-          'productTags': tags,
-          'productDatePost': DateTime.now().toIso8601String(),
-          'productDescription': descriptionController.text,
-          'productOwner': "Wernatraa"
-        }));
+    var response = await http.post(
+      Uri.parse(url),
+      headers: {"Content-Type": "application/json"},
+      body: json.encode({
+        'productImageUrls': imageUrls,
+        'productName': nameController.text,
+        'productPrice': double.parse(priceController.text),
+        'productCategory': selectedCategory,
+        'productTags': tags,
+        'productDatePost': DateTime.now().toIso8601String(),
+        'productDescription': descriptionController.text,
+        'productOwner': "Wernatraa", //mockup
+        'productOwnerId': "888" //mockup
+      }),
+    );
 
     if (response.statusCode == 200) {
       print('Product created successfully');
@@ -142,34 +140,36 @@ class _EditItemsState extends ConsumerState<EditItems> {
   }
 
   Future<List<String>> _uploadImagesToCloudinary() async {
-    List<String> uploadedUrls = [];
     String cloudName =
         dotenv.env['CLOUDINARY_CLOUD_NAME'] ?? 'default_cloud_name';
     final url =
         Uri.parse('https://api.cloudinary.com/v1_1/$cloudName/image/upload');
 
-    for (var image in _selectedImages) {
+    List<Future<String>> uploadFutures =
+        _selectedImages.map<Future<String>>((image) async {
       var request = http.MultipartRequest('POST', url)
         ..fields['upload_preset'] = 'FlutterImage'
         ..files.add(await http.MultipartFile.fromPath('file', image.path));
 
       try {
         var response = await request.send();
-
         if (response.statusCode == 200) {
           final responseData = await response.stream.bytesToString();
           final jsonMap = jsonDecode(responseData);
-          uploadedUrls.add(jsonMap['secure_url']);
+          return jsonMap['secure_url'];
         } else {
           print("Failed to upload image: ${response.statusCode}");
           print(await response.stream.bytesToString());
+          return '';
         }
       } catch (e) {
         print("Error uploading image: $e");
+        return '';
       }
-    }
+    }).toList();
 
-    return uploadedUrls;
+    List<String> uploadedUrls = await Future.wait(uploadFutures);
+    return uploadedUrls.where((url) => url.isNotEmpty).toList();
   }
 
   @override
@@ -629,8 +629,9 @@ class _EditItemsState extends ConsumerState<EditItems> {
                               },
                             );
 
-                            await _uploadImagesToCloudinary();
-                            await createProduct();
+                            List<String> imageUrls =
+                                await _uploadImagesToCloudinary();
+                            await createProduct(imageUrls);
 
                             ref.invalidate(productProvider);
                             Navigator.pop(context);
@@ -641,7 +642,7 @@ class _EditItemsState extends ConsumerState<EditItems> {
                                 MaterialStateProperty.all(Colors.orange),
                           ),
                           child: Text(
-                            "บันทึก",
+                            "โพสต์เลย",
                             style: TextStyle(
                               color: Colors.black,
                               fontSize: 18,
