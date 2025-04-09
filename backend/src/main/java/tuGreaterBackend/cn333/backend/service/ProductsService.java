@@ -6,6 +6,7 @@ import tuGreaterBackend.cn333.backend.entity.Products;
 import tuGreaterBackend.cn333.backend.repository.ProductsRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProductsService {
@@ -40,5 +41,14 @@ public class ProductsService {
 
     public List<Products> findProductByProductOwnerId(String productOwnerId){
         return productsRepository.findByProductOwnerId(productOwnerId);
+    }
+
+    public boolean deleteProduct(String productOwnerId,String productId){
+        Optional<Products> product = productsRepository.findByProductOwnerIdAndProductId(productOwnerId,productId);
+        if(product.isPresent()){
+            productsRepository.delete(product.get());
+            return true;
+        }
+        return false;
     }
 }

@@ -1,5 +1,7 @@
 package tuGreaterBackend.cn333.backend.repository;
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -17,4 +19,6 @@ public interface ProductsRepository extends MongoRepository<Products,String> {
     List<Products> findByCategoryAndName(String productCategory, String productName);
 
     List<Products> findByProductOwnerId(String productOwnerId);
+
+    Optional<Products> findByProductOwnerIdAndProductId(String productOwnerId, String productId);
 }

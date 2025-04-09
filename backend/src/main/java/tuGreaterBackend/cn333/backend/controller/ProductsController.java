@@ -1,10 +1,12 @@
 package tuGreaterBackend.cn333.backend.controller;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tuGreaterBackend.cn333.backend.entity.Products;
 import tuGreaterBackend.cn333.backend.service.ProductsService;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/shop")
@@ -47,6 +49,16 @@ public class ProductsController {
     @GetMapping("/manage/{productOwnerId}")
     public List<Products> getAllProductsByProductOwnerId(@PathVariable String productOwnerId){
         return productsService.findProductByProductOwnerId(productOwnerId);
+    }
+
+    @DeleteMapping("/{productOwnerId}/{productId}")
+    public ResponseEntity<String> deleteProductByProductOwnerId(@PathVariable String productOwnerId, @PathVariable String productId){
+        boolean isDeleted = productsService.deleteProduct(productOwnerId, productId);
+        if (isDeleted) {
+            return ResponseEntity.ok("Product deleted successfully.");
+        } else {
+            return ResponseEntity.status(404).body("Product not found.");
+        }
     }
 
 }
