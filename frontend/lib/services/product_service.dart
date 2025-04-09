@@ -107,4 +107,25 @@ class ProductService {
       throw Exception('Failed to delete product');
     }
   }
+
+  Future<Products> updateProduct(
+    String productOwnerId,
+    String productId,
+    Map<String, dynamic> updatedFields,
+  ) async {
+    final response = await http.put(
+      Uri.parse("$baseUrl/$productOwnerId/$productId"),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: jsonEncode(updatedFields),
+    );
+
+    if (response.statusCode == 200) {
+      final jsonData = jsonDecode(response.body);
+      return Products.fromJson(jsonData);
+    } else {
+      throw Exception("Failed to update product: ${response.body}");
+    }
+  }
 }

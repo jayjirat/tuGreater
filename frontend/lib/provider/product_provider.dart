@@ -37,3 +37,9 @@ final deleteProduct =
     FutureProvider.family<void, Tuple2<String, String>>((ref, params) async {
   return ProductService().deleteProduct(params.item1, params.item2);
 });
+
+final updateProduct = FutureProvider.family<Products,
+    Tuple3<String, String, Map<String, dynamic>>>((ref, params) async {
+  return ProductService()
+      .updateProduct(params.item1, params.item2, params.item3);
+});
