@@ -92,17 +92,17 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
         if (mounted) {
           setState(() {
             imageUrl = result['secure_url'];
-            print(imageUrl);
           });
         }
       }
     } catch (e) {
-      print('Error uploading image: $e');
+      throw Exception('Error uploading image: $e');
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final communityPostController = ref.read(communityProvider.notifier);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFFFF914D),
@@ -276,7 +276,7 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
                       if (image != null) {
                         await uploadImage();
                       }
-                      await ref.read(communityProvider.notifier).createPost(
+                      await communityPostController.createPost(
                           title: titleCtrl.text,
                           description: descriptionCtrl.text,
                           category: selectedValueDropdown!,
@@ -285,7 +285,7 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
                       if (isChangeInEditMode) {
                         await uploadImage();
                       }
-                      await ref.read(communityProvider.notifier).editPost(
+                      await communityPostController.editPost(
                           oriPost: editPost,
                           title: titleCtrl.text,
                           description: descriptionCtrl.text,

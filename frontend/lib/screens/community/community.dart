@@ -25,12 +25,18 @@ class CommunityState extends ConsumerState<Community> {
   @override
   void initState() {
     super.initState();
-    ref.read(communityProvider.notifier).fetchPosts();
+    _initState();
+  }
+
+  void _initState() async {
+    await ref.read(communityProvider.notifier).fetchPosts();
   }
 
   @override
   Widget build(BuildContext context) {
     final posts = ref.watch(communityProvider);
+    final communityPostController = ref.read(communityProvider.notifier);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFFFF914D),
@@ -62,15 +68,14 @@ class CommunityState extends ConsumerState<Community> {
                   borderSide: BorderSide(color: Color(0xFFF4F4F4)),
                 ),
               ),
-              onSubmitted: (value) => ref
-                  .read(communityProvider.notifier)
+              onSubmitted: (value) async => await communityPostController
                   .searchPosts(searchController.text),
             ),
             const SizedBox(height: 16),
             ToggleButtons(
                 isSelected: toggleStatus,
                 borderRadius: BorderRadius.circular(30),
-                onPressed: (index) {
+                onPressed: (index) async {
                   setState(() {
                     toggleStatus[index] = true;
                     toggleStatus[currIndexToggleStatus] = false;
@@ -78,17 +83,13 @@ class CommunityState extends ConsumerState<Community> {
                   });
 
                   if (currIndexToggleStatus == 0) {
-                    ref.read(communityProvider.notifier).fetchPosts();
+                    await communityPostController.fetchPosts();
                   } else if (currIndexToggleStatus == 1) {
-                    ref.read(communityProvider.notifier).filterPosts("General");
+                    await communityPostController.filterPosts("General");
                   } else if (currIndexToggleStatus == 2) {
-                    ref
-                        .read(communityProvider.notifier)
-                        .filterPosts("ReviewCourse");
+                    await communityPostController.filterPosts("ReviewCourse");
                   } else if (currIndexToggleStatus == 3) {
-                    ref
-                        .read(communityProvider.notifier)
-                        .filterPosts("Lost%26Found");
+                    await communityPostController.filterPosts("Lost%26Found");
                   }
                 },
                 children: [
@@ -116,7 +117,7 @@ class CommunityState extends ConsumerState<Community> {
                                     CommunityViewpost(id: post.id)),
                           );
 
-                          ref.read(communityProvider.notifier).fetchPosts();
+                          communityPostController.fetchPosts();
                         },
                         child: Card(
                           elevation: 6,

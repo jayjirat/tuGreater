@@ -41,7 +41,9 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
   Widget build(BuildContext context) {
     // ignore: unused_local_variable
     final posts = ref.watch(communityProvider);
-    final post = ref.read(communityProvider.notifier).post;
+    final communityPostController = ref.read(communityProvider.notifier);
+    final commentController = ref.read(commentProvider(widget.id).notifier);
+    final post = communityPostController.post;
     final comments = ref.watch(commentProvider(widget.id));
     final isLoading = ref.watch(communityProvider.notifier).isLoading;
 
@@ -159,8 +161,7 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                                       child: Text("Edit")),
                                   ElevatedButton(
                                       onPressed: () async {
-                                        await ref
-                                            .read(communityProvider.notifier)
+                                        await communityPostController
                                             .deletePost(id: post.id);
 
                                         if (context.mounted) {
@@ -196,18 +197,16 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                           _buildActionButton(
                             onTap: isLiked
                                 ? () async {
-                                    await ref
-                                        .read(communityProvider.notifier)
-                                        .unlikePost("999", post.id);
+                                    await communityPostController.unlikePost(
+                                        "999", post.id);
                                     setState(() {
                                       isLiked = false;
                                       post.likeCount--;
                                     });
                                   }
                                 : () async {
-                                    await ref
-                                        .read(communityProvider.notifier)
-                                        .likePost("999", post.id);
+                                    await communityPostController.likePost(
+                                        "999", post.id);
                                     setState(() {
                                       isLiked = true;
                                       post.likeCount++;
@@ -307,12 +306,8 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                                                     ),
                                                     recognizer:
                                                         TapGestureRecognizer()
-                                                          ..onTap = () {
-                                                            ref
-                                                                .read(commentProvider(
-                                                                        widget
-                                                                            .id)
-                                                                    .notifier)
+                                                          ..onTap = () async {
+                                                            await commentController
                                                                 .deleteComment(
                                                                     widget.id,
                                                                     comments[
@@ -367,9 +362,8 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                   InkWell(
                     onTap: () async {
                       if (commentCtrl.text.isNotEmpty) {
-                        await ref
-                            .read(commentProvider(widget.id).notifier)
-                            .addComment(post!.id, commentCtrl.text);
+                        await commentController.addComment(
+                            post!.id, commentCtrl.text);
 
                         setState(() {
                           post.commentCount++;
