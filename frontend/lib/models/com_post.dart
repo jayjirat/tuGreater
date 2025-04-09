@@ -1,14 +1,12 @@
-import 'package:frontend/models/comment.dart';
-
 class CommuPost {
   final String id;
   final String title;
   final String description;
   final String category;
   int likeCount;
-  final List<Comment> comments;
+  int commentCount;
   final DateTime createdAt;
-  final DateTime? updatedAt;
+  final DateTime updatedAt;
   final String userId;
   final String username;
   final bool isEdited;
@@ -20,9 +18,9 @@ class CommuPost {
     required this.description,
     required this.category,
     this.likeCount = 0,
-    this.comments = const [],
+    this.commentCount = 0,
     required this.createdAt,
-    this.updatedAt,
+    required this.updatedAt,
     required this.userId,
     required this.username,
     this.isEdited = false,
@@ -37,16 +35,13 @@ class CommuPost {
       description: json['description'] as String,
       category: json['category'] as String,
       likeCount: json['likeCount'] as int? ?? 0,
-      comments: (json['comments'] as List<dynamic>?)
-              ?.map((e) => Comment.fromJson(e as Map<String, dynamic>))
-              .toList() ??
-          [],
+      commentCount: json['commentCount'] as int? ?? 0,
       createdAt: json['createdAt'] != null
           ? DateTime.parse(json['createdAt'] as String)
           : DateTime.now(),
       updatedAt: json['updatedAt'] != null
-          ? DateTime.parse(json['updatedAt'] as String)
-          : null,
+          ? DateTime.parse(json['createdAt'] as String)
+          : DateTime.now(),
       userId: json['userId'] as String,
       username: json['username'] as String,
       isEdited: json['isEdited'] as bool? ?? false,
