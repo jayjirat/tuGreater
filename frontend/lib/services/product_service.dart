@@ -99,4 +99,12 @@ class ProductService {
       throw Exception('Failed to load products');
     }
   }
+
+  Future<void> deleteProduct(String productOwnerId, String productId) async {
+    final response = await http
+        .delete(Uri.parse(baseUrl + "/${productOwnerId}/${productId}"));
+    if (response.statusCode != 200) {
+      throw Exception('Failed to delete product');
+    }
+  }
 }

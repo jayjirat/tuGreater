@@ -32,3 +32,8 @@ final productProviderByProductOwnerId =
     FutureProvider.family<List<Products>, String>((ref, productOwnerId) async {
   return ProductService().fetchAllManageProducts(productOwnerId);
 });
+
+final deleteProduct =
+    FutureProvider.family<void, Tuple2<String, String>>((ref, params) async {
+  return ProductService().deleteProduct(params.item1, params.item2);
+});
