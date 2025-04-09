@@ -1,7 +1,6 @@
 package tuGreaterBackend.cn333.backend.entity;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -15,13 +14,14 @@ public class CommunityPost {
     private String description;
     private String category;
     private int likeCount;
-    private List<Comment> comments;
+    private int commentCount;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private String userId;
     private String username;
     private boolean isEdited;
     private String imageUrl;
+
 
     public String getId() {
         return this.id;
@@ -63,12 +63,12 @@ public class CommunityPost {
         this.likeCount = likeCount;
     }
 
-    public List<Comment> getComments() {
-        return this.comments;
+    public int getCommentCount() {
+        return this.commentCount;
     }
 
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
+    public void setCommentCount(int commentCount) {
+        this.commentCount = commentCount;
     }
 
     public LocalDateTime getCreatedAt() {
