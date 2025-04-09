@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/providers/comment_provider.dart';
@@ -38,6 +39,7 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
 
   @override
   Widget build(BuildContext context) {
+    // ignore: unused_local_variable
     final posts = ref.watch(communityProvider);
     final post = ref.read(communityProvider.notifier).post;
     final comments = ref.watch(commentProvider(widget.id));
@@ -281,7 +283,48 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                                             ),
                                           ],
                                         ),
-                                        subtitle: Text(comments[index].content),
+                                        subtitle: RichText(
+                                          text: TextSpan(
+                                              text: comments[index].content,
+                                              style: TextStyle(
+                                                  color: Colors.black),
+                                              children: [
+                                                if (comments[index].userId ==
+                                                    "999")
+                                                  WidgetSpan(
+                                                    child: SizedBox(height: 8),
+                                                  ),
+                                                if (comments[index].userId ==
+                                                    "999")
+                                                  TextSpan(
+                                                    text: "\nDelete",
+                                                    style: TextStyle(
+                                                      color: Color(0xFFE63946),
+                                                      decoration: TextDecoration
+                                                          .underline,
+                                                      decorationThickness: 2,
+                                                      height: 1.5,
+                                                    ),
+                                                    recognizer:
+                                                        TapGestureRecognizer()
+                                                          ..onTap = () {
+                                                            ref
+                                                                .read(commentProvider(
+                                                                        widget
+                                                                            .id)
+                                                                    .notifier)
+                                                                .deleteComment(
+                                                                    widget.id,
+                                                                    comments[
+                                                                            index]
+                                                                        .id);
+                                                            setState(() {
+                                                              post.commentCount--;
+                                                            });
+                                                          },
+                                                  )
+                                              ]),
+                                        ),
                                       ),
                                     );
                                   },

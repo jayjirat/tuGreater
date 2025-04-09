@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:frontend/models/com_post.dart';
 import 'package:frontend/models/comment.dart';
 import 'package:http/http.dart' as http;
 
@@ -63,7 +62,7 @@ class CommentNotifier extends StateNotifier<List<Comment>> {
         throw Exception(
             'Failed to delete comment id: $commentId. Status code: ${response.statusCode}');
       } else {
-        state = [...state];
+        state = state.where((comment) => comment.id != commentId).toList();
       }
     } catch (e) {
       throw Exception('Error: $e');
