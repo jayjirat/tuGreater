@@ -1,104 +1,105 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/components/toolbar.dart';
 import 'package:frontend/pages/edit_items.dart';
+import 'package:frontend/provider/product_provider.dart';
 
-class ManageItems extends StatelessWidget {
-  var pNames = [
-    'Product 1',
-    'Product 2',
-    'Product 3',
-    'Product 4',
-  ];
-
+class ManageItems extends ConsumerWidget {
+  final String productOwnerId = "888"; //mockup
+  const ManageItems({
+    super.key,
+  });
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final productManageAsyncValue =
+        ref.watch(productProviderByProductOwnerId(productOwnerId));
+
     return Scaffold(
       appBar: Toolbar(title: "Manage Products"),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.only(top: 20, left: 20, right: 20),
-          child: Column(
-            children: [
-              Column(
-                children: [
-                  for (int i = 0; i < 4; i++)
-                    Container(
-                        margin: EdgeInsets.symmetric(vertical: 5),
-                        height: 120,
-                        width: MediaQuery.of(context).size.width,
+      body: productManageAsyncValue.when(
+        data: (products) => SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.only(top: 20, left: 20, right: 20),
+            child: Column(
+              children: products.map((product) {
+                return Container(
+                  margin: EdgeInsets.symmetric(vertical: 5),
+                  height: 120,
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(255, 240, 239, 239),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        height: 100,
+                        width: MediaQuery.of(context).size.width / 4,
+                        margin: EdgeInsets.only(left: 8),
                         decoration: BoxDecoration(
-                          color: Color.fromARGB(255, 240, 239, 239),
+                          color: Color(0xFFD4ECF7),
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        child: Row(
-                          children: [
-                            Container(
-                              height: 100,
-                              width: MediaQuery.of(context).size.width / 4,
-                              margin: EdgeInsets.only(left: 8),
-                              decoration: BoxDecoration(
-                                color: Color(0xFFD4ECF7),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Image.asset(
-                                "assets/images/shoe.jpg",
-                                height: 70,
-                                width: 70,
-                              ),
-                            ),
-                            Expanded(
-                              child: Padding(
-                                padding: EdgeInsets.only(
-                                    left: 20, top: 20, bottom: 15),
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      pNames[i],
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    FilledButton(
-                                      onPressed: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    EditItems()));
-                                      },
-                                      style: FilledButton.styleFrom(
-                                        backgroundColor:
-                                            Colors.white.withOpacity(0.8),
-                                        foregroundColor: Colors.black,
-                                        elevation: 0,
-                                      ),
-                                      child: Text("Edit"),
-                                    ),
-                                  ],
+                        child: product.productImageUrls.isNotEmpty
+                            ? Image.network(product.productImageUrls[0],
+                                fit: BoxFit.cover)
+                            : Icon(Icons.image_not_supported),
+                      ),
+                      Expanded(
+                        child: Padding(
+                          padding:
+                              EdgeInsets.only(left: 20, top: 20, bottom: 15),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                product.productName,
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
-                            ),
-                            Container(
-                              padding: EdgeInsets.only(top: 8, right: 8),
-                              child: IconButton(
-                                onPressed: () {},
-                                icon: Icon(Icons.delete),
-                                color: Colors.redAccent,
-                                tooltip: 'Delete',
+                              FilledButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => EditItems(),
+                                    ),
+                                  );
+                                },
+                                style: FilledButton.styleFrom(
+                                  backgroundColor:
+                                      Colors.white.withOpacity(0.8),
+                                  foregroundColor: Colors.black,
+                                  elevation: 0,
+                                ),
+                                child: Text("Edit"),
                               ),
-                            ),
-                          ],
-                        ))
-                ],
-              )
-            ],
+                            ],
+                          ),
+                        ),
+                      ),
+                      Container(
+                        padding: EdgeInsets.only(top: 8, right: 8),
+                        child: IconButton(
+                          onPressed: () {},
+                          icon: Icon(Icons.delete),
+                          color: Colors.redAccent,
+                          tooltip: 'Delete',
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }).toList(),
+            ),
           ),
         ),
+        loading: () => Center(child: CircularProgressIndicator()),
+        error: (err, _) => Center(child: Text(err.toString())),
       ),
     );
   }
