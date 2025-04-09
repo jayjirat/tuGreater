@@ -100,38 +100,8 @@ class _EditItemsState extends ConsumerState<EditItems> {
     }
   }
 
-  //image function
-  void _showImageSourceOptions(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return SafeArea(
-          child: Wrap(
-            children: <Widget>[
-              ListTile(
-                leading: Icon(Icons.photo_library),
-                title: Text('Photo Library'),
-                onTap: () {
-                  _pickImagesFromGallery();
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.photo_camera),
-                title: Text('Camera'),
-                onTap: () {
-                  _pickImageFromCamera();
-                },
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
   Future _pickImagesFromGallery() async {
-    final returnedImages =
-        await ImagePicker().pickMultiImage(); // pickMultipleImages for gallery
+    final returnedImages = await ImagePicker().pickMultiImage();
     if (returnedImages.isNotEmpty) {
       setState(() {
         _selectedImages.addAll(returnedImages.map((e) => File(e.path)));
@@ -149,6 +119,37 @@ class _EditItemsState extends ConsumerState<EditItems> {
     }
   }
 
+  void _showImageSourceOptions(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return SafeArea(
+          child: Wrap(
+            children: <Widget>[
+              ListTile(
+                leading: Icon(Icons.photo_library),
+                title: Text('Photo Library'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _pickImagesFromGallery();
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.photo_camera),
+                title: Text('Camera'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _pickImageFromCamera();
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+// Method to upload images to Cloudinary and get URLs
   Future<List<String>> _uploadImagesToCloudinary() async {
     String cloudName =
         dotenv.env['CLOUDINARY_CLOUD_NAME'] ?? 'default_cloud_name';
@@ -177,6 +178,10 @@ class _EditItemsState extends ConsumerState<EditItems> {
         return '';
       }
     }).toList();
+
+    setState(() {
+      _selectedImages = [];
+    });
 
     List<String> uploadedUrls = await Future.wait(uploadFutures);
     return uploadedUrls.where((url) => url.isNotEmpty).toList();
@@ -207,7 +212,6 @@ class _EditItemsState extends ConsumerState<EditItems> {
           return SingleChildScrollView(
             child: Column(
               children: [
-                // Product Image Section
                 Center(
                   child: GestureDetector(
                     onTap: () {
@@ -222,27 +226,17 @@ class _EditItemsState extends ConsumerState<EditItems> {
                       ),
                       child: Stack(
                         children: [
-                          _selectedImages.isNotEmpty
-                              ? GridView.builder(
-                                  padding: EdgeInsets.all(8),
-                                  gridDelegate:
-                                      SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 3,
-                                    crossAxisSpacing: 4.0,
-                                    mainAxisSpacing: 4.0,
-                                  ),
-                                  shrinkWrap: true,
-                                  itemCount: _selectedImages.length,
-                                  itemBuilder: (context, index) {
-                                    return Image.file(
-                                      _selectedImages[index],
-                                      width: 100,
-                                      height: 100,
-                                      fit: BoxFit.cover,
-                                    );
-                                  },
-                                )
-                              : Center(
+                          Builder(
+                            builder: (context) {
+                              final allImages = [
+                                ...product.productImageUrls
+                                    .map((url) => {"type": "url", "data": url}),
+                                ..._selectedImages.map(
+                                    (file) => {"type": "file", "data": file}),
+                              ];
+
+                              if (allImages.isEmpty) {
+                                return Center(
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
@@ -252,8 +246,71 @@ class _EditItemsState extends ConsumerState<EditItems> {
                                           style: TextStyle(fontSize: 16)),
                                     ],
                                   ),
+                                );
+                              }
+
+                              return GridView.builder(
+                                padding: EdgeInsets.all(8),
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 3,
+                                  crossAxisSpacing: 4.0,
+                                  mainAxisSpacing: 4.0,
                                 ),
-                          if (_selectedImages.isNotEmpty)
+                                shrinkWrap: true,
+                                itemCount: allImages.length,
+                                itemBuilder: (context, index) {
+                                  final item = allImages[index];
+                                  if (item["type"] == "url") {
+                                    final String url = item["data"] as String;
+                                    return Image.network(
+                                      url,
+                                      width: 100,
+                                      height: 100,
+                                      fit: BoxFit.cover,
+                                      loadingBuilder:
+                                          (context, child, loadingProgress) {
+                                        if (loadingProgress == null)
+                                          return child;
+                                        return Center(
+                                          child: CircularProgressIndicator(
+                                            value: loadingProgress
+                                                        .expectedTotalBytes !=
+                                                    null
+                                                ? loadingProgress
+                                                        .cumulativeBytesLoaded /
+                                                    loadingProgress
+                                                        .expectedTotalBytes!
+                                                : null,
+                                          ),
+                                        );
+                                      },
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
+                                        return Container(
+                                          color: Colors.grey[300],
+                                          child: Icon(Icons.broken_image,
+                                              color: Colors.grey[600]),
+                                        );
+                                      },
+                                    );
+                                  } else {
+                                    final File file = item["data"] as File;
+                                    return Image.file(
+                                      file,
+                                      width: 100,
+                                      height: 100,
+                                      fit: BoxFit.cover,
+                                    );
+                                  }
+                                },
+                              );
+                            },
+                          ),
+
+                          // Clear all button (URLs + files)
+                          if (_selectedImages.isNotEmpty ||
+                              product.productImageUrls.isNotEmpty)
                             Positioned(
                               top: 4,
                               right: 4,
@@ -261,6 +318,7 @@ class _EditItemsState extends ConsumerState<EditItems> {
                                 onTap: () {
                                   setState(() {
                                     _selectedImages.clear();
+                                    product.productImageUrls.clear();
                                   });
                                 },
                                 child: Container(
@@ -279,7 +337,6 @@ class _EditItemsState extends ConsumerState<EditItems> {
                     ),
                   ),
                 ),
-                // Product Name, Price and Category Section
                 Row(
                   children: [
                     Padding(
@@ -629,64 +686,52 @@ class _EditItemsState extends ConsumerState<EditItems> {
                   ),
                 ),
                 // Post Button
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.all(20),
-                      child: SizedBox(
-                        child: FilledButton(
-                          onPressed: () async {
-                            if (isCheckedOthers &&
-                                otherTagController.text.isNotEmpty) {
-                              addTag();
-                            }
+                FilledButton(
+                  onPressed: () async {
+                    if (isCheckedOthers && otherTagController.text.isNotEmpty) {
+                      addTag();
+                    }
 
-                            showDialog(
-                              context: context,
-                              barrierDismissible: false,
-                              builder: (context) {
-                                return Dialog(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(15)),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(20.0),
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        CircularProgressIndicator(),
-                                        SizedBox(height: 15),
-                                        Text("กำลังสร้างสินค้า...",
-                                            style: TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold)),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              },
-                            );
-
-                            List<String> imageUrls =
-                                await _uploadImagesToCloudinary();
-                            await createProduct(imageUrls);
-
-                            ref.invalidate(productProvider);
-                            Navigator.pop(context);
-                            Navigator.pop(context, true);
-                          },
-                          style: ButtonStyle(
-                            backgroundColor:
-                                MaterialStateProperty.all(Colors.orange),
+                    showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (context) {
+                        return Dialog(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15)),
+                          child: Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                CircularProgressIndicator(),
+                                SizedBox(height: 15),
+                                Text("กำลังสร้างสินค้า...",
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold)),
+                              ],
+                            ),
                           ),
-                          child: Text(
-                            "บันทึก",
-                            style: TextStyle(color: Colors.black, fontSize: 18),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                        );
+                      },
+                    );
+
+                    List<String> imageUrls = await _uploadImagesToCloudinary();
+
+                    await createProduct(imageUrls);
+
+                    ref.invalidate(productProvider);
+                    Navigator.pop(context);
+                    Navigator.pop(context, true);
+                  },
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Colors.orange),
+                  ),
+                  child: Text(
+                    "บันทึก",
+                    style: TextStyle(color: Colors.black, fontSize: 18),
+                  ),
                 ),
               ],
             ),
