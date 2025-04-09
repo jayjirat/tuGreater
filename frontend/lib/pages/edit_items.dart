@@ -576,6 +576,9 @@ class _EditItemsState extends ConsumerState<EditItems> {
                                       tag == text);
                                   otherTagController.clear();
                                 }
+
+                                // Remove empty strings from tagsOld list
+                                tagsOld.removeWhere((tag) => tag.isEmpty);
                               });
                             },
                           ),
@@ -598,6 +601,7 @@ class _EditItemsState extends ConsumerState<EditItems> {
                               onChanged: (text) {
                                 if (isCheckedOthers) {
                                   setState(() {
+                                    tagsOld.removeWhere((tag) => tag.isEmpty);
                                     tagsOld.removeWhere((tag) =>
                                         !excludedTags.contains(tag) &&
                                         tag != text.trim() &&
