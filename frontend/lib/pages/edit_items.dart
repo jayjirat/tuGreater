@@ -577,7 +577,6 @@ class _EditItemsState extends ConsumerState<EditItems> {
                                   otherTagController.clear();
                                 }
 
-                                // Remove empty strings from tagsOld list
                                 tagsOld.removeWhere((tag) => tag.isEmpty);
                               });
                             },
@@ -708,18 +707,11 @@ class _EditItemsState extends ConsumerState<EditItems> {
                       "productName": nameController.text,
                       "productPrice": double.tryParse(priceController.text),
                       "productDescription": descriptionController.text,
-                      "productTags": [
-                        ...tagsOld,
-                        if (isCheckedOthers) otherTagController.text
-                      ],
+                      "productTags": tagsOld,
                       "productImageUrls": imageUrls,
                       "productCategory": selectedCategory,
                       "productDateUpdate": DateTime.now().toIso8601String(),
                     };
-
-                    print([
-                      ...tagsOld,
-                    ]);
 
                     final updatedProduct = await ref.read(updateProduct(
                       Tuple3(productOwnerId, productId, updatedFields),
