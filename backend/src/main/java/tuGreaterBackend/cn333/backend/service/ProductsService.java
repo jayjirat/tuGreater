@@ -79,7 +79,7 @@ public class ProductsService {
                 existingProduct.setProductImageUrls((List<String>) updatedFields.get("productImageUrls"));
             }
             if (updatedFields.containsKey("productDateUpdate")) {
-                existingProduct.setProductDateUpdate((LocalDateTime) updatedFields.get("productDateUpdate"));
+                existingProduct.setProductDateUpdate(LocalDateTime.parse((String) updatedFields.get("productDateUpdate")));
             }
 
             return productsRepository.save(existingProduct);

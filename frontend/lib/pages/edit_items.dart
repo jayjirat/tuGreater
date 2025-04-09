@@ -6,16 +6,20 @@ import 'package:frontend/components/toolbar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/services.dart';
 import 'package:frontend/main.dart';
+import 'package:frontend/models/Products.dart';
 import 'package:frontend/pages/shop.dart';
 import 'package:frontend/provider/product_provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:tuple/tuple.dart';
 
 class EditItems extends ConsumerStatefulWidget {
   final String productId;
-  const EditItems({super.key, required this.productId});
+  final String productOwnerId;
+  const EditItems(
+      {super.key, required this.productId, required this.productOwnerId});
 
   @override
   ConsumerState<EditItems> createState() => _EditItemsState();
@@ -48,33 +52,6 @@ class _EditItemsState extends ConsumerState<EditItems> {
 
   // Image related variables
   List<File> _selectedImages = [];
-
-  Future<void> createProduct(List<String> imageUrls) async {
-    var url = "http://10.0.2.2:8080/shop";
-
-    var response = await http.post(
-      Uri.parse(url),
-      headers: {"Content-Type": "application/json"},
-      body: json.encode({
-        'productImageUrls': imageUrls,
-        'productName': nameController.text,
-        'productPrice': double.parse(priceController.text),
-        'productCategory': selectedCategory,
-        'productTags': tags,
-        'productDatePost': DateTime.now().toIso8601String(),
-        'productDescription': descriptionController.text,
-        'productOwner': "Wernatraa", //mockup
-        'productOwnerId': "888" //mockup
-      }),
-    );
-
-    if (response.statusCode == 200) {
-      print('Product created successfully');
-    } else {
-      print('Failed to create product. Status Code: ${response.statusCode}');
-      print('Response body: ${response.body}');
-    }
-  }
 
   @override
   void initState() {
@@ -190,6 +167,7 @@ class _EditItemsState extends ConsumerState<EditItems> {
   @override
   Widget build(BuildContext context) {
     final productId = widget.productId;
+    final productOwnerId = widget.productOwnerId;
     final productDetailsAsyncValue = ref.watch(productProviderById(productId));
 
     return Scaffold(
@@ -692,6 +670,7 @@ class _EditItemsState extends ConsumerState<EditItems> {
                       addTag();
                     }
 
+                    // Show loading dialog
                     showDialog(
                       context: context,
                       barrierDismissible: false,
@@ -706,7 +685,7 @@ class _EditItemsState extends ConsumerState<EditItems> {
                               children: [
                                 CircularProgressIndicator(),
                                 SizedBox(height: 15),
-                                Text("กำลังสร้างสินค้า...",
+                                Text("กำลังแก้ไขสินค้า...",
                                     style: TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold)),
@@ -717,13 +696,38 @@ class _EditItemsState extends ConsumerState<EditItems> {
                       },
                     );
 
+                    // Get image URLs
                     List<String> imageUrls = await _uploadImagesToCloudinary();
 
-                    await createProduct(imageUrls);
+                    // Prepare updated fields
+                    final updatedFields = {
+                      "productName": nameController.text,
+                      "productPrice": double.tryParse(priceController.text),
+                      "productDescription": descriptionController.text,
+                      "productTags": [
+                        ...tagsOld,
+                        if (isCheckedOthers) otherTagController.text
+                      ],
+                      "productImageUrls": imageUrls,
+                      "productCategory": selectedCategory,
+                      "productDateUpdate": DateTime.now().toIso8601String(),
+                    };
+
+                    print([
+                      ...tagsOld,
+                    ]);
+
+                    final updatedProduct = await ref.read(updateProduct(
+                      Tuple3(productOwnerId, productId, updatedFields),
+                    ).future);
 
                     ref.invalidate(productProvider);
-                    Navigator.pop(context);
-                    Navigator.pop(context, true);
+                    await Future.delayed(Duration(milliseconds: 100));
+                    ref.refresh(
+                        productProviderByProductOwnerId(productOwnerId));
+                    ref.refresh(productProviderById(productId));
+                    Navigator.pop(context); // Close loading dialog
+                    Navigator.pop(context, true); // Close current screen
                   },
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(Colors.orange),

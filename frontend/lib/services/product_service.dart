@@ -113,8 +113,9 @@ class ProductService {
     String productId,
     Map<String, dynamic> updatedFields,
   ) async {
+    const String baseUrl = 'http://10.0.2.2:8080/shop';
     final response = await http.put(
-      Uri.parse("$baseUrl/$productOwnerId/$productId"),
+      Uri.parse("$baseUrl/${productOwnerId}/${productId}"),
       headers: {
         "Content-Type": "application/json",
       },

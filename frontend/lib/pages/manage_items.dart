@@ -68,7 +68,9 @@ class ManageItems extends ConsumerWidget {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) => EditItems(
-                                                productId: product.productId)));
+                                                productId: product.productId,
+                                                productOwnerId:
+                                                    productOwnerId)));
                                   },
                                   style: FilledButton.styleFrom(
                                     backgroundColor:
