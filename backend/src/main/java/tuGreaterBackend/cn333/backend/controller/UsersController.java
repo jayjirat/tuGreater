@@ -41,13 +41,13 @@ public class UsersController {
         
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getUser(@PathVariable String id) {
+    @GetMapping("/{studentId}")
+    public ResponseEntity<?> getUser(@PathVariable String studentId) {
         try {
-            Users user = usersService.getUserById(id);
+            Users user = usersService.getUserByStudentId(studentId);
         if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(Map.of("message", "User not found by id: " + id));
+                    .body(Map.of("message", "User not found by id: " + studentId));
         }
         return ResponseEntity.ok(user);
         } catch (Exception e){
