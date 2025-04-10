@@ -38,7 +38,7 @@ class _ShopState extends ConsumerState<Shop> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: Toolbar(title: AppLocalizations.of(context)!.title),
+      appBar: Toolbar(title: AppLocalizations.of(context)!.shop_title),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(

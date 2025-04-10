@@ -4,7 +4,25 @@
     "@helloWorld": {
       "description": "The conventional newborn programmer greeting"
     },
-    "title":"Shop",
+    "shop_title":"Shop",
     "shop_search":"Search products...",
-    "shop_category":"All"
+    "shop_category":"All",
+    "filter_title": "Filter Product",
+    "filter_min_price":"Min price",
+    "filter_max_price":"Max price",
+    "filter_low":"Low",
+    "filter_high":"High",
+    "filter_tag":"Tag",
+    "tag_first_hand":"1st-hand",
+    "tag_second_hand":"2nd-hand",
+    "tag_good_quality":"good quality",
+    "tag_delicious":"delicious",
+    "tag_clean":"clean",
+    "filter_sort":"Sort by",
+    "filter_price_high_to_low":"Price (high to low)",
+    "filter_price_low_to_high":"Price (low to high)",
+    "filter_date_new_first":"New first",
+    "filter_date_old_first":"Old first",
+    "filter_reset":"Reset",
+    "filter_apply":"Apply"
 }

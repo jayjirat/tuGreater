@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class FilterModal extends StatefulWidget {
   final double? minPrice;
@@ -91,7 +92,7 @@ class _FilterModalState extends State<FilterModal> {
         child: Column(
           children: [
             Text(
-              "Filter Product",
+              AppLocalizations.of(context)!.filter_title,
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             SizedBox(
@@ -100,14 +101,14 @@ class _FilterModalState extends State<FilterModal> {
             Row(
               children: [
                 Text(
-                  "ราคาต่ำสุด",
+                  AppLocalizations.of(context)!.filter_min_price,
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(
                   width: 100,
                 ),
                 Text(
-                  "ราคาสูงสุด",
+                  AppLocalizations.of(context)!.filter_max_price,
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 )
               ],
@@ -124,7 +125,7 @@ class _FilterModalState extends State<FilterModal> {
                     keyboardType: TextInputType.number,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     decoration: InputDecoration(
-                      hintText: "Low",
+                      hintText: AppLocalizations.of(context)!.filter_low,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(25),
                         borderSide: BorderSide.none,
@@ -152,7 +153,7 @@ class _FilterModalState extends State<FilterModal> {
                     keyboardType: TextInputType.number,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     decoration: InputDecoration(
-                      hintText: "High",
+                      hintText: AppLocalizations.of(context)!.filter_high,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(25),
                         borderSide: BorderSide.none,
@@ -173,117 +174,132 @@ class _FilterModalState extends State<FilterModal> {
             Row(
               children: [
                 Text(
-                  "Tag",
+                  AppLocalizations.of(context)!.filter_tag,
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
             Row(
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    Checkbox(
-                      value: isCheckedFirstHanded,
-                      onChanged: (value) {
-                        setState(() {
-                          isCheckedFirstHanded = value!;
-                          if (value == true) {
-                            selectedTags.add("มือหนึ่ง");
-                          } else {
-                            selectedTags.remove("มือหนึ่ง");
-                          }
-                        });
-                      },
-                    ),
-                    Text("มือหนึ่ง"),
-                  ],
+                SizedBox(
+                  width: 110,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Checkbox(
+                        value: isCheckedFirstHanded,
+                        onChanged: (value) {
+                          setState(() {
+                            isCheckedFirstHanded = value!;
+                            if (value == true) {
+                              selectedTags.add("มือหนึ่ง");
+                            } else {
+                              selectedTags.remove("มือหนึ่ง");
+                            }
+                          });
+                        },
+                      ),
+                      Text(AppLocalizations.of(context)!.tag_first_hand),
+                    ],
+                  ),
                 ),
-                SizedBox(width: 10),
-                Row(
-                  children: [
-                    Checkbox(
-                      value: isCheckedSecondHanded,
-                      onChanged: (value) {
-                        setState(() {
-                          isCheckedSecondHanded = value!;
-                          if (value == true) {
-                            selectedTags.add("มือสอง");
-                          } else {
-                            selectedTags.remove("มือสอง");
-                          }
-                        });
-                      },
-                    ),
-                    Text("มือสอง"),
-                  ],
+                SizedBox(
+                  width: 110,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Checkbox(
+                        value: isCheckedSecondHanded,
+                        onChanged: (value) {
+                          setState(() {
+                            isCheckedSecondHanded = value!;
+                            if (value == true) {
+                              selectedTags.add("มือสอง");
+                            } else {
+                              selectedTags.remove("มือสอง");
+                            }
+                          });
+                        },
+                      ),
+                      Text(AppLocalizations.of(context)!.tag_second_hand),
+                    ],
+                  ),
                 ),
-                SizedBox(width: 10),
-                Row(
-                  children: [
-                    Checkbox(
-                      value: isCheckedGood,
-                      onChanged: (value) {
-                        setState(() {
-                          isCheckedGood = value!;
-                          if (value == true) {
-                            selectedTags.add("สภาพดี");
-                          } else {
-                            selectedTags.remove("สภาพดี");
-                          }
-                        });
-                      },
-                    ),
-                    Text("สภาพดี"),
-                  ],
+                SizedBox(
+                  width: 110,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Checkbox(
+                        value: isCheckedClean,
+                        onChanged: (value) {
+                          setState(() {
+                            isCheckedClean = value!;
+                            if (value == true) {
+                              selectedTags.add("สะอาด");
+                            } else {
+                              selectedTags.remove("สะอาด");
+                            }
+                          });
+                        },
+                      ),
+                      Text(AppLocalizations.of(context)!.tag_clean),
+                    ],
+                  ),
                 ),
-                SizedBox(width: 10),
               ],
             ),
             Row(
               children: [
-                Row(
-                  children: [
-                    Checkbox(
-                      value: isCheckedDelicious,
-                      onChanged: (value) {
-                        setState(() {
-                          isCheckedDelicious = value!;
-                          if (value == true) {
-                            selectedTags.add("อร่อย");
-                          } else {
-                            selectedTags.remove("อร่อย");
-                          }
-                        });
-                      },
-                    ),
-                    Text("อร่อย"),
-                  ],
+                SizedBox(
+                  width: 110,
+                  child: Row(
+                    children: [
+                      Checkbox(
+                        value: isCheckedDelicious,
+                        onChanged: (value) {
+                          setState(() {
+                            isCheckedDelicious = value!;
+                            if (value == true) {
+                              selectedTags.add("อร่อย");
+                            } else {
+                              selectedTags.remove("อร่อย");
+                            }
+                          });
+                        },
+                      ),
+                      Text(AppLocalizations.of(context)!.tag_delicious),
+                    ],
+                  ),
                 ),
-                SizedBox(width: 19),
-                Row(
-                  children: [
-                    Checkbox(
-                      value: isCheckedClean,
-                      onChanged: (value) {
-                        setState(() {
-                          isCheckedClean = value!;
-                          if (value == true) {
-                            selectedTags.add("สะอาด");
-                          } else {
-                            selectedTags.remove("สะอาด");
-                          }
-                        });
-                      },
-                    ),
-                    Text("สะอาด"),
-                  ],
+                SizedBox(
+                  width: 150,
+                  child: Row(
+                    children: [
+                      Checkbox(
+                        value: isCheckedGood,
+                        onChanged: (value) {
+                          setState(() {
+                            isCheckedGood = value!;
+                            if (value == true) {
+                              selectedTags.add("สภาพดี");
+                            } else {
+                              selectedTags.remove("สภาพดี");
+                            }
+                          });
+                        },
+                      ),
+                      Text(AppLocalizations.of(context)!.tag_good_quality),
+                    ],
+                  ),
                 ),
               ],
             ),
             Row(
               children: [
                 Text(
-                  "เรียงสินค้า",
+                  AppLocalizations.of(context)!.filter_sort,
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ],
@@ -322,7 +338,7 @@ class _FilterModalState extends State<FilterModal> {
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        "ราคาสูงไปต่ำ",
+                        AppLocalizations.of(context)!.filter_price_high_to_low,
                         style: TextStyle(color: Colors.black),
                       ),
                     ),
@@ -364,7 +380,7 @@ class _FilterModalState extends State<FilterModal> {
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        "ราคาต่ำไปสูง",
+                        AppLocalizations.of(context)!.filter_price_low_to_high,
                         style: TextStyle(color: Colors.black),
                       ),
                     ),
@@ -406,7 +422,7 @@ class _FilterModalState extends State<FilterModal> {
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        "ใหม่สุดก่อน",
+                        AppLocalizations.of(context)!.filter_date_new_first,
                         style: TextStyle(color: Colors.black),
                       ),
                     ),
@@ -448,7 +464,7 @@ class _FilterModalState extends State<FilterModal> {
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        "เก่าสุดก่อน",
+                        AppLocalizations.of(context)!.filter_date_old_first,
                         style: TextStyle(color: Colors.black),
                       ),
                     ),
@@ -489,7 +505,7 @@ class _FilterModalState extends State<FilterModal> {
                           const Color.fromARGB(255, 236, 104, 95)),
                     ),
                     child: Text(
-                      "Clear",
+                      AppLocalizations.of(context)!.filter_reset,
                       style: TextStyle(color: Colors.black, fontSize: 18),
                     ),
                   ),
@@ -517,7 +533,7 @@ class _FilterModalState extends State<FilterModal> {
                           Color.fromARGB(255, 243, 221, 19)),
                     ),
                     child: Text(
-                      "Apply",
+                      AppLocalizations.of(context)!.filter_apply,
                       style: TextStyle(color: Colors.black, fontSize: 18),
                     ),
                   ),
