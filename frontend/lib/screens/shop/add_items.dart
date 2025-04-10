@@ -5,7 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/components/toolbar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/services.dart';
-import 'package:frontend/provider/product_provider.dart';
+import 'package:frontend/providers/product_provider.dart';
+import 'package:frontend/providers/user_provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -37,7 +38,8 @@ class _AddItemsState extends ConsumerState<AddItems> {
   // Image related variables
   List<File> _selectedImages = [];
 
-  Future<void> createProduct(List<String> imageUrls) async {
+  Future<void> createProduct(
+      List<String> imageUrls, String userId, String username) async {
     var url = "http://10.0.2.2:8080/shop";
 
     var response = await http.post(
@@ -52,8 +54,8 @@ class _AddItemsState extends ConsumerState<AddItems> {
         'productDatePost': DateTime.now().toIso8601String(),
         'productDateUpdate': DateTime.now().toIso8601String(),
         'productDescription': descriptionController.text,
-        'productOwner': "Wernatraa", //mockup
-        'productOwnerId': "888" //mockup
+        'productOwner': userId,
+        'productOwnerId': username
       }),
     );
 
@@ -174,6 +176,7 @@ class _AddItemsState extends ConsumerState<AddItems> {
   @override
   Widget build(BuildContext context) {
     final productOwnerId = widget.productOwnerId;
+    final user = ref.read(userProvider);
     return Scaffold(
         appBar: Toolbar(title: "Add Product"),
         body: Consumer(builder: (context, ref, child) {
@@ -631,7 +634,8 @@ class _AddItemsState extends ConsumerState<AddItems> {
 
                             List<String> imageUrls =
                                 await _uploadImagesToCloudinary();
-                            await createProduct(imageUrls);
+                            await createProduct(
+                                imageUrls, user!.id, user.username);
 
                             ref.invalidate(productProvider);
                             await Future.delayed(Duration(milliseconds: 100));

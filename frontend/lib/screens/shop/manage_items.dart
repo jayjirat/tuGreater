@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/components/toolbar.dart';
 import 'package:frontend/screens/shop/edit_items.dart';
-import 'package:frontend/provider/product_provider.dart';
+import 'package:frontend/providers/product_provider.dart';
 import 'package:tuple/tuple.dart';
 
 class ManageItems extends ConsumerWidget {

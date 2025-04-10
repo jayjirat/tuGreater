@@ -37,12 +37,13 @@ class MyApp extends StatelessWidget {
           primaryColor: Colors.red,
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        initialRoute: '/',
+        initialRoute: '/manage-items',
         routes: {
           '/': (context) => Login(),
           '/set-display-name': (context) => ConfirmationPage(),
           '/community': (context) => Community(),
           '/shop': (context) => Shop(),
+          '/manage-items': (context) => ManageItems(),
         });
   }
 }
