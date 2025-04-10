@@ -7,5 +7,5 @@ import tuGreaterBackend.cn333.backend.entity.Users;
 
 @Repository
 public interface UsersRepository extends MongoRepository<Users, String> {
-
+    Users findByStudentId(String studentId);
 }

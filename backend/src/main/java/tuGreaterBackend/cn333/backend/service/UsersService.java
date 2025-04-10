@@ -18,8 +18,43 @@ public class UsersService {
         this.usersRepository = usersRepository;
     }
 
-    public List<Users> getUsers(){
+    public Users createUser(Users user) {
+        return usersRepository.save(user);
+    }
+
+    public List<Users> getUsers() {
         return usersRepository.findAll();
+    }
+
+    public Users updateDisplayName(String id, String newDisplayName) {
+        Optional<Users> optionalUser = usersRepository.findById(id);
+        if (optionalUser.isPresent()) {
+            Users user = optionalUser.get();
+            user.setDisplayName(newDisplayName);
+            return usersRepository.save(user);
+        } else {
+            throw new RuntimeException("User not found");
+        }
+    }
+
+    public Users updateDisplayNameByStudentId(String studentId, String newDisplayName) {
+        Users user = usersRepository.findByStudentId(studentId);
+        if (user == null) {
+            throw new RuntimeException("User with student ID " + studentId + " not found");
+        }
+
+        user.setDisplayName(newDisplayName);
+        return usersRepository.save(user);
+    }
+
+    public String getDisplayNameByStudentId(String studentId) {
+        Users user = usersRepository.findByStudentId(studentId);
+        if (user == null) {
+            throw new RuntimeException("User with student ID " + studentId + " not found");
+        }
+
+        String displayName = user.getDisplayName();
+        return displayName;
     }
 
 }
