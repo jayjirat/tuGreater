@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/components/community_post.dart';
 import 'package:frontend/providers/community_provider.dart';
+import 'package:frontend/providers/user_provider.dart';
 import 'package:frontend/screens/community/community_view_post.dart';
 
 class CommunityMe extends ConsumerStatefulWidget {
@@ -19,7 +20,10 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
   }
 
   void _initState() async {
-    await ref.read(communityProvider.notifier).fetchMyPosts("999");
+    Future.microtask(() async {
+      final user = ref.read(userProvider);
+      await ref.read(communityProvider.notifier).fetchMyPosts(user!.studentId);
+    });
   }
 
   int _selectedIndex = 0;

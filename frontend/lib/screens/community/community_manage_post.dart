@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/models/com_post.dart';
 import 'package:frontend/providers/community_provider.dart';
+import 'package:frontend/providers/user_provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 
@@ -102,6 +103,7 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
 
   @override
   Widget build(BuildContext context) {
+    final user = ref.read(userProvider);
     final communityPostController = ref.read(communityProvider.notifier);
     return Scaffold(
       appBar: AppBar(
@@ -277,6 +279,8 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
                         await uploadImage();
                       }
                       await communityPostController.createPost(
+                          userId: user!.studentId,
+                          username: user.displayName,
                           title: titleCtrl.text,
                           description: descriptionCtrl.text,
                           category: selectedValueDropdown!,

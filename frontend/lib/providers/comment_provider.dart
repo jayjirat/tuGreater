@@ -11,15 +11,19 @@ class CommentNotifier extends StateNotifier<List<Comment>> {
 
   final String baseURL = "http://10.0.2.2:8080";
 
-  Future<void> addComment(String postId, String content) async {
+  Future<void> addComment(
+      {required String postId,
+      required String content,
+      required String userId,
+      required String username}) async {
     final url = Uri.parse('$baseURL/community/$postId/comment');
     try {
       final commentBody = {
         'content': content,
         'createdAt': DateTime.now().toIso8601String(),
         'postId': postId,
-        'userId': '999',
-        'username': 'jay'
+        'userId': userId,
+        'username': username
       };
       final header = {'Content-Type': 'application/json'};
       final response = await http.post((url),

@@ -39,6 +39,7 @@ class ConfirmationPage extends ConsumerWidget {
             onPressed: () async {
               if (displayNameController.text.isNotEmpty) {
                 await ref.read(userProvider.notifier).updateUser(
+                    isFirst: true,
                     user: user!,
                     context: context,
                     username: user.username,

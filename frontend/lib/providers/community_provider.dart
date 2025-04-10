@@ -75,6 +75,8 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
       {required String title,
       String? description,
       required String category,
+      required String userId,
+      required String username,
       String? imageUrl}) async {
     final url = '$baseURL/community';
     try {
@@ -83,8 +85,8 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
         'description': description ?? '',
         'category': category,
         'likeCount': 0,
-        'userId': '999', // Mock
-        'username': 'jay', // Mock
+        'userId': userId,
+        'username': username,
         'isEdited': false,
         'createdAt': DateTime.now().toIso8601String(),
         'updatedAt': DateTime.now().toIso8601String(),

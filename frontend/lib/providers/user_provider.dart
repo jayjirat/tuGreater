@@ -33,7 +33,6 @@ class UserNotifier extends StateNotifier<User?> {
               'TU43dbf40881f67122e5d01de44b07e49b30df28a5025c449497f5caf4fd1b4c3e72a7568e1e011c6ec05690c64ae48982'
         },
       );
-
       // Login success
       if (tuResponse.statusCode == 200) {
         final tuResponseData = json.decode(tuResponse.body);

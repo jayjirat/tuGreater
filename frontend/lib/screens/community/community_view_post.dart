@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/providers/comment_provider.dart';
 import 'package:frontend/providers/community_provider.dart';
+import 'package:frontend/providers/user_provider.dart';
 import 'package:frontend/screens/community/community_manage_post.dart';
 
 class CommunityViewpost extends ConsumerStatefulWidget {
@@ -27,8 +28,10 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
     await ref
         .read(commentProvider(widget.id).notifier)
         .fetchCommentByPostId(widget.id);
-    bool liked =
-        await ref.read(communityProvider.notifier).isLiked("999", widget.id);
+    final user = ref.read(userProvider);
+    bool liked = await ref
+        .read(communityProvider.notifier)
+        .isLiked(user!.studentId, widget.id);
 
     if (mounted) {
       setState(() {
@@ -39,6 +42,7 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
 
   @override
   Widget build(BuildContext context) {
+    final user = ref.read(userProvider);
     // ignore: unused_local_variable
     final posts = ref.watch(communityProvider);
     final communityPostController = ref.read(communityProvider.notifier);
@@ -98,7 +102,7 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                               ),
                             ],
                           ),
-                          trailing: post.userId == "999"
+                          trailing: post.userId == user!.studentId
                               ? PopupMenuButton(
                                   onSelected: (value) async {
                                     if (value == "edit") {
@@ -160,7 +164,8 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                                     ),
                                   ),
                                   if (post.userId !=
-                                      "999") // owner can't report own post
+                                      user
+                                          .studentId) // owner can't report own post
                                     ElevatedButton(
                                         onPressed: () {
                                           showReportPopup(context);
@@ -203,7 +208,7 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                             onTap: isLiked
                                 ? () async {
                                     await communityPostController.unlikePost(
-                                        "999", post.id);
+                                        user.studentId, post.id);
                                     setState(() {
                                       isLiked = false;
                                       post.likeCount--;
@@ -211,7 +216,7 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                                   }
                                 : () async {
                                     await communityPostController.likePost(
-                                        "999", post.id);
+                                        user.studentId, post.id);
                                     setState(() {
                                       isLiked = true;
                                       post.likeCount++;
@@ -294,12 +299,12 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                                                   color: Colors.black),
                                               children: [
                                                 if (comments[index].userId ==
-                                                    "999")
+                                                    user.studentId)
                                                   WidgetSpan(
                                                     child: SizedBox(height: 8),
                                                   ),
                                                 if (comments[index].userId ==
-                                                    "999")
+                                                    user.studentId)
                                                   TextSpan(
                                                     text: "\nDelete",
                                                     style: TextStyle(
@@ -368,7 +373,10 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                     onTap: () async {
                       if (commentCtrl.text.isNotEmpty) {
                         await commentController.addComment(
-                            post!.id, commentCtrl.text);
+                            postId: post!.id,
+                            content: commentCtrl.text,
+                            userId: user!.studentId,
+                            username: user.displayName);
 
                         setState(() {
                           post.commentCount++;
