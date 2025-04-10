@@ -1,45 +1,138 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/setting_page_folder/profile_page.dart';
+import 'package:frontend/setting_page/profile_page.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-void main() {
-  runApp(const MyApp());
+class AppThemes {
+  // Light Theme
+  static ThemeData lightTheme = ThemeData(
+    primarySwatch: MaterialColor(0xFFFF5722, {
+      50: Color(0xFFFBE9E7),
+      100: Color(0xFFFFCCBC),
+      200: Color(0xFFFFAB91),
+      300: Color(0xFFFF8A65),
+      400: Color(0xFFFF7043),
+      500: Color(0xFFFF5722),
+      600: Color(0xFFF4511E),
+      700: Color(0xFFE64A19),
+      800: Color(0xFFD84315),
+      900: Color(0xFFBF360C),
+    }),
+    brightness: Brightness.light,
+    scaffoldBackgroundColor: const Color.fromARGB(255, 240, 239, 236),
+    appBarTheme: AppBarTheme(
+      color: Color(0xFFFF5722),
+      foregroundColor: Colors.white,
+    ),
+    colorScheme: ColorScheme.light(
+      primary: Color(0xFFFF5722),
+      secondary: Color(0xFFFF7043),
+      surfaceBright: Colors.white,
+      surface: Colors.white,
+      onPrimary: Colors.white,
+      onSecondary: Colors.white,
+      onSurfaceVariant: Colors.black,
+      onSurface: Colors.black,
+    ),
+    textTheme: TextTheme(
+      displayLarge: TextStyle(
+          color: Colors.black, fontSize: 24, fontWeight: FontWeight.bold),
+      displayMedium: TextStyle(color: Colors.black, fontSize: 22),
+      bodyLarge: TextStyle(color: Colors.black, fontSize: 16),
+      bodyMedium: TextStyle(color: Colors.black87, fontSize: 14),
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Color(0xFFFF5722),
+        foregroundColor: Colors.white,
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+      ),
+    ),
+    inputDecorationTheme: InputDecorationTheme(
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: BorderSide(color: Color(0xFFFF5722)),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: BorderSide(color: Colors.grey),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: BorderSide(color: Color(0xFFFF5722), width: 2),
+      ),
+    ),
+  );
+
+  // Dark Theme
+  static ThemeData darkTheme = ThemeData(
+    primarySwatch: MaterialColor(0xFFFF5722, {
+      50: Color(0xFFFBE9E7),
+      100: Color(0xFFFFCCBC),
+      200: Color(0xFFFFAB91),
+      300: Color(0xFFFF8A65),
+      400: Color(0xFFFF7043),
+      500: Color(0xFFFF5722),
+      600: Color(0xFFF4511E),
+      700: Color(0xFFE64A19),
+      800: Color(0xFFD84315),
+      900: Color(0xFFBF360C),
+    }),
+    brightness: Brightness.dark,
+    scaffoldBackgroundColor: Colors.black,
+    appBarTheme: AppBarTheme(
+      color: Color(0xFFFF5722),
+      foregroundColor: Colors.white,
+    ),
+    colorScheme: ColorScheme.dark(
+      primary: Color(0xFFFF5722),
+      secondary: Color(0xFFFF7043),
+      surfaceBright: Colors.black,
+      surface: Color(0xFF121212),
+      onPrimary: Colors.white,
+      onSecondary: Colors.white,
+      onSurfaceVariant: Colors.white,
+      onSurface: Colors.white,
+    ),
+    textTheme: TextTheme(
+      displayLarge: TextStyle(
+          color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+      displayMedium: TextStyle(color: Colors.white, fontSize: 22),
+      bodyLarge: TextStyle(color: Colors.white, fontSize: 16),
+      bodyMedium: TextStyle(color: Colors.white70, fontSize: 14),
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Color(0xFFFF5722),
+        foregroundColor: Colors.white,
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+      ),
+    ),
+    inputDecorationTheme: InputDecorationTheme(
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: BorderSide(color: Color(0xFFFF5722)),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: BorderSide(color: Colors.grey),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: BorderSide(color: Color(0xFFFF5722), width: 2),
+      ),
+    ),
+  );
 }
 
-// class MyApp extends StatelessWidget {
-//   const MyApp({super.key});
-
-//   // This widget is the root of your application.
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       title: 'Flutter Demo',
-//       theme: ThemeData(
-//         // This is the theme of your application.
-//         //
-//         // TRY THIS: Try running your application with "flutter run". You'll see
-//         // the application has a purple toolbar. Then, without quitting the app,
-//         // try changing the seedColor in the colorScheme below to Colors.green
-//         // and then invoke "hot reload" (save your changes or press the "hot
-//         // reload" button in a Flutter-supported IDE, or press "r" if you used
-//         // the command line to start the app).
-//         //
-//         // Notice that the counter didn't reset back to zero; the application
-//         // state is not lost during the reload. To reset the state, use hot
-//         // restart instead.
-//         //
-//         // This works for code too, not just values: Most code changes can be
-//         // tested with just a hot reload.
-//         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-//         useMaterial3: true,
-//       ),
-//       home: Scaffold(
-//         appBar: AppBar(
-//           title: Text("TU GREATER"),
-//         ),
-//       ),
-//     );
-//   }
-// }
+void main() {
+  runApp(const ProviderScope(child: MyApp()));
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -48,6 +141,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: AppThemes.lightTheme,
+      darkTheme: AppThemes.darkTheme,
+      themeMode: ThemeMode
+          .system, // This will use dark or light theme based on system settings
       home: ProfilePage(),
     );
   }
