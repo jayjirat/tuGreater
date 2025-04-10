@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/setting_page/single_toggle_buttons.dart';
 import 'package:frontend/components/custom_bottom_navigation.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
+import 'package:frontend/providers/locale_provider.dart';
+import 'package:frontend/providers/theme_provider.dart';
 
 class SettingPage extends StatefulWidget {
   const SettingPage({super.key});
@@ -10,11 +13,10 @@ class SettingPage extends StatefulWidget {
 }
 
 class _SettingPageState extends State<SettingPage> {
-  int selectedLanguage = 0; // 0 = English, 1 = Thai
-  int selectedTheme = 0; // 0 = Light, 1 = Dark
-
   @override
   Widget build(BuildContext context) {
+    final localeProvider = context.watch<LocaleProvider>();
+    final themeProvider = Provider.of<ThemeProvider>(context);
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 223, 130, 9),
       body: Padding(
@@ -64,13 +66,14 @@ class _SettingPageState extends State<SettingPage> {
                   fontSize: 20,
                   fontWeight: FontWeight.bold),
             ),
-            CustomToggle(
-              options: ["English", "Thai"],
-              selectedIndex: selectedLanguage,
-              onChanged: (index) {
-                setState(() {
-                  selectedLanguage = index;
-                });
+            Text(AppLocalizations.of(context)!
+                .helloWorld), // Text based on localization
+            Switch(
+              value: localeProvider.locale.languageCode ==
+                  'th', // Check if the current language is Thai
+              onChanged: (_) {
+                localeProvider
+                    .toggleLanguage(); // Toggle language using the provider
               },
             ),
             // Theme Selection
@@ -81,15 +84,17 @@ class _SettingPageState extends State<SettingPage> {
                   fontSize: 20,
                   fontWeight: FontWeight.bold),
             ),
-            CustomToggle(
-              options: ["Light", "Dark"],
-              selectedIndex: selectedTheme,
-              onChanged: (index) {
-                setState(() {
-                  selectedTheme = index;
-                });
-              },
-            ),
+            Switch(
+                value: themeProvider.isDarkMode,
+                onChanged: (_) {
+                  themeProvider.toggleTheme();
+                },
+                activeColor: Theme.of(context).colorScheme.secondary,
+                activeTrackColor:
+                    Theme.of(context).colorScheme.secondaryContainer,
+                inactiveThumbColor: Theme.of(context).colorScheme.primary,
+                inactiveTrackColor:
+                    Theme.of(context).colorScheme.primaryContainer),
           ],
         ),
       ),
