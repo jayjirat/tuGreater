@@ -33,6 +33,7 @@ class UserNotifier extends StateNotifier<User?> {
               'TU43dbf40881f67122e5d01de44b07e49b30df28a5025c449497f5caf4fd1b4c3e72a7568e1e011c6ec05690c64ae48982'
         },
       );
+      print(tuResponse.statusCode);
       // Login success
       if (tuResponse.statusCode == 200) {
         final tuResponseData = json.decode(tuResponse.body);
@@ -40,6 +41,7 @@ class UserNotifier extends StateNotifier<User?> {
 
         // Fetch user in db
         final existingUser = await http.get(usernameUrl);
+        print(existingUser.statusCode);
         final usernameNew = tuResponseData['displayname_en'];
         // User not found in db -> Create new user (First Login)
         if (existingUser.statusCode == 404) {
@@ -53,6 +55,7 @@ class UserNotifier extends StateNotifier<User?> {
 
           final createUserResponse = await http.post(Uri.parse(userDBUrl),
               headers: {"content-type": "application/json"}, body: userBody);
+
           if (createUserResponse.statusCode == 201) {
             if (context.mounted) {
               final data = json.decode(createUserResponse.body);

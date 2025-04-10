@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:frontend/screens/shop/manage_items.dart';
+import 'package:frontend/screens/main.dart';
 import 'package:frontend/screens/shop/shop.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-// import 'package:frontend/screens/community/community.dart';
+import 'package:frontend/screens/community/community.dart';
 // import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:frontend/dpname.dart';
 import 'package:frontend/login.dart';
@@ -40,9 +40,8 @@ class MyApp extends StatelessWidget {
         routes: {
           '/': (context) => Login(),
           '/set-display-name': (context) => ConfirmationPage(),
-          '/community': (context) => Community(),
+          '/community': (context) => Main(),
           '/shop': (context) => Shop(),
-          '/manage-items': (context) => ManageItems(),
         });
   }
 }

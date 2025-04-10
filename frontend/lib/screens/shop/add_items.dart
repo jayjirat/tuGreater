@@ -54,8 +54,8 @@ class _AddItemsState extends ConsumerState<AddItems> {
         'productDatePost': DateTime.now().toIso8601String(),
         'productDateUpdate': DateTime.now().toIso8601String(),
         'productDescription': descriptionController.text,
-        'productOwner': userId,
-        'productOwnerId': displayname
+        'productOwner': displayname,
+        'productOwnerId': userId
       }),
     );
 

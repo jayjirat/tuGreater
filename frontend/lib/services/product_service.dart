@@ -86,9 +86,10 @@ class ProductService {
   }
 
   Future<List<Products>> fetchAllManageProducts(String productOwnerId) async {
+    print("In fetchAllManageProducts");
     final response =
         await http.get(Uri.parse(baseUrl + "/manage/${productOwnerId}"));
-
+    print(response.statusCode);
     if (response.statusCode == 200) {
       // Decode the response body with UTF-8
       String decodedResponse = utf8.decode(response.bodyBytes);
