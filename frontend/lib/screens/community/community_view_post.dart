@@ -94,11 +94,13 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                             children: [
                               Text(
                                 post.createdAt.toString(),
-                                style: TextStyle(color: Colors.grey[600]),
+                                style: TextStyle(
+                                    color: Colors.grey[600], fontSize: 13),
                               ),
                               Text(
                                 post.isEdited ? " (edited)" : "",
-                                style: TextStyle(color: Colors.grey[600]),
+                                style: TextStyle(
+                                    color: Colors.grey[600], fontSize: 13),
                               ),
                             ],
                           ),
