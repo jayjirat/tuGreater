@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/components/custom_bottom_navigationbar.dart';
+import 'package:frontend/providers/user_provider.dart';
 import 'package:frontend/screens/community/community.dart';
 import 'package:frontend/screens/profile/profile_page.dart';
 import 'package:frontend/screens/shop/shop.dart';
@@ -14,9 +15,10 @@ class Main extends ConsumerStatefulWidget {
 
 class MainState extends ConsumerState<Main> {
   int currentIndex = 0;
-  final screens = [Community(), Shop(), ProfilePage()];
   @override
   Widget build(BuildContext context) {
+  final user = ref.read(userProvider);
+  final screens = [Community(), Shop(), ProfilePage(studentId: user!.studentId,)];
     return Scaffold(
       body: screens[currentIndex],
       bottomNavigationBar: customBottomNavigationBar(

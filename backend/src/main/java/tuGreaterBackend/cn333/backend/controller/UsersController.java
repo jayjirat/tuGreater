@@ -99,4 +99,26 @@ public class UsersController {
         }
     }
 
+    @PostMapping("/student/{studentId}/displayName")
+    public ResponseEntity<?> updateDisplayNameByStudentId(
+            @PathVariable String studentId,
+            @RequestBody @Valid UpdateDisplayNameRequest request) {
+        try {
+            Users updatedUser = usersService.updateDisplayNameByStudentId(studentId, request.getDisplayName());
+            return ResponseEntity.ok(updatedUser);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/student/{studentId}/displayName")
+    public ResponseEntity<?> getDisplayNameByStudentId(@PathVariable String studentId) {
+        try {
+            String displayName = usersService.getDisplayNameByStudentId(studentId);
+            return ResponseEntity.ok(new DisplayNameResponse(displayName));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        }
+    }
+
 }

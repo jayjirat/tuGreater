@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class DisplaynameApiService {
-  final String baseUrl = 'http://10.0.2.2:8080/api';
+  final String baseUrl = 'http://10.0.2.2:8080/users';
 
   /// Get the display name of a student by their ID
   ///
