@@ -3,6 +3,8 @@ package tuGreaterBackend.cn333.backend.entity;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
+
 @Document(collection="users")
 public class Users {
     @Id
