@@ -66,10 +66,10 @@ class _FilterModalState extends State<FilterModal> {
     minPrice = widget.minPrice;
     maxPrice = widget.maxPrice;
     minPriceController = TextEditingController(
-      text: minPrice?.toString() ?? '',
+      text: minPrice?.toInt().toString() ?? '',
     );
     maxPriceController = TextEditingController(
-      text: maxPrice?.toString() ?? '',
+      text: maxPrice?.toInt().toString() ?? '',
     );
     selectedTags = List<String>.from(widget.selectedTags);
   }
@@ -459,26 +459,61 @@ class _FilterModalState extends State<FilterModal> {
             SizedBox(
               height: 25,
             ),
-            FilledButton(
-              onPressed: () {
-                Navigator.pop(context, {
-                  'minPrice': minPrice,
-                  'maxPrice': maxPrice,
-                  'isCheckedHighToLowPrice': isCheckedHighToLowPrice,
-                  'isCheckedLowToHighPrice': isCheckedLowToHighPrice,
-                  'isCheckedNewFirst': isCheckedNewFirst,
-                  'isCheckedOldFirst': isCheckedOldFirst,
-                  'selectedTags': selectedTags,
-                });
-              },
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(
-                    Color.fromARGB(255, 243, 221, 19)),
-              ),
-              child: Text(
-                "Apply",
-                style: TextStyle(color: Colors.black, fontSize: 18),
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: 50,
+                  width: 100,
+                  child: FilledButton(
+                    onPressed: () {
+                      minPrice = 0.0;
+                      maxPrice = 0.0;
+                      isCheckedHighToLowPrice = false;
+                      isCheckedLowToHighPrice = false;
+                      isCheckedNewFirst = false;
+                      isCheckedOldFirst = false;
+                      selectedTags.clear();
+                    },
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(
+                          const Color.fromARGB(255, 236, 104, 95)),
+                    ),
+                    child: Text(
+                      "Clear",
+                      style: TextStyle(color: Colors.black, fontSize: 18),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                SizedBox(
+                  height: 50,
+                  width: 100,
+                  child: FilledButton(
+                    onPressed: () {
+                      Navigator.pop(context, {
+                        'minPrice': minPrice,
+                        'maxPrice': maxPrice,
+                        'isCheckedHighToLowPrice': isCheckedHighToLowPrice,
+                        'isCheckedLowToHighPrice': isCheckedLowToHighPrice,
+                        'isCheckedNewFirst': isCheckedNewFirst,
+                        'isCheckedOldFirst': isCheckedOldFirst,
+                        'selectedTags': selectedTags,
+                      });
+                    },
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(
+                          Color.fromARGB(255, 243, 221, 19)),
+                    ),
+                    child: Text(
+                      "Apply",
+                      style: TextStyle(color: Colors.black, fontSize: 18),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         ),
