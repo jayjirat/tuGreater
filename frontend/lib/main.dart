@@ -41,7 +41,8 @@ class MyApp extends StatelessWidget {
         routes: {
           '/': (context) => Login(),
           '/set-display-name': (context) => ConfirmationPage(),
-          '/community': (context) => Community()
+          '/community': (context) => Community(),
+          '/shop': (context) => Shop(),
         });
   }
 }
