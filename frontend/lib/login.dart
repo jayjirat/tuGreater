@@ -16,6 +16,25 @@ class LoginState extends ConsumerState<Login> {
   final passwordController = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
+  @override
+  void initState() {
+    super.initState();
+
+    Future.microtask(() async {
+      final userNotifier = ref.read(userProvider.notifier);
+      final isValid =
+          await ref.read(userProvider.notifier).checkLoginSessionAndLoadUser();
+
+      if (isValid) {
+        // ถ้า user มีข้อมูล → ไปหน้า Community
+        // TODO
+        // if (mounted) {
+        //   Navigator.pushReplacementNamed(context, '/community');
+        // }
+      }
+    });
+  }
+
   // ฟังก์ชันสำหรับการล็อกอินผ่าน API
 
   @override

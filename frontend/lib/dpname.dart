@@ -9,6 +9,7 @@ class ConfirmationPage extends ConsumerWidget {
   final displayNameController = TextEditingController();
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final user = ref.read(userProvider);
     return loginStack(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -35,10 +36,15 @@ class ConfirmationPage extends ConsumerWidget {
               obscureText: false),
           SizedBox(height: 32.0),
           ElevatedButton(
-            onPressed: () {
-              ref
-                  .read(userProvider.notifier)
-                  .setDisplayName(displayNameController.text, context);
+            onPressed: () async {
+              if (displayNameController.text.isNotEmpty) {
+                await ref.read(userProvider.notifier).updateUser(
+                    user: user!,
+                    context: context,
+                    username: user.username,
+                    displayName: displayNameController.text,
+                    profileImageUrl: user.profileImageUrl);
+              }
             },
             child: Text('CONFIRM'),
           ),

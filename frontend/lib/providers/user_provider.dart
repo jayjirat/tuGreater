@@ -4,6 +4,7 @@ import 'package:frontend/models/role.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/models/user.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserNotifier extends StateNotifier<User?> {
   UserNotifier() : super(null);
@@ -57,6 +58,7 @@ class UserNotifier extends StateNotifier<User?> {
             if (context.mounted) {
               final data = json.decode(createUserResponse.body);
               state = User(
+                id: data["user"]['id'],
                 studentId: data["user"]['studentId'],
                 username: data["user"]['username'],
                 displayName: data["user"]['displayName'],
@@ -74,12 +76,14 @@ class UserNotifier extends StateNotifier<User?> {
         } else if (existingUser.statusCode == 200) {
           final data = json.decode(existingUser.body);
           state = User(
+            id: data['id'],
             studentId: data['studentId'],
             username: data['username'],
             displayName: data['displayName'],
             profileImageUrl: data['profileImageUrl'],
             role: parseStringtoRole(data['role']),
           );
+          await _saveUserToPrefs(state!);
           // TODO  push -> community screen
           print("Community screen");
         } else {
@@ -107,30 +111,43 @@ class UserNotifier extends StateNotifier<User?> {
     }
   }
 
-  Future<void> setDisplayName(String displayName, BuildContext context) async {
-    final id = state!.studentId;
+  Future<void> logout() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear(); // ลบข้อมูล user ที่เซฟไว้
+
+    state = null; // ล้าง user ออกจาก provider
+  }
+
+  Future<void> updateUser(
+      {required User user,
+      required BuildContext context,
+      required String username,
+      required String displayName,
+      required String profileImageUrl}) async {
     Map<String, dynamic> editUser = {
-      "studentId": state!.studentId,
-      "username": state!.username,
+      "studentId": user.studentId,
+      "username": username,
       "displayName": displayName,
-      "profileImageUrl": state!.profileImageUrl,
-      "role": parseRoletoString(state!.role),
+      "profileImageUrl": profileImageUrl,
+      "role": parseRoletoString(user.role),
     };
     try {
       final response = await http.put(
-        Uri.parse("$userDBUrl/$id"),
+        Uri.parse("$userDBUrl/${user.id}"),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(editUser),
       );
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         state = User(
+          id: data['id'],
           studentId: data['studentId'],
           username: data['username'],
           displayName: data['displayName'],
           profileImageUrl: data['profileImageUrl'],
           role: parseStringtoRole(data['role']),
         );
+        await _saveUserToPrefs(state!);
       }
     } catch (e) {
       if (context.mounted) {
@@ -139,6 +156,64 @@ class UserNotifier extends StateNotifier<User?> {
         ).showSnackBar(SnackBar(content: Text('Error: $e')));
       }
     }
+  }
+
+  // บันทึกข้อมูล User ลง SharedPreferences
+  Future<void> _saveUserToPrefs(User user) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('id', user.id);
+    await prefs.setBool('isLoggedIn', true);
+    await prefs.setInt('loginTimeStamp', DateTime.now().microsecondsSinceEpoch);
+  }
+
+// โหลดข้อมูล User จาก SharedPreferences
+  Future<bool> checkLoginSessionAndLoadUser() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+    final loginTimestamp = prefs.getInt('loginTimestamp');
+
+    // ถ้ายังไม่เคย login หรือไม่มี timestamp
+    if (!isLoggedIn || loginTimestamp == null) {
+      return false;
+    }
+
+    final loginTime = DateTime.fromMillisecondsSinceEpoch(loginTimestamp);
+    final now = DateTime.now();
+
+    // ตั้งระยะเวลา session เช่น 2 ชั่วโมง
+    const sessionDuration = Duration(hours: 72);
+
+    // หมดอายุแล้ว
+    if (now.difference(loginTime) > sessionDuration) {
+      await prefs.clear(); // หรือลบแค่ key ที่เกี่ยวข้อง
+      return false;
+    }
+
+    // ยังไม่หมดอายุ → โหลดข้อมูลผู้ใช้ (อาจจะต้องเรียก API หรือดึงจาก local cache)
+    try {
+      final id = prefs.getString('id'); // ต้องเซฟเพิ่มตอน login
+      if (id == null) return false;
+
+      final userResponse = await http.get(Uri.parse('$userDBUrl/$id'));
+      if (userResponse.statusCode == 200) {
+        final data = json.decode(userResponse.body);
+        state = User(
+          id: data['id'],
+          studentId: data['studentId'],
+          username: data['username'],
+          displayName: data['displayName'],
+          profileImageUrl: data['profileImageUrl'],
+          role: parseStringtoRole(data['role']),
+        );
+        return true;
+      }
+    } catch (e) {
+      print('Error loading user: $e');
+      return false;
+    }
+
+    return false;
   }
 }
 
