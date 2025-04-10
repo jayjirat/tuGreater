@@ -5,14 +5,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/components/toolbar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/services.dart';
-import 'package:frontend/main.dart';
-import 'package:frontend/models/Products.dart';
-import 'package:frontend/pages/shop.dart';
 import 'package:frontend/provider/product_provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:tuple/tuple.dart';
 
 class EditItems extends ConsumerStatefulWidget {

@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/components/item_image_slider.dart';
 import 'package:frontend/components/report_modal.dart';
 import 'package:frontend/components/toolbar.dart';
-import 'package:frontend/models/Products.dart';
 import 'package:frontend/provider/product_provider.dart';
 import 'package:intl/intl.dart';
 
