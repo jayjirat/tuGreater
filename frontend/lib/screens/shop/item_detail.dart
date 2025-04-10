@@ -15,6 +15,7 @@ class ItemDetail extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final productAsyncValue =
         ref.watch(productProviderById(productId)); // Watch the product directly
+    final user = ref.read(userProvider);
     return Scaffold(
       appBar: Toolbar(title: "Item Detail"),
       body: productAsyncValue.when(
@@ -102,7 +103,7 @@ class ItemDetail extends ConsumerWidget {
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      "@${product.productOwner}",
+                      "@${user!.displayName}",
                       style: TextStyle(fontSize: 15),
                     ),
                   ),
