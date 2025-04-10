@@ -15,8 +15,20 @@ import 'package:frontend/providers/theme_provider.dart';
 import 'package:provider/provider.dart' as pd;
 
 void main() async {
-  await dotenv.load(fileName: ".env");
-  runApp(ProviderScope(child: MyApp()));
+  WidgetsFlutterBinding.ensureInitialized();
+  // await dotenv.load(fileName: ".env");
+
+  runApp(
+    ProviderScope(
+      child: pd.MultiProvider(
+        providers: [
+          pd.ChangeNotifierProvider(create: (_) => ThemeProvider()),
+          pd.ChangeNotifierProvider(create: (_) => LocaleProvider()),
+        ],
+        child: MyApp(),
+      ),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -43,10 +55,7 @@ class MyApp extends StatelessWidget {
         themeMode: themeProvider.themeMode,
         theme: themeProvider.lightTheme,
         darkTheme: themeProvider.darkTheme,
-        home: const ProfilePage(),
-      );
         title: 'Flutter Demo',
-        
         initialRoute: '/',
         routes: {
           '/': (context) => Login(),

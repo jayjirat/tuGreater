@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/setting_page/image_picker.dart';
+import 'package:frontend/screens/profile/image_picker.dart';
 import 'package:frontend/components/custom_bottom_navigation.dart';
 
 class UploadProfilePage extends StatefulWidget {

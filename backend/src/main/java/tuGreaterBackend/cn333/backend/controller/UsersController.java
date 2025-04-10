@@ -19,9 +19,8 @@ import jakarta.validation.Valid;
 import tuGreaterBackend.cn333.backend.dto.*;
 import tuGreaterBackend.cn333.backend.service.UsersService;
 
-
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/users")
 public class UsersController {
 
     private final UsersService usersService;
@@ -29,18 +28,19 @@ public class UsersController {
     public UsersController(UsersService usersService) {
         this.usersService = usersService;
     }
+
     @GetMapping("")
     public ResponseEntity<?> getUsers() {
         try {
             List<Users> users = usersService.getUsers();
-            if(users.isEmpty()){
+            if (users.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
             }
             return ResponseEntity.ok(users);
-        } catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
-        
+
     }
 
     @GetMapping("/{studentId}")
@@ -52,10 +52,10 @@ public class UsersController {
                         .body(Map.of("message", "User not found by id: " + studentId));
             }
             return ResponseEntity.ok(user);
-        } catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
-        
+
     }
 
     @PostMapping("")
@@ -73,15 +73,15 @@ public class UsersController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> putUser(@PathVariable String id, @RequestBody Users user) {
-        
+
         try {
-            Users updateUser = usersService.updateUser(id,user);
+            Users updateUser = usersService.updateUser(id, user);
             if (updateUser == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(Map.of("message", "User not found by id: " + id));
             }
             return ResponseEntity.ok(updateUser);
-                    
+
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
@@ -99,8 +99,4 @@ public class UsersController {
         }
     }
 
-    
-
-    
-    
 }

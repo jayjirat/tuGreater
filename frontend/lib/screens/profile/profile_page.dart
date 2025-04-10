@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/setting_page/setting_page.dart';
-import 'package:frontend/setting_page/uploadprofile_page.dart';
-import 'package:frontend/components/custom_bottom_navigation.dart';
-import 'package:frontend/services/displayname_api_service.dart'; 
-
+import 'package:frontend/screens/profile/setting_page.dart';
+import 'package:frontend/screens/profile/uploadprofile_page.dart';
+import 'package:frontend/services/displayname_api_service.dart';
 
 class ProfilePage extends StatefulWidget {
   final String studentId;
@@ -292,7 +290,6 @@ class _ProfilePageState extends State<ProfilePage> {
                       ],
                     ),
                   ),
-        bottomNavigationBar: const CustomBottomNavigationBar(),
       ),
     );
   }
