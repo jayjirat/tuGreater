@@ -85,6 +85,9 @@ class UserNotifier extends StateNotifier<User?> {
           );
           await _saveUserToPrefs(state!);
           // TODO  push -> community screen
+          if (context.mounted) {
+            Navigator.pushReplacementNamed(context, '/community');
+          }
           print("Community screen");
         } else {
           print("error");
@@ -119,7 +122,8 @@ class UserNotifier extends StateNotifier<User?> {
   }
 
   Future<void> updateUser(
-      {required User user,
+      {bool isFirst = false,
+      required User user,
       required BuildContext context,
       required String username,
       required String displayName,
@@ -148,6 +152,11 @@ class UserNotifier extends StateNotifier<User?> {
           role: parseStringtoRole(data['role']),
         );
         await _saveUserToPrefs(state!);
+        if (isFirst) {
+          if (context.mounted) {
+            Navigator.pushReplacementNamed(context, '/community');
+          }
+        }
       }
     } catch (e) {
       if (context.mounted) {
