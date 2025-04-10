@@ -467,13 +467,22 @@ class _FilterModalState extends State<FilterModal> {
                   width: 100,
                   child: FilledButton(
                     onPressed: () {
-                      minPrice = 0.0;
-                      maxPrice = 0.0;
-                      isCheckedHighToLowPrice = false;
-                      isCheckedLowToHighPrice = false;
-                      isCheckedNewFirst = false;
-                      isCheckedOldFirst = false;
-                      selectedTags.clear();
+                      setState(() {
+                        minPrice = null;
+                        maxPrice = null;
+                        minPriceController.clear();
+                        maxPriceController.clear();
+                        isCheckedFirstHanded = false;
+                        isCheckedSecondHanded = false;
+                        isCheckedGood = false;
+                        isCheckedDelicious = false;
+                        isCheckedClean = false;
+                        isCheckedHighToLowPrice = false;
+                        isCheckedLowToHighPrice = false;
+                        isCheckedNewFirst = false;
+                        isCheckedOldFirst = false;
+                        selectedTags.clear();
+                      });
                     },
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(
