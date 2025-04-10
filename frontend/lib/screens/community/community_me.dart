@@ -13,6 +13,13 @@ class CommunityMe extends ConsumerStatefulWidget {
 }
 
 class CommunityMeState extends ConsumerState<CommunityMe> {
+  String capitalize(String text) {
+    if (text.isEmpty) {
+      return text;
+    }
+    return text[0].toUpperCase() + text.substring(1).toLowerCase();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -29,6 +36,7 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
   int _selectedIndex = 0;
   @override
   Widget build(BuildContext context) {
+    final user = ref.read(userProvider);
     final posts = ref.watch(communityProvider);
     final communityPostController = ref.read(communityProvider.notifier);
     final List<Widget> swapPage = [
@@ -83,11 +91,11 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
               height: 10,
             ),
             Text(
-              "Jirat Charoenkaew", //username
+              "${capitalize(user!.username.split(" ")[0])} ${capitalize(user.username.split(" ")[1])}", //username
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             Text(
-              "Jayeieie", //displayname
+              user.displayName, //displayname
               style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
