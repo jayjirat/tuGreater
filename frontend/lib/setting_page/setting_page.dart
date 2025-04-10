@@ -18,7 +18,7 @@ class _SettingPageState extends State<SettingPage> {
     final localeProvider = context.watch<LocaleProvider>();
     final themeProvider = Provider.of<ThemeProvider>(context);
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 223, 130, 9),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -28,7 +28,7 @@ class _SettingPageState extends State<SettingPage> {
             Center(
               child: Container(
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Theme.of(context).primaryColor,
                     borderRadius: BorderRadius.circular(30),
                   ),
                   padding: EdgeInsets.all(10),
