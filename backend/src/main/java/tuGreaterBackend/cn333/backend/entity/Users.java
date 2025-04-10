@@ -6,20 +6,23 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection="users")
 public class Users {
     @Id
+    private String id;
+
     private String studentId;
     private String username;
     private String displayName;
     private String profileImageUrl;
     private Role role;
 
-    public Role getRole() {
-        return this.role;
+
+    public String getId() {
+        return this.id;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
+    public void setId(String id) {
+        this.id = id;
     }
-    
+
     public String getStudentId() {
         return this.studentId;
     }
@@ -50,6 +53,14 @@ public class Users {
 
     public void setProfileImageUrl(String profileImageUrl) {
         this.profileImageUrl = profileImageUrl;
+    }
+
+    public Role getRole() {
+        return this.role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 
 
