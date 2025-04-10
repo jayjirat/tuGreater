@@ -16,7 +16,7 @@ import 'package:provider/provider.dart' as pd;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // await dotenv.load(fileName: ".env");
+  await dotenv.load(fileName: ".env");
 
   runApp(
     ProviderScope(
