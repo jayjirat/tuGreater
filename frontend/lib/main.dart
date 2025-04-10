@@ -1,23 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/setting_page/profile_page.dart';
-import 'package:frontend/setting_page/localize_test.dart';
-import 'package:frontend/setting_page/setting_page.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:frontend/screens/main.dart';
+import 'package:frontend/screens/shop/shop.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+// import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:frontend/dpname.dart';
+import 'package:frontend/login.dart';
+// import 'package:TUGREATER/lib/login.dart';
+
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:frontend/providers/locale_provider.dart';
 import 'package:frontend/providers/theme_provider.dart';
-import 'package:provider/provider.dart';
+import 'package:provider/provider.dart' as pd;
 
-void main() {
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => ThemeProvider()),
-        ChangeNotifierProvider(create: (_) => LocaleProvider()),
-      ],
-      child: MyApp(),
-    ),
-  );
+void main() async {
+  await dotenv.load(fileName: ".env");
+  runApp(ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -26,25 +25,34 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
-    final localeProvider = Provider.of<LocaleProvider>(context);
+    final themeProvider = pd.Provider.of<ThemeProvider>(context);
+    final localeProvider = pd.Provider.of<LocaleProvider>(context);
 
     return MaterialApp(
-      supportedLocales: [
-        Locale('en'),
-        Locale('th'),
-      ],
-      localizationsDelegates: [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      locale: localeProvider.locale, // Get locale from provider
-      themeMode: themeProvider.themeMode,
-      theme: themeProvider.lightTheme,
-      darkTheme: themeProvider.darkTheme,
-      home: const ProfilePage(),
-    );
+        supportedLocales: [
+          Locale('en'),
+          Locale('th'),
+        ],
+        localizationsDelegates: [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        locale: localeProvider.locale, // Get locale from provider
+        themeMode: themeProvider.themeMode,
+        theme: themeProvider.lightTheme,
+        darkTheme: themeProvider.darkTheme,
+        home: const ProfilePage(),
+      );
+        title: 'Flutter Demo',
+        
+        initialRoute: '/',
+        routes: {
+          '/': (context) => Login(),
+          '/set-display-name': (context) => ConfirmationPage(),
+          '/community': (context) => Main(),
+          '/shop': (context) => Shop(),
+        });
   }
 }
