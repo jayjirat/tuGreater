@@ -39,7 +39,7 @@ class _AddItemsState extends ConsumerState<AddItems> {
   List<File> _selectedImages = [];
 
   Future<void> createProduct(
-      List<String> imageUrls, String userId, String username) async {
+      List<String> imageUrls, String userId, String displayname) async {
     var url = "http://10.0.2.2:8080/shop";
 
     var response = await http.post(
@@ -55,7 +55,7 @@ class _AddItemsState extends ConsumerState<AddItems> {
         'productDateUpdate': DateTime.now().toIso8601String(),
         'productDescription': descriptionController.text,
         'productOwner': userId,
-        'productOwnerId': username
+        'productOwnerId': displayname
       }),
     );
 
@@ -176,7 +176,7 @@ class _AddItemsState extends ConsumerState<AddItems> {
   @override
   Widget build(BuildContext context) {
     final productOwnerId = widget.productOwnerId;
-    final user = ref.read(userProvider);
+    final user = ref.watch(userProvider);
     return Scaffold(
         appBar: Toolbar(title: "Add Product"),
         body: SingleChildScrollView(
@@ -628,10 +628,6 @@ class _AddItemsState extends ConsumerState<AddItems> {
 
                           List<String> imageUrls =
                               await _uploadImagesToCloudinary();
-                          print(user);
-                          print(imageUrls);
-                          print(user!.id);
-                          print(user.displayName);
                           await createProduct(
                               imageUrls, user!.id, user.displayName);
 
