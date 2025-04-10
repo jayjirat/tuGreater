@@ -4,6 +4,7 @@ import 'package:frontend/components/filter_modal.dart';
 import 'package:frontend/components/grid_items.dart';
 import 'package:frontend/components/toolbar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:frontend/providers/user_provider.dart';
 import 'package:frontend/screens/shop/add_items.dart';
 
 class Shop extends ConsumerStatefulWidget {
@@ -36,6 +37,7 @@ class _ShopState extends ConsumerState<Shop> {
 
   @override
   Widget build(BuildContext context) {
+    final user = ref.read(userProvider);
     return Scaffold(
       appBar: Toolbar(title: "Shop"),
       floatingActionButton: FloatingActionButton(

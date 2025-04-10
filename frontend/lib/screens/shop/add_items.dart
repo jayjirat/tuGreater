@@ -35,7 +35,7 @@ class _AddItemsState extends ConsumerState<AddItems> {
   FocusNode otherTagFocusNode = FocusNode();
 
   // Image related variables
-  List<File> _selectedImages = [];
+  final List<File> _selectedImages = [];
 
   Future<void> createProduct(List<String> imageUrls) async {
     var url = "http://10.0.2.2:8080/shop";
