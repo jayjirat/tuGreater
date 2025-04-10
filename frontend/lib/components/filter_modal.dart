@@ -495,7 +495,7 @@ class _FilterModalState extends State<FilterModal> {
                   ),
                 ),
                 SizedBox(
-                  width: 10,
+                  width: 15,
                 ),
                 SizedBox(
                   height: 50,

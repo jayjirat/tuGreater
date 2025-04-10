@@ -1,4 +1,7 @@
 {
-    "@@locale": "th",
-    "helloWorld": "สวัสดีโลก!"
+  "@@locale": "th",
+  "helloWorld": "สวัสดีโลก!",
+  "title": "ร้านค้า",
+  "shop_search":"ค้นหาสินค้า...",
+  "shop_category":"ทั้งหมด"
 }

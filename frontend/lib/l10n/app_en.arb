@@ -3,5 +3,8 @@
     "helloWorld": "Hello World!",
     "@helloWorld": {
       "description": "The conventional newborn programmer greeting"
-    }
+    },
+    "title":"Shop",
+    "shop_search":"Search products...",
+    "shop_category":"All"
 }

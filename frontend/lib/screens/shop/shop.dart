@@ -5,6 +5,7 @@ import 'package:frontend/components/grid_items.dart';
 import 'package:frontend/components/toolbar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:frontend/screens/shop/add_items.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Shop extends ConsumerStatefulWidget {
   const Shop({super.key});
@@ -37,7 +38,7 @@ class _ShopState extends ConsumerState<Shop> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: Toolbar(title: "Shop"),
+      appBar: Toolbar(title: AppLocalizations.of(context)!.title),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
@@ -64,7 +65,7 @@ class _ShopState extends ConsumerState<Shop> {
                     });
                   },
                   decoration: InputDecoration(
-                    hintText: "Search products...",
+                    hintText: AppLocalizations.of(context)!.shop_search,
                     suffixIcon: Icon(Icons.search), // Search icon on the right
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(25),
@@ -147,7 +148,8 @@ class _ShopState extends ConsumerState<Shop> {
             padding: EdgeInsets.symmetric(horizontal: 5),
             child: Row(
               children: [
-                Expanded(
+                SizedBox(
+                  width: 90,
                   child: GestureDetector(
                     onTap: () {
                       setState(() {
@@ -155,9 +157,7 @@ class _ShopState extends ConsumerState<Shop> {
                       });
                     },
                     child: Container(
-                      // ช่องสี่เหลี่ยม for "All"
                       height: 45,
-                      width: 48,
                       margin: EdgeInsets.all(8),
                       decoration: BoxDecoration(
                         color: selectedCategory == -1
@@ -172,21 +172,23 @@ class _ShopState extends ConsumerState<Shop> {
                           )
                         ],
                       ),
-                      child: Padding(
-                        padding: EdgeInsets.all(6),
-                        child: Center(
-                          child: Text("All",
-                              style: TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold)),
+                      child: Center(
+                        child: Text(
+                          AppLocalizations.of(context)!.shop_category,
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
+                // Other categories
                 for (var i = 0; i < 5; i++)
                   Expanded(
+                    flex: 1,
                     child: GestureDetector(
                       onTap: () {
                         setState(() {
@@ -194,9 +196,7 @@ class _ShopState extends ConsumerState<Shop> {
                         });
                       },
                       child: Container(
-                        // ช่องสี่เหลี่ยม for categories
                         height: 45,
-                        width: 48,
                         margin: EdgeInsets.all(8),
                         decoration: BoxDecoration(
                           color: selectedCategory == i
