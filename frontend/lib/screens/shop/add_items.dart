@@ -176,10 +176,10 @@ class _AddItemsState extends ConsumerState<AddItems> {
   @override
   Widget build(BuildContext context) {
     final productOwnerId = widget.productOwnerId;
-    final user = ref.read(userProvider);
     return Scaffold(
         appBar: Toolbar(title: "Add Product"),
         body: Consumer(builder: (context, ref, child) {
+          final user = ref.read(userProvider);
           return SingleChildScrollView(
             child: Column(
               children: [
@@ -634,8 +634,12 @@ class _AddItemsState extends ConsumerState<AddItems> {
 
                             List<String> imageUrls =
                                 await _uploadImagesToCloudinary();
+                            print(user);
+                            print(imageUrls);
+                            print(user!.id);
+                            print(user.displayName);
                             await createProduct(
-                                imageUrls, user!.id, user.username);
+                                imageUrls, user!.id, user.displayName);
 
                             ref.invalidate(productProvider);
                             await Future.delayed(Duration(milliseconds: 100));

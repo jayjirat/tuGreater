@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/components/toolbar.dart';
+import 'package:frontend/providers/user_provider.dart';
 import 'package:frontend/screens/shop/edit_items.dart';
 import 'package:frontend/providers/product_provider.dart';
 import 'package:tuple/tuple.dart';
 
 class ManageItems extends ConsumerWidget {
-  final String productOwnerId = "888"; //mockup
   const ManageItems({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final user = ref.read(userProvider);
     final productManageAsyncValue =
-        ref.watch(productProviderByProductOwnerId(productOwnerId));
+        ref.watch(productProviderByProductOwnerId(user!.id));
 
     return Scaffold(
       appBar: Toolbar(title: "Manage Products"),
@@ -69,8 +70,7 @@ class ManageItems extends ConsumerWidget {
                                         MaterialPageRoute(
                                             builder: (context) => EditItems(
                                                 productId: product.productId,
-                                                productOwnerId:
-                                                    productOwnerId)));
+                                                productOwnerId: user.id)));
                                   },
                                   style: FilledButton.styleFrom(
                                     backgroundColor:
@@ -118,8 +118,8 @@ class ManageItems extends ConsumerWidget {
 
                                 await Future.delayed(
                                     Duration(milliseconds: 100));
-                                ref.refresh(productProviderByProductOwnerId(
-                                    productOwnerId));
+                                ref.refresh(
+                                    productProviderByProductOwnerId(user.id));
 
                                 ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
