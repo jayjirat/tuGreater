@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:frontend/components/custom_bottom_navigationbar.dart';
-import 'package:frontend/pages/manage_items.dart';
-import 'package:frontend/pages/shop.dart';
+import 'package:frontend/screens/shop/manage_items.dart';
+import 'package:frontend/screens/shop/shop.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() async {

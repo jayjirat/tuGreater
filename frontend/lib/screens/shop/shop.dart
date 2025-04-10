@@ -4,7 +4,7 @@ import 'package:frontend/components/filter_modal.dart';
 import 'package:frontend/components/grid_items.dart';
 import 'package:frontend/components/toolbar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:frontend/pages/add_items.dart';
+import 'package:frontend/screens/shop/add_items.dart';
 
 class Shop extends ConsumerStatefulWidget {
   const Shop({super.key});
