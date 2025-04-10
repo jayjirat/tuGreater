@@ -23,8 +23,8 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: Scaffold(
-        // body: Shop(),
-        body: ManageItems(),
+        body: Shop(),
+        // body: ManageItems(),
         bottomNavigationBar: CustomBottomNavigationBar(),
       ),
     );
