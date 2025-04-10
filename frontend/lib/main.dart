@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/setting_page/profile_page.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:frontend/setting_page/localize_test.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:frontend/providers/locale_provider.dart';
+import 'package:provider/provider.dart';
 
 class AppThemes {
   // Light Theme
@@ -131,7 +135,12 @@ class AppThemes {
 }
 
 void main() {
-  runApp(const ProviderScope(child: MyApp()));
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => LocaleProvider(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -140,12 +149,24 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    // Retrieve the current locale from the provider
+    final locale = context.watch<LocaleProvider>().locale;
+
     return MaterialApp(
-      theme: AppThemes.lightTheme,
-      darkTheme: AppThemes.darkTheme,
-      themeMode: ThemeMode
-          .system, // This will use dark or light theme based on system settings
-      home: ProfilePage(),
+      supportedLocales: [
+        Locale('en'), 
+        Locale('th'),
+      ],
+      localizationsDelegates: [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      locale: locale, // Apply the locale
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
+      home: LocalizeTest(),
     );
   }
 }

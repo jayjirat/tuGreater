@@ -39,6 +39,11 @@ dependencies:
   http: ^1.1.0
   flutter_riverpod: ^2.6.1 
   riverpod_annotation: ^2.1.0
+  flutter_localizations:
+    sdk: flutter
+  intl: any
+  provider: ^6.0.3  
+  
 
 
 dev_dependencies:
@@ -56,6 +61,7 @@ dev_dependencies:
   riverpod_generator: ^2.2.0
   custom_lint:
   riverpod_lint:
+  
 
 
 # For information on the generic Dart part of this file, see the
@@ -68,6 +74,16 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+  generate: true
+  assets:
+    - lib/l10n/
+
+l10n:
+  arb-dir: lib/l10n
+  template-arb-file: app_en.arb
+  output-localization-file: app_localizations.dart
+  output-dir: lib/generated
+
 
   # To add assets to your application, add an assets section, like this:
   # assets:

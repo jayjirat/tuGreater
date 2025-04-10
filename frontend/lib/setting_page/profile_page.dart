@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:frontend/setting_page/setting_page.dart';
 import 'package:frontend/setting_page/uploadprofile_page.dart';
 import 'package:frontend/components/custom_bottom_navigation.dart';
-import 'package:frontend/services/displayname_api_service.dart';
+import 'package:frontend/services/displayname_api_service.dart'; 
+
 
 class ProfilePage extends StatefulWidget {
   final String studentId;
@@ -13,7 +14,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  final StudentApiService _apiService = StudentApiService();
+  final DisplaynameApiService _apiService = DisplaynameApiService();
 
   String displayName = "Loading...";
   bool _isLoading = true;
@@ -26,6 +27,8 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future<void> _loadStudentDisplayName() async {
+    if (!mounted) return;
+
     setState(() {
       _isLoading = true;
       _errorMessage = '';
@@ -33,11 +36,16 @@ class _ProfilePageState extends State<ProfilePage> {
 
     try {
       final name = await _apiService.getStudentDisplayName(widget.studentId);
+
+      if (!mounted) return;
+
       setState(() {
         displayName = name;
         _isLoading = false;
       });
     } catch (e) {
+      if (!mounted) return;
+
       setState(() {
         _errorMessage = 'Failed to load display name';
         _isLoading = false;
@@ -45,44 +53,68 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
+  // Separate method to show snackbar to avoid context issues
+  void _showSnackBar(String message, {bool isError = false}) {
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(message),
+      backgroundColor: isError ? Colors.red : null,
+    ));
+  }
+
   Future<void> _updateDisplayName(String newName) async {
+    if (newName.trim().isEmpty || newName == displayName) {
+      return; // No change or empty name
+    }
+
+    final previousName = displayName;
+
+    // Set optimistic update
     setState(() {
-      _isLoading = true;
-      _errorMessage = '';
+      displayName = newName;
     });
 
     try {
       final success =
           await _apiService.updateStudentDisplayName(widget.studentId, newName);
 
+      if (!mounted) return;
+
       if (success) {
-        setState(() {
-          displayName = newName;
-          _isLoading = false;
-        });
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('Display name updated successfully!')));
+        _showSnackBar('Display name updated successfully!');
+
+        // Refresh the display name from server to ensure consistency
+        _loadStudentDisplayName();
       } else {
+        // API returned false but didn't throw an exception
         setState(() {
-          _errorMessage = 'Failed to update display name';
-          _isLoading = false;
+          displayName = previousName; // Revert to previous name
         });
+        _showSnackBar('Failed to update display name', isError: true);
       }
     } catch (e) {
+      if (!mounted) return;
+
+      // Revert the optimistic update
       setState(() {
-        _errorMessage = 'Error updating display name';
-        _isLoading = false;
+        displayName = previousName;
       });
+
+      _showSnackBar('Error: ${e.toString()}', isError: true);
     }
   }
 
   void _showChangeNameDialog() {
+    if (!mounted) return;
+
     final TextEditingController nameController =
         TextEditingController(text: displayName);
 
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (BuildContext dialogContext) {
+        // Use separate context for dialog
         return AlertDialog(
           title: const Text('Change Display Name'),
           content: TextField(
@@ -95,14 +127,16 @@ class _ProfilePageState extends State<ProfilePage> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(dialogContext).pop();
               },
               child: const Text('Cancel'),
             ),
             ElevatedButton(
               onPressed: () {
-                _updateDisplayName(nameController.text);
-                Navigator.of(context).pop();
+                final newName = nameController.text.trim();
+                Navigator.of(dialogContext).pop();
+                // Call update method after dialog is closed
+                _updateDisplayName(newName);
               },
               child: const Text('Save'),
             ),

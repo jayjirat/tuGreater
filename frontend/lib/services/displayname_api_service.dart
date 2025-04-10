@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-class StudentApiService {
+class DisplaynameApiService {
   final String baseUrl = 'http://10.0.2.2:8080/api';
 
   /// Get the display name of a student by their ID
@@ -15,13 +15,11 @@ class StudentApiService {
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = json.decode(response.body);
-        print(data);
         return data['displayName'];
       } else {
         throw Exception('Failed to get display name: ${response.statusCode}');
       }
     } catch (e) {
-      print(e);
       throw Exception('Error getting display name: $e');
     }
   }
