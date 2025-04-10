@@ -8,9 +8,27 @@ import 'package:frontend/dpname.dart';
 import 'package:frontend/login.dart';
 // import 'package:TUGREATER/lib/login.dart';
 
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:frontend/providers/locale_provider.dart';
+import 'package:frontend/providers/theme_provider.dart';
+import 'package:provider/provider.dart' as pd;
+
 void main() async {
-  await dotenv.load(fileName: ".env");
-  runApp(ProviderScope(child: MyApp()));
+  WidgetsFlutterBinding.ensureInitialized();
+  // await dotenv.load(fileName: ".env");
+
+  runApp(
+    ProviderScope(
+      child: pd.MultiProvider(
+        providers: [
+          pd.ChangeNotifierProvider(create: (_) => ThemeProvider()),
+          pd.ChangeNotifierProvider(create: (_) => LocaleProvider()),
+        ],
+        child: MyApp(),
+      ),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -19,22 +37,25 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    final themeProvider = pd.Provider.of<ThemeProvider>(context);
+    final localeProvider = pd.Provider.of<LocaleProvider>(context);
+
     return MaterialApp(
+        supportedLocales: [
+          Locale('en'),
+          Locale('th'),
+        ],
+        localizationsDelegates: [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        locale: localeProvider.locale, // Get locale from provider
+        themeMode: themeProvider.themeMode,
+        theme: themeProvider.lightTheme,
+        darkTheme: themeProvider.darkTheme,
         title: 'Flutter Demo',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          elevatedButtonTheme: ElevatedButtonThemeData(
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFFFF7622),
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  padding: EdgeInsets.symmetric(vertical: 18, horizontal: 50))),
-          useMaterial3: true,
-          primaryColor: Colors.red,
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-        ),
         initialRoute: '/',
         routes: {
           '/': (context) => Login(),

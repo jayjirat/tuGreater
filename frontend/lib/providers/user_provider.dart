@@ -41,6 +41,7 @@ class UserNotifier extends StateNotifier<User?> {
 
         // Fetch user in db
         final existingUser = await http.get(usernameUrl);
+        print("YYYYY");
         print(existingUser.statusCode);
         final usernameNew = tuResponseData['displayname_en'];
         // User not found in db -> Create new user (First Login)
@@ -55,7 +56,9 @@ class UserNotifier extends StateNotifier<User?> {
 
           final createUserResponse = await http.post(Uri.parse(userDBUrl),
               headers: {"content-type": "application/json"}, body: userBody);
-
+          print("ZZZZZZZ");
+          print(createUserResponse.body);
+          print("XXXXXXXXXX");
           if (createUserResponse.statusCode == 201) {
             if (context.mounted) {
               final data = json.decode(createUserResponse.body);
@@ -93,6 +96,7 @@ class UserNotifier extends StateNotifier<User?> {
           print("Community screen");
         } else {
           print("error");
+          print("xxxxxxxxxx");
           // TODO  Notify the error to user
         }
 
