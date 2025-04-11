@@ -41,5 +41,7 @@
   "create_product_waiting":"กำลังสร้างสินค้า...",
   "edit_product_title":"แก้ไขสินค้า",
   "edit_product_waiting":"กำลังแก้ไขสินค้า...",
-  "edit_product_save":"บันทึก"
+  "edit_product_save":"บันทึก",
+  "product_detail_title":"รายละเอียดสินค้า",
+  "product_detail_report":"รายงาน"
 }
