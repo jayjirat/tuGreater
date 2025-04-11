@@ -101,14 +101,14 @@ class _AddItemsState extends ConsumerState<AddItems> {
             children: <Widget>[
               ListTile(
                 leading: Icon(Icons.photo_library),
-                title: Text('Photo Library'),
+                title: Text(AppLocalizations.of(context)!.product_images_popup),
                 onTap: () {
                   _pickImagesFromGallery();
                 },
               ),
               ListTile(
                 leading: Icon(Icons.photo_camera),
-                title: Text('Camera'),
+                title: Text(AppLocalizations.of(context)!.product_camera_popup),
                 onTap: () {
                   _pickImageFromCamera();
                 },

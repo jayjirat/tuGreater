@@ -27,6 +27,8 @@
     "filter_apply":"Apply",
     "add_product_title":"Add Product",
     "product_images":"Upload Images",
+    "product_images_popup":"Photo Library",
+    "product_camera_popup":"Camera",
     "product_name":"Name",
     "product_name_placeholder":"Enter Name...",
     "product_price_placeholder":"Baht",

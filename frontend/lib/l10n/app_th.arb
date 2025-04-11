@@ -24,6 +24,8 @@
   "filter_apply": "ใช้",
   "add_product_title": "เพิ่มสินค้า",
   "product_images": "อัปโหลดรูปภาพ",
+  "product_images_popup": "คลังรูปภาพ",
+  "product_camera_popup": "กล้องถ่ายรูป",
   "product_name": "ชื่อสินค้า",
   "product_name_placeholder": "กรอกชื่อสินค้า...",
   "product_price_placeholder": "บาท",
