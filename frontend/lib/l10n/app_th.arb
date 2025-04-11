@@ -38,5 +38,8 @@
   "product_description_placeholder": "กรอกรายละเอียด...",
   "product_caution": "*โปรดตรวจสอบว่าได้ใส่ช่องทางการติดต่อลงไปในรายละเอียด",
   "create_product": "เพิ่มสินค้า",
-  "create_product_waiting":"กำลังสร้างสินค้า"
+  "create_product_waiting":"กำลังสร้างสินค้า...",
+  "edit_product_title":"แก้ไขสินค้า",
+  "edit_product_waiting":"กำลังแก้ไขสินค้า...",
+  "edit_product_save":"บันทึก"
 }

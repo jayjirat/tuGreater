@@ -258,26 +258,34 @@ class _AddItemsState extends ConsumerState<AddItems> {
                 children: [
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        AppLocalizations.of(context)!.product_name,
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
+                    child: SizedBox(
+                      width: 180,
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          AppLocalizations.of(context)!.product_name,
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                  SizedBox(
-                    width: 148,
-                  ),
+                  SizedBox(width: 20),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        AppLocalizations.of(context)!.product_price,
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
+                    child: SizedBox(
+                      width: 100,
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          AppLocalizations.of(context)!.product_price,
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
                     ),
                   ),

@@ -41,5 +41,8 @@
     "product_description_placeholder":"Enter Description...", 
     "product_caution":"*Please make sure that contact information has been included in the details",
     "create_product":"Add Product",
-    "create_product_waiting":"Creating product"
+    "create_product_waiting":"Creating product...",
+    "edit_product_title":"Edit Product",
+    "edit_product_waiting":"Editing product...",
+    "edit_product_save":"Save"
 }
