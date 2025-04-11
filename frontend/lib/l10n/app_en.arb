@@ -46,5 +46,13 @@
     "edit_product_waiting":"Editing product...",
     "edit_product_save":"Save",
     "product_detail_title":"Item Detail",
-    "product_detail_report":"Report"
+    "product_detail_report":"Report",
+    "report_product":"Product Report",
+    "report_illegal_product":"Illegal product",
+    "report_item_does_not_match_the_description":"Item does not match the description",
+    "report_seller_did_not_deliver_the_item":"Seller did not deliver the item",
+    "report_Other_please_specify":"Other (please specify)",
+    "report_description":"Report Description",
+    "report_description_placeholder":"Enter Description...",
+    "report_submit":"Submit Report"
 }

@@ -52,7 +52,6 @@ class ItemDetail extends ConsumerWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: product.productTags.map((tag) {
                         final localizations = AppLocalizations.of(context)!;
-
                         final displayTag = {
                               "มือหนึ่ง": localizations.tag_first_hand,
                               "มือสอง": localizations.tag_second_hand,

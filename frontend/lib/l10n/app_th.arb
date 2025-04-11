@@ -43,5 +43,13 @@
   "edit_product_waiting":"กำลังแก้ไขสินค้า...",
   "edit_product_save":"บันทึก",
   "product_detail_title":"รายละเอียดสินค้า",
-  "product_detail_report":"รายงาน"
+  "product_detail_report":"รายงาน",
+  "report_product": "รายงานสินค้า",
+  "report_illegal_product": "สินค้าผิดกฎหมาย",
+  "report_item_does_not_match_the_description": "สินค้าไม่ตรงตามที่ระบุ",
+  "report_seller_did_not_deliver_the_item": "ผู้ขายไม่ส่งมอบสินค้า",
+  "report_Other_please_specify": "อื่น ๆ (โปรดระบุ)",
+  "report_description": "รายละเอียดคำร้อง",
+  "report_description_placeholder": "กรอกรายละเอียด...",
+  "report_submit": "ส่งรายงาน"
 }

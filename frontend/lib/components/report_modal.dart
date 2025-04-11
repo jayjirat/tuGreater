@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ReportModal extends StatefulWidget {
   const ReportModal({super.key});
@@ -23,7 +24,7 @@ class _ReportModalState extends State<ReportModal> {
         child: Column(
           children: [
             Text(
-              "คำร้องโพสต์สินค้า",
+              AppLocalizations.of(context)!.report_product,
               style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
             ),
             Padding(
@@ -37,7 +38,7 @@ class _ReportModalState extends State<ReportModal> {
                           isChecked1 = value!;
                         });
                       }),
-                  Text("ของผิดกฎหมาย")
+                  Text(AppLocalizations.of(context)!.report_illegal_product)
                 ],
               ),
             ),
@@ -50,7 +51,8 @@ class _ReportModalState extends State<ReportModal> {
                         isChecked2 = value!;
                       });
                     }),
-                Text("โฆษณาสินค้าเกินจริง")
+                Text(AppLocalizations.of(context)!
+                    .report_item_does_not_match_the_description)
               ],
             ),
             Row(
@@ -62,7 +64,8 @@ class _ReportModalState extends State<ReportModal> {
                         isChecked3 = value!;
                       });
                     }),
-                Text("ผู้ขายไม่ส่งมอบสินค้า")
+                Text(AppLocalizations.of(context)!
+                    .report_seller_did_not_deliver_the_item)
               ],
             ),
             Row(
@@ -74,7 +77,7 @@ class _ReportModalState extends State<ReportModal> {
                         isChecked4 = value!;
                       });
                     }),
-                Text("อื่นๆ")
+                Text(AppLocalizations.of(context)!.report_Other_please_specify)
               ],
             ),
             SizedBox(
@@ -86,7 +89,7 @@ class _ReportModalState extends State<ReportModal> {
                   width: 15,
                 ),
                 Text(
-                  "รายละเอียดคำร้อง",
+                  AppLocalizations.of(context)!.report_description,
                   style: TextStyle(fontSize: 20),
                 ),
               ],
@@ -101,7 +104,8 @@ class _ReportModalState extends State<ReportModal> {
                     maxLines: null,
                     minLines: 5,
                     decoration: InputDecoration(
-                      hintText: "Enter Description...",
+                      hintText: AppLocalizations.of(context)!
+                          .report_description_placeholder,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(25),
                         borderSide: BorderSide.none,
@@ -121,7 +125,7 @@ class _ReportModalState extends State<ReportModal> {
                   ),
                   onPressed: () {},
                   child: Text(
-                    "Report Sale Post",
+                    AppLocalizations.of(context)!.report_submit,
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 20,
