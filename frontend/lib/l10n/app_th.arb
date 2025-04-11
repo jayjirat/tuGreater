@@ -21,5 +21,20 @@
   "filter_date_new_first": "ใหม่สุดก่อน",
   "filter_date_old_first": "เก่าสุดก่อน",
   "filter_reset": "รีเซ็ต",
-  "filter_apply": "ใช้"
+  "filter_apply": "ใช้",
+  "add_product_title": "เพิ่มสินค้า",
+  "product_images": "อัปโหลดรูปภาพ",
+  "product_name": "ชื่อสินค้า",
+  "product_name_placeholder": "กรอกชื่อสินค้า...",
+  "product_price_placeholder": "บาท",
+  "product_price": "ราคา",
+  "product_category": "หมวดหมู่",
+  "product_select_category": "เลือกหมวดหมู่",
+  "product_tag": "แท็ก",
+  "product_tag_other": "อื่นๆ",
+  "product_description": "รายละเอียด",
+  "product_description_placeholder": "กรอกรายละเอียด...",
+  "product_caution": "*โปรดตรวจสอบว่าได้ใส่ช่องทางการติดต่อลงไปในรายละเอียด",
+  "create_product": "เพิ่มสินค้า",
+  "create_product_waiting":"กำลังสร้างสินค้า"
 }

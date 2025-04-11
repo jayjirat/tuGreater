@@ -179,122 +179,138 @@ class _FilterModalState extends State<FilterModal> {
                 ),
               ],
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: 110,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Checkbox(
-                        value: isCheckedFirstHanded,
-                        onChanged: (value) {
-                          setState(() {
-                            isCheckedFirstHanded = value!;
-                            if (value == true) {
-                              selectedTags.add("มือหนึ่ง");
-                            } else {
-                              selectedTags.remove("มือหนึ่ง");
-                            }
-                          });
-                        },
-                      ),
-                      Text(AppLocalizations.of(context)!.tag_first_hand),
-                    ],
+            Padding(
+              padding: EdgeInsets.symmetric(),
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 110,
+                    child: Row(
+                      children: [
+                        Checkbox(
+                          value: isCheckedFirstHanded,
+                          onChanged: (value) {
+                            setState(() {
+                              isCheckedFirstHanded = value!;
+                              if (value == true) {
+                                selectedTags.add("มือหนึ่ง");
+                              } else {
+                                selectedTags.remove("มือหนึ่ง");
+                              }
+                            });
+                          },
+                        ),
+                        Flexible(
+                            child: Text(
+                                AppLocalizations.of(context)!.tag_first_hand)),
+                      ],
+                    ),
                   ),
-                ),
-                SizedBox(
-                  width: 110,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Checkbox(
-                        value: isCheckedSecondHanded,
-                        onChanged: (value) {
-                          setState(() {
-                            isCheckedSecondHanded = value!;
-                            if (value == true) {
-                              selectedTags.add("มือสอง");
-                            } else {
-                              selectedTags.remove("มือสอง");
-                            }
-                          });
-                        },
-                      ),
-                      Text(AppLocalizations.of(context)!.tag_second_hand),
-                    ],
+
+                  // Second checkbox
+                  SizedBox(
+                    width: 110,
+                    child: Row(
+                      children: [
+                        Checkbox(
+                          value: isCheckedSecondHanded,
+                          onChanged: (value) {
+                            setState(() {
+                              isCheckedSecondHanded = value!;
+                              if (value == true) {
+                                selectedTags.add("มือสอง");
+                              } else {
+                                selectedTags.remove("มือสอง");
+                              }
+                            });
+                          },
+                        ),
+                        Flexible(
+                            child: Text(
+                                AppLocalizations.of(context)!.tag_second_hand)),
+                      ],
+                    ),
                   ),
-                ),
-                SizedBox(
-                  width: 110,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Checkbox(
-                        value: isCheckedClean,
-                        onChanged: (value) {
-                          setState(() {
-                            isCheckedClean = value!;
-                            if (value == true) {
-                              selectedTags.add("สะอาด");
-                            } else {
-                              selectedTags.remove("สะอาด");
-                            }
-                          });
-                        },
-                      ),
-                      Text(AppLocalizations.of(context)!.tag_clean),
-                    ],
+
+                  // Third checkbox
+                  SizedBox(
+                    width: 130,
+                    child: Row(
+                      children: [
+                        Checkbox(
+                          value: isCheckedGood,
+                          onChanged: (value) {
+                            setState(() {
+                              isCheckedGood = value!;
+                              if (value == true) {
+                                selectedTags.add("สภาพดี");
+                              } else {
+                                selectedTags.remove("สภาพดี");
+                              }
+                            });
+                          },
+                        ),
+                        Flexible(
+                            child: Text(AppLocalizations.of(context)!
+                                .tag_good_quality)),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-            Row(
-              children: [
-                SizedBox(
-                  width: 110,
-                  child: Row(
-                    children: [
-                      Checkbox(
-                        value: isCheckedDelicious,
-                        onChanged: (value) {
-                          setState(() {
-                            isCheckedDelicious = value!;
-                            if (value == true) {
-                              selectedTags.add("อร่อย");
-                            } else {
-                              selectedTags.remove("อร่อย");
-                            }
-                          });
-                        },
-                      ),
-                      Text(AppLocalizations.of(context)!.tag_delicious),
-                    ],
+            Padding(
+              padding: EdgeInsets.symmetric(),
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 110,
+                    child: Row(
+                      children: [
+                        Checkbox(
+                          value: isCheckedDelicious,
+                          onChanged: (value) {
+                            setState(() {
+                              isCheckedDelicious = value!;
+                              if (value == true) {
+                                selectedTags.add("อร่อย");
+                              } else {
+                                selectedTags.remove("อร่อย");
+                              }
+                            });
+                          },
+                        ),
+                        Flexible(
+                            child: Text(
+                                AppLocalizations.of(context)!.tag_delicious)),
+                      ],
+                    ),
                   ),
-                ),
-                SizedBox(
-                  width: 150,
-                  child: Row(
-                    children: [
-                      Checkbox(
-                        value: isCheckedGood,
-                        onChanged: (value) {
-                          setState(() {
-                            isCheckedGood = value!;
-                            if (value == true) {
-                              selectedTags.add("สภาพดี");
-                            } else {
-                              selectedTags.remove("สภาพดี");
-                            }
-                          });
-                        },
-                      ),
-                      Text(AppLocalizations.of(context)!.tag_good_quality),
-                    ],
+                  SizedBox(
+                    width: 120,
+                    child: Row(
+                      children: [
+                        Checkbox(
+                          value: isCheckedClean,
+                          onChanged: (value) {
+                            setState(() {
+                              isCheckedClean = value!;
+                              if (value == true) {
+                                selectedTags.add("สะอาด");
+                              } else {
+                                selectedTags.remove("สะอาด");
+                              }
+                            });
+                          },
+                        ),
+                        Flexible(
+                            child:
+                                Text(AppLocalizations.of(context)!.tag_clean)),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
             Row(
               children: [

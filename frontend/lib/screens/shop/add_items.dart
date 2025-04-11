@@ -10,9 +10,9 @@ import 'package:frontend/providers/user_provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AddItems extends ConsumerStatefulWidget {
-  final String productOwnerId = "888"; //mockup
   const AddItems({super.key});
 
   @override
@@ -175,10 +175,9 @@ class _AddItemsState extends ConsumerState<AddItems> {
 
   @override
   Widget build(BuildContext context) {
-    final productOwnerId = widget.productOwnerId;
     final user = ref.watch(userProvider);
     return Scaffold(
-        appBar: Toolbar(title: "Add Product"),
+        appBar: Toolbar(title: AppLocalizations.of(context)!.add_product_title),
         body: SingleChildScrollView(
           child: Column(
             children: [
@@ -222,7 +221,9 @@ class _AddItemsState extends ConsumerState<AddItems> {
                                   children: [
                                     SvgPicture.asset("assets/svg/upload.svg"),
                                     SizedBox(height: 5),
-                                    Text("Upload Images",
+                                    Text(
+                                        AppLocalizations.of(context)!
+                                            .product_images,
                                         style: TextStyle(fontSize: 16)),
                                   ],
                                 ),
@@ -260,7 +261,7 @@ class _AddItemsState extends ConsumerState<AddItems> {
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        "Name",
+                        AppLocalizations.of(context)!.product_name,
                         style: TextStyle(
                             fontSize: 20, fontWeight: FontWeight.bold),
                       ),
@@ -274,7 +275,7 @@ class _AddItemsState extends ConsumerState<AddItems> {
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        "Price",
+                        AppLocalizations.of(context)!.product_price,
                         style: TextStyle(
                             fontSize: 20, fontWeight: FontWeight.bold),
                       ),
@@ -293,7 +294,8 @@ class _AddItemsState extends ConsumerState<AddItems> {
                         child: TextField(
                           controller: nameController,
                           decoration: InputDecoration(
-                            hintText: "Enter Name...",
+                            hintText: AppLocalizations.of(context)!
+                                .product_name_placeholder,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(25),
                               borderSide: BorderSide.none,
@@ -319,7 +321,8 @@ class _AddItemsState extends ConsumerState<AddItems> {
                             FilteringTextInputFormatter.digitsOnly
                           ], // Allow only numbers
                           decoration: InputDecoration(
-                            hintText: "Baht",
+                            hintText: AppLocalizations.of(context)!
+                                .product_price_placeholder,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(25),
                               borderSide: BorderSide.none,
@@ -343,7 +346,7 @@ class _AddItemsState extends ConsumerState<AddItems> {
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    "Category",
+                    AppLocalizations.of(context)!.product_category,
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -360,7 +363,8 @@ class _AddItemsState extends ConsumerState<AddItems> {
                     fillColor: Colors.grey[200], // Background color
                   ),
                   value: selectedCategory,
-                  hint: Text("Select Category"),
+                  hint: Text(
+                      AppLocalizations.of(context)!.product_select_category),
                   items: ["Food", "Drink", "Dormitory", "Clothes", "Others"]
                       .map((category) {
                     return DropdownMenuItem(
@@ -380,7 +384,7 @@ class _AddItemsState extends ConsumerState<AddItems> {
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    "Tag",
+                    AppLocalizations.of(context)!.product_tag,
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -389,66 +393,79 @@ class _AddItemsState extends ConsumerState<AddItems> {
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 child: Row(
                   children: [
-                    // First checkbox with fixed text
-                    Row(
-                      children: [
-                        Checkbox(
-                          value: isCheckedFirstHanded,
-                          onChanged: (value) {
-                            setState(() {
-                              isCheckedFirstHanded = value!;
-                              if (value!) {
-                                tags.add("มือหนึ่ง");
-                              } else {
-                                tags.remove("มือหนึ่ง");
-                              }
-                            });
-                          },
-                        ),
-                        Text("มือหนึ่ง"),
-                      ],
+                    // First checkbox
+                    SizedBox(
+                      width: 110,
+                      child: Row(
+                        children: [
+                          Checkbox(
+                            value: isCheckedFirstHanded,
+                            onChanged: (value) {
+                              setState(() {
+                                isCheckedFirstHanded = value!;
+                                if (value) {
+                                  tags.add("มือหนึ่ง");
+                                } else {
+                                  tags.remove("มือหนึ่ง");
+                                }
+                              });
+                            },
+                          ),
+                          Flexible(
+                              child: Text(AppLocalizations.of(context)!
+                                  .tag_first_hand)),
+                        ],
+                      ),
                     ),
-                    SizedBox(width: 10), // Spacing
 
-                    // Second checkbox with fixed text
-                    Row(
-                      children: [
-                        Checkbox(
-                          value: isCheckedSecondHanded,
-                          onChanged: (value) {
-                            setState(() {
-                              isCheckedSecondHanded = value!;
-                              if (value!) {
-                                tags.add("มือสอง");
-                              } else {
-                                tags.remove("มือสอง");
-                              }
-                            });
-                          },
-                        ),
-                        Text("มือสอง"),
-                      ],
+                    // Second checkbox
+                    SizedBox(
+                      width: 110,
+                      child: Row(
+                        children: [
+                          Checkbox(
+                            value: isCheckedSecondHanded,
+                            onChanged: (value) {
+                              setState(() {
+                                isCheckedSecondHanded = value!;
+                                if (value) {
+                                  tags.add("มือสอง");
+                                } else {
+                                  tags.remove("มือสอง");
+                                }
+                              });
+                            },
+                          ),
+                          Flexible(
+                              child: Text(AppLocalizations.of(context)!
+                                  .tag_second_hand)),
+                        ],
+                      ),
                     ),
-                    SizedBox(width: 10), // Spacing
 
-                    // Third checkbox with a text field
-                    Row(
-                      children: [
-                        Checkbox(
-                          value: isCheckedThirdHanded,
-                          onChanged: (value) {
-                            setState(() {
-                              isCheckedThirdHanded = value!;
-                              if (value!) {
-                                tags.add("สภาพดี");
-                              } else {
-                                tags.remove("สภาพดี");
-                              }
-                            });
-                          },
-                        ),
-                        Text("สภาพดี"),
-                      ],
+                    // Third checkbox
+                    SizedBox(
+                      width: 130,
+                      child: Row(
+                        children: [
+                          Checkbox(
+                            value: isCheckedThirdHanded,
+                            onChanged: (value) {
+                              setState(() {
+                                isCheckedThirdHanded = value!;
+                                if (value) {
+                                  tags.add("สภาพดี");
+                                } else {
+                                  tags.remove("สภาพดี");
+                                }
+                              });
+                            },
+                          ),
+                          Flexible(
+                              child: Text(AppLocalizations.of(context)!
+                                  .tag_good_quality)),
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -457,85 +474,96 @@ class _AddItemsState extends ConsumerState<AddItems> {
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 child: Row(
                   children: [
-                    // First checkbox with fixed text
-                    Row(
-                      children: [
-                        Checkbox(
-                          value: isCheckedFourthHanded,
-                          onChanged: (value) {
-                            setState(() {
-                              isCheckedFourthHanded = value!;
-                              if (value!) {
-                                tags.add("อร่อย");
-                              } else {
-                                tags.remove("อร่อย");
-                              }
-                            });
-                          },
-                        ),
-                        Text("อร่อย"),
-                      ],
+                    // Fourth checkbox
+                    SizedBox(
+                      width: 110,
+                      child: Row(
+                        children: [
+                          Checkbox(
+                            value: isCheckedFourthHanded,
+                            onChanged: (value) {
+                              setState(() {
+                                isCheckedFourthHanded = value!;
+                                if (value) {
+                                  tags.add("อร่อย");
+                                } else {
+                                  tags.remove("อร่อย");
+                                }
+                              });
+                            },
+                          ),
+                          Flexible(
+                              child: Text(
+                                  AppLocalizations.of(context)!.tag_delicious)),
+                        ],
+                      ),
                     ),
-                    SizedBox(width: 19), // Spacing
 
-                    // Second checkbox with fixed text
-                    Row(
-                      children: [
-                        Checkbox(
-                          value: isCheckedFifthHanded,
-                          onChanged: (value) {
-                            setState(() {
-                              isCheckedFifthHanded = value!;
-                              if (value!) {
-                                tags.add("สะอาด");
-                              } else {
-                                tags.remove("สะอาด");
-                              }
-                            });
-                          },
-                        ),
-                        Text("สะอาด"),
-                      ],
+                    // Fifth checkbox
+                    SizedBox(
+                      width: 110,
+                      child: Row(
+                        children: [
+                          Checkbox(
+                            value: isCheckedFifthHanded,
+                            onChanged: (value) {
+                              setState(() {
+                                isCheckedFifthHanded = value!;
+                                if (value) {
+                                  tags.add("สะอาด");
+                                } else {
+                                  tags.remove("สะอาด");
+                                }
+                              });
+                            },
+                          ),
+                          Flexible(
+                              child: Text(
+                                  AppLocalizations.of(context)!.tag_clean)),
+                        ],
+                      ),
                     ),
-                    SizedBox(width: 11), // Spacing
 
-                    // Third checkbox with a text field
-                    Row(
-                      children: [
-                        Checkbox(
-                          value: isCheckedOthers,
-                          onChanged: (value) {
-                            setState(() {
-                              isCheckedOthers = value!;
-                              if (!value!) {
-                                otherTagController.clear();
-                                tags.removeWhere(
-                                    (tag) => tag == otherTagController.text);
-                              }
-                            });
-                          },
-                        ),
-                        SizedBox(
-                          width: 100, // Adjust width as needed
-                          child: TextField(
-                            controller: otherTagController,
-                            focusNode: otherTagFocusNode,
-                            enabled:
-                                isCheckedOthers, // Enable only if checkbox is checked
-                            decoration: InputDecoration(
-                              hintText: "อื่นๆ",
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide: BorderSide.none,
+                    // Others checkbox with input
+                    SizedBox(
+                      width: 140,
+                      child: Row(
+                        children: [
+                          Checkbox(
+                            value: isCheckedOthers,
+                            onChanged: (value) {
+                              setState(() {
+                                isCheckedOthers = value!;
+                                if (!value) {
+                                  tags.removeWhere(
+                                    (tag) => tag == otherTagController.text,
+                                  );
+                                  otherTagController.clear();
+                                }
+                              });
+                            },
+                          ),
+                          Flexible(
+                            child: TextField(
+                              controller: otherTagController,
+                              focusNode: otherTagFocusNode,
+                              enabled: isCheckedOthers,
+                              decoration: InputDecoration(
+                                hintText: AppLocalizations.of(context)!
+                                    .product_tag_other,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide.none,
+                                ),
+                                filled: true,
+                                fillColor: Colors.grey[200],
+                                contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 4),
                               ),
-                              filled: true,
-                              fillColor: Colors.grey[200],
-                              contentPadding: EdgeInsets.symmetric(
-                                  horizontal: 8, vertical: 4),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -545,7 +573,7 @@ class _AddItemsState extends ConsumerState<AddItems> {
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    "Description",
+                    AppLocalizations.of(context)!.product_description,
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -561,7 +589,8 @@ class _AddItemsState extends ConsumerState<AddItems> {
                       maxLines: null,
                       minLines: 5,
                       decoration: InputDecoration(
-                        hintText: "Enter Description...",
+                        hintText: AppLocalizations.of(context)!
+                            .product_description_placeholder,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(25),
                           borderSide: BorderSide.none,
@@ -578,7 +607,7 @@ class _AddItemsState extends ConsumerState<AddItems> {
                 child: Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    "*โปรดตรวจสอบว่าได้ใส่ช่องทางการติดต่อลงไปในรายละเอียด",
+                    AppLocalizations.of(context)!.product_caution,
                     style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
@@ -614,7 +643,8 @@ class _AddItemsState extends ConsumerState<AddItems> {
                                       CircularProgressIndicator(),
                                       SizedBox(height: 15),
                                       Text(
-                                        "กำลังสร้างสินค้า...",
+                                        AppLocalizations.of(context)!
+                                            .create_product_waiting,
                                         style: TextStyle(
                                             fontSize: 18,
                                             fontWeight: FontWeight.bold),
@@ -634,7 +664,7 @@ class _AddItemsState extends ConsumerState<AddItems> {
                           ref.invalidate(productProvider);
                           await Future.delayed(Duration(milliseconds: 100));
                           ref.refresh(
-                              productProviderByProductOwnerId(productOwnerId));
+                              productProviderByProductOwnerId(user!.id));
                           Navigator.pop(context);
                           Navigator.pop(context, true);
                         },
@@ -643,7 +673,7 @@ class _AddItemsState extends ConsumerState<AddItems> {
                               MaterialStateProperty.all(Colors.orange),
                         ),
                         child: Text(
-                          "โพสต์เลย",
+                          AppLocalizations.of(context)!.create_product,
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 18,

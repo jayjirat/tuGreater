@@ -656,6 +656,7 @@ class _EditItemsState extends ConsumerState<EditItems> {
                     ),
                   ),
                 ),
+                SizedBox(height: 20),
                 // Post Button
                 FilledButton(
                   onPressed: () async {
@@ -727,6 +728,7 @@ class _EditItemsState extends ConsumerState<EditItems> {
                     style: TextStyle(color: Colors.black, fontSize: 18),
                   ),
                 ),
+                SizedBox(height: 20),
               ],
             ),
           );

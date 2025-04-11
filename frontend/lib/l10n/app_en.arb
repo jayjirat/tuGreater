@@ -24,5 +24,20 @@
     "filter_date_new_first":"New first",
     "filter_date_old_first":"Old first",
     "filter_reset":"Reset",
-    "filter_apply":"Apply"
+    "filter_apply":"Apply",
+    "add_product_title":"Add Product",
+    "product_images":"Upload Images",
+    "product_name":"Name",
+    "product_name_placeholder":"Enter Name...",
+    "product_price_placeholder":"Baht",
+    "product_price":"Price",
+    "product_category":"Category",
+    "product_select_category":"Select Category",
+    "product_tag":"Tag",
+    "product_tag_other":"Others",
+    "product_description":"Description",
+    "product_description_placeholder":"Enter Description...", 
+    "product_caution":"*Please make sure that contact information has been included in the details",
+    "create_product":"Add Product",
+    "create_product_waiting":"Creating product"
 }
