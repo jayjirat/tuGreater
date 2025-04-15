@@ -12,20 +12,32 @@ class CommuPost {
   final bool isEdited;
   final String? imageUrl;
 
-  CommuPost({
-    required this.id,
-    required this.title,
-    required this.description,
-    required this.category,
-    this.likeCount = 0,
-    this.commentCount = 0,
-    required this.createdAt,
-    required this.updatedAt,
-    required this.userId,
-    required this.username,
-    this.isEdited = false,
-    this.imageUrl,
-  });
+  int repostCount;
+  final bool? isReposted;
+  final String? repostedUserId;
+  final String? repostedPostId;
+  final bool? isOriginalDeleted;
+  final DateTime? repostCreatedAt;
+
+  CommuPost(
+      {required this.id,
+      required this.title,
+      required this.description,
+      required this.category,
+      this.likeCount = 0,
+      this.commentCount = 0,
+      this.repostCount = 0,
+      required this.createdAt,
+      required this.updatedAt,
+      required this.userId,
+      required this.username,
+      this.isEdited = false,
+      this.imageUrl,
+      this.isReposted = false,
+      this.repostedUserId,
+      this.repostedPostId,
+      this.isOriginalDeleted,
+      this.repostCreatedAt});
 
   // ฟังก์ชันแปลง JSON เป็น CommuPost
   factory CommuPost.fromJson(Map<String, dynamic> json) {
@@ -36,16 +48,24 @@ class CommuPost {
       category: json['category'] as String,
       likeCount: json['likeCount'] as int? ?? 0,
       commentCount: json['commentCount'] as int? ?? 0,
+      repostCount: json['repostCount'] as int? ?? 0, // เพิ่ม repostCount
       createdAt: json['createdAt'] != null
           ? DateTime.parse(json['createdAt'] as String)
           : DateTime.now(),
       updatedAt: json['updatedAt'] != null
-          ? DateTime.parse(json['createdAt'] as String)
+          ? DateTime.parse(json['updatedAt'] as String)
           : DateTime.now(),
       userId: json['userId'] as String,
       username: json['username'] as String,
       isEdited: json['isEdited'] as bool? ?? false,
       imageUrl: json['imageUrl'] as String?,
+      isReposted: json['isReposted'] as bool? ?? false,
+      repostedUserId: json['repostedUserId'] as String?,
+      repostedPostId: json['repostedPostId'] as String?,
+      isOriginalDeleted: json['isOriginalDeleted'] as bool?,
+      repostCreatedAt: json['repostCreatedAt'] != null
+          ? DateTime.parse(json['repostCreatedAt'] as String)
+          : null,
     );
   }
 }

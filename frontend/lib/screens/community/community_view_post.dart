@@ -32,9 +32,8 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
         .read(commentProvider(widget.id).notifier)
         .fetchCommentByPostId(widget.id);
     final user = ref.read(userProvider);
-    bool liked = await ref
-        .read(communityProvider.notifier)
-        .isLiked(user!.id, widget.id);
+    bool liked =
+        await ref.read(communityProvider.notifier).isLiked(user!.id, widget.id);
 
     if (mounted) {
       setState(() {
@@ -244,8 +243,8 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                           ),
                           _buildActionButton(
                             onTap: () {},
-                            icon: Icons.share_outlined,
-                            label: "Share",
+                            icon: Icons.cached_outlined,
+                            label: "${post.repostCount}",
                           ),
                         ],
                       ),

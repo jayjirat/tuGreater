@@ -123,8 +123,8 @@ Widget communityPost(
                     ),
                     buildActionButton(
                       context: context,
-                      icon: Icons.share_outlined,
-                      label: "Share",
+                      icon: Icons.cached_outlined,
+                      label: "${post.repostCount}",
                     ),
                   ],
                 ),

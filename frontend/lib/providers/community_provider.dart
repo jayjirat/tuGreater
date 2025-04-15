@@ -90,7 +90,8 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
         'isEdited': false,
         'createdAt': DateTime.now().toIso8601String(),
         'updatedAt': DateTime.now().toIso8601String(),
-        'imageUrl': imageUrl // Mock
+        'imageUrl': imageUrl,
+        'repostCount': 0,
       };
 
       final header = {'Content-Type': 'application/json'};
@@ -110,12 +111,13 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
     }
   }
 
-  Future<void> editPost(
-      {required CommuPost oriPost,
-      required String title,
-      required String description,
-      required String category,
-      required String imageUrl}) async {
+  Future<void> editPost({
+    required CommuPost oriPost,
+    required String title,
+    required String description,
+    required String category,
+    required String imageUrl,
+  }) async {
     final url = '$baseURL/community/${oriPost.id}';
     try {
       final Map<String, dynamic> editPost = {
