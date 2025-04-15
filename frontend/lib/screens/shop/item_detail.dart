@@ -154,7 +154,9 @@ class ItemDetail extends ConsumerWidget {
                             context: context,
                             isScrollControlled: true,
                             builder: (context) {
-                              return ReportModal();
+                              return ReportModal(
+                                id: product.productId,
+                              );
                             });
                       },
                       style: ButtonStyle(

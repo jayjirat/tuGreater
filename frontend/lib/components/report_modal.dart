@@ -1,21 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:frontend/models/report.dart';
+import 'package:frontend/providers/report_provider.dart';
+import 'package:frontend/providers/user_provider.dart';
 
-class ReportModal extends StatefulWidget {
-  const ReportModal({super.key});
+class ReportModal extends ConsumerStatefulWidget {
+  final String id;
+  const ReportModal({super.key, required this.id});
 
   @override
-  State<ReportModal> createState() => _ReportModalState();
+  _ReportModalState createState() => _ReportModalState();
 }
 
-class _ReportModalState extends State<ReportModal> {
+class _ReportModalState extends ConsumerState<ReportModal> {
   bool isChecked1 = false;
   bool isChecked2 = false;
   bool isChecked3 = false;
   bool isChecked4 = false;
+  List<String> reportReasons = [];
+  TextEditingController descriptionController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    String productId = widget.id;
+    final user = ref.read(userProvider);
     return Container(
       height: 600,
       padding: EdgeInsets.all(24),
@@ -36,6 +45,11 @@ class _ReportModalState extends State<ReportModal> {
                       onChanged: (value) {
                         setState(() {
                           isChecked1 = value!;
+                          if (isChecked1) {
+                            reportReasons.add("Illegal Product");
+                          } else {
+                            reportReasons.remove("Illegal Product");
+                          }
                         });
                       }),
                   Text(AppLocalizations.of(context)!.report_illegal_product)
@@ -49,6 +63,11 @@ class _ReportModalState extends State<ReportModal> {
                     onChanged: (value) {
                       setState(() {
                         isChecked2 = value!;
+                        if (isChecked2) {
+                          reportReasons.add("Description does not match");
+                        } else {
+                          reportReasons.remove("Description does not match");
+                        }
                       });
                     }),
                 Text(AppLocalizations.of(context)!
@@ -62,6 +81,11 @@ class _ReportModalState extends State<ReportModal> {
                     onChanged: (value) {
                       setState(() {
                         isChecked3 = value!;
+                        if (isChecked3) {
+                          reportReasons.add("Did not deliver the item");
+                        } else {
+                          reportReasons.remove("Did not deliver the item");
+                        }
                       });
                     }),
                 Text(AppLocalizations.of(context)!
@@ -75,6 +99,11 @@ class _ReportModalState extends State<ReportModal> {
                     onChanged: (value) {
                       setState(() {
                         isChecked4 = value!;
+                        if (isChecked4) {
+                          reportReasons.add("Other");
+                        } else {
+                          reportReasons.remove("Other");
+                        }
                       });
                     }),
                 Text(AppLocalizations.of(context)!.report_Other_please_specify)
@@ -103,6 +132,7 @@ class _ReportModalState extends State<ReportModal> {
                   child: TextField(
                     maxLines: null,
                     minLines: 5,
+                    controller: descriptionController,
                     decoration: InputDecoration(
                       hintText: AppLocalizations.of(context)!
                           .report_description_placeholder,
@@ -123,7 +153,22 @@ class _ReportModalState extends State<ReportModal> {
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(Colors.red),
                   ),
-                  onPressed: () {},
+                  onPressed: () async {
+                    await ref.read(reportProvider.notifier).createReport(
+                        reportReasons: reportReasons,
+                        additionalInfo: descriptionController.text,
+                        reportedBy: user!.studentId,
+                        postId: productId,
+                        postCategory: PostCategory.shop);
+                    if (context.mounted) {
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("Report submitted!"),
+                        ),
+                      );
+                    }
+                  },
                   child: Text(
                     AppLocalizations.of(context)!.report_submit,
                     style: TextStyle(
