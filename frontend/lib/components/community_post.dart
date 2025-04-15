@@ -22,17 +22,18 @@ Widget communityPost(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
+      color: Theme.of(context).cardColor,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ListTile(
             leading: CircleAvatar(
               radius: 18,
-              backgroundColor: Color(0xFFFF914D),
+              backgroundColor: Theme.of(context).primaryColorDark,
               child: Icon(
                 Icons.account_circle,
-                size: 30,
-                color: Colors.white,
+                size: 36,
+                color: Theme.of(context).cardColor,
               ),
             ),
             title: Text(
@@ -65,11 +66,7 @@ Widget communityPost(
                         post.title,
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                          color: Colors.black87,
-                        ),
+                        style: Theme.of(context).textTheme.bodySmall,
                       ),
                     ),
                     const SizedBox(width: 8),
@@ -98,6 +95,39 @@ Widget communityPost(
                     color: Colors.grey[600],
                   ),
                 ),
+                const SizedBox(height: 10),
+                post.imageUrl != ""
+                    ? ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: Image.network(
+                          post.imageUrl!,
+                          fit: BoxFit.cover,
+                          // height: 200,
+                          width: double.infinity,
+                        ),
+                      )
+                    : Container(),
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    buildActionButton(
+                      context: context,
+                      icon: Icons.thumb_up_alt_outlined,
+                      label: "${post.likeCount}",
+                    ),
+                    buildActionButton(
+                      context: context,
+                      icon: Icons.comment_outlined,
+                      label: "${post.commentCount}",
+                    ),
+                    buildActionButton(
+                      context: context,
+                      icon: Icons.share_outlined,
+                      label: "Share",
+                    ),
+                  ],
+                ),
               ],
             ),
           )
@@ -105,4 +135,19 @@ Widget communityPost(
       ),
     ),
   );
+}
+
+Widget buildActionButton(
+    {required IconData icon,
+    required String label,
+    required BuildContext context}) {
+  return Padding(
+      padding: const EdgeInsets.all(4),
+      child: Row(
+        children: [
+          Icon(icon, color: Theme.of(context).primaryColor),
+          const SizedBox(width: 8),
+          Text(label, style: TextStyle(color: Theme.of(context).primaryColor)),
+        ],
+      ));
 }

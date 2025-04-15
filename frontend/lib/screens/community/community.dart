@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/components/community_post.dart';
 import 'package:frontend/providers/community_provider.dart';
-import 'package:frontend/screens/community/community_manage_post.dart';
-import 'package:frontend/screens/community/community_me.dart';
 import 'package:frontend/screens/community/community_view_post.dart';
 
 class Community extends ConsumerStatefulWidget {
@@ -47,15 +45,8 @@ class CommunityState extends ConsumerState<Community> {
             controller: searchController,
             textInputAction: TextInputAction.search,
             decoration: InputDecoration(
-              hintText: 'Search...',
-              hintStyle: TextStyle(color: Colors.grey),
+              hintText: 'Search Posts...',
               prefixIcon: Icon(Icons.search, color: Colors.grey),
-              filled: true,
-              fillColor: Color(0xFFF4F4F4),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(30),
-                borderSide: BorderSide(color: Color(0xFFF4F4F4)),
-              ),
             ),
             onSubmitted: (value) async => await communityPostController
                 .searchPosts(searchController.text),
@@ -87,20 +78,6 @@ class CommunityState extends ConsumerState<Community> {
                 toggleElement("Course Review"),
                 toggleElement("Lost & Found"),
               ]),
-          const SizedBox(height: 16),
-          // TODO
-          //! Mock ------------------------------
-          ElevatedButton(
-              onPressed: () async {
-                await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => CommunityMe(),
-                    ));
-                await communityPostController.fetchPosts();
-              },
-              child: Text("MyProfile")),
-          //! -----------------------------------
           const SizedBox(height: 16),
           Expanded(
             child: ListView.builder(

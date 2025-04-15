@@ -9,7 +9,8 @@ import 'package:frontend/screens/shop/edit_items.dart';
 import 'package:tuple/tuple.dart';
 
 class CommunityMe extends ConsumerStatefulWidget {
-  const CommunityMe({super.key});
+  final String studentId;
+  const CommunityMe({super.key, required this.studentId});
 
   @override
   CommunityMeState createState() => CommunityMeState();
@@ -31,8 +32,7 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
 
   void _initState() async {
     Future.microtask(() async {
-      final user = ref.read(userProvider);
-      await ref.read(communityProvider.notifier).fetchMyPosts(user!.studentId);
+      await ref.read(communityProvider.notifier).fetchMyPosts(widget.studentId);
     });
   }
 
@@ -40,10 +40,7 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (mounted) {
-      final user = ref.read(userProvider);
-      if (user != null) {
-        ref.refresh(productProviderByProductOwnerId(user.id));
-      }
+      ref.refresh(productProviderByProductOwnerId(widget.studentId));
     }
   }
 

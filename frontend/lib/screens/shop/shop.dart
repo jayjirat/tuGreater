@@ -51,15 +51,10 @@ class _ShopState extends ConsumerState<Shop> {
                   searchQuery = value;
                 });
               },
+              textInputAction: TextInputAction.search,
               decoration: InputDecoration(
                 hintText: "Search products...",
-                suffixIcon: Icon(Icons.search), // Search icon on the right
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(25),
-                  borderSide: BorderSide.none,
-                ),
-                filled: true,
-                fillColor: Colors.grey[200], // Light background for input
+                prefixIcon: Icon(Icons.search, color: Colors.grey),
               ),
             ),
           ),

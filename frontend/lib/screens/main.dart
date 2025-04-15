@@ -32,6 +32,7 @@ class MainState extends ConsumerState<Main> {
       body: SafeArea(child: screens[currentIndex]),
       bottomNavigationBar: customBottomNavigationBar(
           currentIndex: currentIndex,
+          context: context,
           onTap: (index) {
             setState(() {
               currentIndex = index;
@@ -50,7 +51,7 @@ class MainState extends ConsumerState<Main> {
                   },
                 ));
               },
-              backgroundColor: Color(0xFFFF914D),
+              backgroundColor: Theme.of(context).primaryColor,
               child: Icon(Icons.add, color: Colors.white),
             )
           : null,

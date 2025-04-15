@@ -107,11 +107,12 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
     final communityPostController = ref.read(communityProvider.notifier);
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFFFF914D),
-        elevation: 2,
         title: Text(
           widget.mode == "Add" ? 'Create a Post' : 'Edit a Post',
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
       body: Padding(
@@ -127,12 +128,6 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
                 controller: titleCtrl,
                 decoration: InputDecoration(
                   hintText: 'Title',
-                  filled: true,
-                  fillColor: Color(0xFFF4F4F4),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                    borderSide: BorderSide.none,
-                  ),
                   contentPadding:
                       EdgeInsets.symmetric(vertical: 14, horizontal: 16),
                 ),
@@ -153,12 +148,6 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
                 keyboardType: TextInputType.multiline,
                 decoration: InputDecoration(
                   hintText: 'Description',
-                  filled: true,
-                  fillColor: Color(0xFFF4F4F4),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                    borderSide: BorderSide.none,
-                  ),
                   contentPadding:
                       EdgeInsets.symmetric(vertical: 14, horizontal: 16),
                 ),
@@ -225,46 +214,43 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
               const SizedBox(height: 16),
               labelText("Select Category"),
               const SizedBox(height: 8),
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30),
-                  color: Color(0xFFF4F4F4),
+              DropdownButtonFormField<String>(
+                borderRadius: BorderRadius.circular(25),
+                dropdownColor: Theme.of(context).cardColor,
+                value: selectedValueDropdown,
+                hint: Text(
+                  'Category',
                 ),
-                child: DropdownButtonFormField<String>(
-                  value: selectedValueDropdown,
-                  hint: Text(
-                    'Select Category',
-                  ),
-                  isExpanded: true,
-                  decoration: InputDecoration(
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 14, horizontal: 16),
-                    border: InputBorder.none,
-                  ),
-                  items: <String>['General', 'ReviewCourse', 'Lost&Found']
-                      .map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      selectedValueDropdown = newValue ?? "General";
-                    });
-                  },
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please select category';
-                    }
-                    return null;
-                  },
+                isExpanded: true,
+                decoration: InputDecoration(
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+                  border: InputBorder.none,
                 ),
+                items: <String>['General', 'ReviewCourse', 'Lost&Found']
+                    .map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    selectedValueDropdown = newValue ?? "General";
+                  });
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please select category';
+                  }
+                  return null;
+                },
               ),
               const SizedBox(height: 10),
               Text(
                 "Disclaimer: Posts containing inappropriate, offensive, or harmful content will be removed without prior notice. Please adhere to the community guidelines.",
-                style: TextStyle(fontSize: 12, color: Color(0xFFE63946)),
+                style: TextStyle(
+                    fontSize: 12, color: Theme.of(context).primaryColor),
               ),
               const SizedBox(height: 30),
               ElevatedButton(
@@ -312,7 +298,7 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.symmetric(vertical: 14),
                   elevation: 2,
-                  backgroundColor: Color(0xFFFF914D),
+                  backgroundColor: Theme.of(context).primaryColor,
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
