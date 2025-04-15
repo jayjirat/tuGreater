@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/models/Products.dart';
+import 'package:frontend/models/products.dart';
 import 'package:frontend/screens/shop/item_detail.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/providers/product_provider.dart';

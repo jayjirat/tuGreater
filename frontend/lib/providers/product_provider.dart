@@ -1,4 +1,4 @@
-import 'package:frontend/models/Products.dart';
+import 'package:frontend/models/products.dart';
 import 'package:frontend/services/product_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tuple/tuple.dart';

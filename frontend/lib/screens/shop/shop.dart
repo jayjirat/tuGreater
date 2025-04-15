@@ -43,9 +43,9 @@ class _ShopState extends ConsumerState<Shop> {
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => AddItems()));
         }, // navigate to add items page
-        child: Icon(Icons.add),
         backgroundColor: Colors.amber,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+        child: Icon(Icons.add),
       ),
       body: Column(
         children: [

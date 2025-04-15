@@ -1,8 +1,10 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:frontend/models/report.dart';
 import 'package:frontend/providers/comment_provider.dart';
 import 'package:frontend/providers/community_provider.dart';
+import 'package:frontend/providers/report_provider.dart';
 import 'package:frontend/providers/user_provider.dart';
 import 'package:frontend/screens/community/community_manage_post.dart';
 
@@ -170,7 +172,11 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                                           .studentId) // owner can't report own post
                                     ElevatedButton(
                                         onPressed: () {
-                                          showReportPopup(context);
+                                          showReportPopup(
+                                            context: context,
+                                            userId: user.id,
+                                            postId: post.id,
+                                          );
                                         },
                                         style: ElevatedButton.styleFrom(
                                             backgroundColor: Color(0xFFE63946),
@@ -424,17 +430,21 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
     );
   }
 
-  void showReportPopup(BuildContext ctx) {
+  void showReportPopup({
+    required BuildContext context,
+    required String userId,
+    required String postId,
+  }) {
     bool isChecked1 = false;
     bool isChecked2 = false;
     bool isChecked3 = false;
     bool isChecked4 = false;
-    final descriptionController = TextEditingController();
-
+    final additionalController = TextEditingController();
+    List<String> reportReasons = [];
     final post = ref.read(communityProvider.notifier).post;
 
     showDialog(
-      context: ctx,
+      context: context,
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setState) {
@@ -454,34 +464,67 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                       title: Text("Uses harsh or offensive language"),
                       value: isChecked1,
                       onChanged: (bool? value) {
-                        setState(() => isChecked1 = value!);
+                        setState(() {
+                          isChecked1 = value!;
+                          if (isChecked1) {
+                            reportReasons
+                                .add("Uses harsh or offensive language");
+                          } else {
+                            reportReasons
+                                .remove("Uses harsh or offensive language");
+                          }
+                        });
                       },
                     ),
                     CheckboxListTile(
                       title: Text("Causes misunderstandings or confusion"),
                       value: isChecked2,
                       onChanged: (bool? value) {
-                        setState(() => isChecked2 = value!);
+                        setState(() {
+                          isChecked2 = value!;
+                          if (isChecked2) {
+                            reportReasons
+                                .add("Causes misunderstandings or confusion");
+                          } else {
+                            reportReasons.remove(
+                                "Causes misunderstandings or confusion");
+                          }
+                        });
                       },
                     ),
                     CheckboxListTile(
                       title: Text("Contains inappropriate images"),
                       value: isChecked3,
                       onChanged: (bool? value) {
-                        setState(() => isChecked3 = value!);
+                        setState(() {
+                          isChecked3 = value!;
+                          if (isChecked3) {
+                            reportReasons.add("Contains inappropriate images");
+                          } else {
+                            reportReasons
+                                .remove("Contains inappropriate images");
+                          }
+                        });
                       },
                     ),
                     CheckboxListTile(
                       title: Text("Others"),
                       value: isChecked4,
                       onChanged: (bool? value) {
-                        setState(() => isChecked4 = value!);
+                        setState(() {
+                          isChecked4 = value!;
+                          if (isChecked4) {
+                            reportReasons.add("Others");
+                          } else {
+                            reportReasons.remove("Others");
+                          }
+                        });
                       },
                     ),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 8.0),
                       child: TextField(
-                        controller: descriptionController,
+                        controller: additionalController,
                         maxLength: 200,
                         maxLines: 5,
                         decoration: InputDecoration(
@@ -507,8 +550,21 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  onPressed: () {
-                    Navigator.pop(context);
+                  onPressed: () async {
+                    await ref.read(reportProvider.notifier).createReport(
+                        reportReasons: reportReasons,
+                        additionalInfo: additionalController.text,
+                        reportedBy: userId,
+                        postId: postId,
+                        postCategory: PostCategory.community);
+                    if (context.mounted) {
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("Report submitted!"),
+                        ),
+                      );
+                    }
                   },
                   child: Text("Report"),
                 ),

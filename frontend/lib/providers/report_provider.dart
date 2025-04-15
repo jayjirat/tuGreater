@@ -1,0 +1,48 @@
+import 'dart:convert';
+
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:frontend/models/report.dart';
+import 'package:http/http.dart' as http;
+
+class ReportNotifier extends StateNotifier<List<Report>> {
+  ReportNotifier() : super([]);
+  String baseURL = "http://10.0.2.2:8080";
+  Future<void> createReport(
+      {required List<String> reportReasons,
+      required String additionalInfo,
+      required String reportedBy,
+      required String postId,
+      required PostCategory postCategory}) async {
+    final url = Uri.parse('$baseURL/report');
+    try {
+      final Map<String, dynamic> newReport = {
+        'reportReasons': reportReasons,
+        'additionalInfo': additionalInfo,
+        'status': ReportStatus.underReview.name,
+        'reportedBy': reportedBy,
+        'postId': postId,
+        'postCategory': postCategory.name,
+        'createdAt': DateTime.now().toIso8601String(),
+        'updatedAt': DateTime.now().toIso8601String(),
+      };
+      final header = {'Content-Type': 'application/json'};
+
+      final response =
+          await http.post(url, headers: header, body: jsonEncode(newReport));
+      print(response.body);
+      if (response.statusCode == 201) {
+        final data = jsonDecode(response.body);
+        final newReport = Report.fromJson(data);
+        state = [newReport, ...state];
+      } else {
+        throw Exception(
+            'Failed to create report. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
+}
+
+final reportProvider = StateNotifierProvider<ReportNotifier, List<Report>>(
+    (ref) => ReportNotifier());
