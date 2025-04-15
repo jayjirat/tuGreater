@@ -82,13 +82,16 @@ class ItemDetail extends ConsumerWidget {
                   padding: EdgeInsets.only(
                       left: 30, top: 10, right: 30), // Add right padding
                   child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment:
                         MainAxisAlignment.spaceBetween, // Pushes items apart
                     children: [
-                      Text(
-                        product.productName,
-                        style: TextStyle(
-                            fontSize: 25, fontWeight: FontWeight.bold),
+                      Expanded(
+                        child: Text(
+                          product.productName,
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
                       ),
                       Text(
                         "฿ ${NumberFormat('#,###').format(product.productPrice.toInt())}",

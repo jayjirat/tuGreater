@@ -99,6 +99,7 @@ class GridItems extends ConsumerWidget {
                               children: [
                                 Text(
                                   product.productName,
+                                  overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
                                     fontSize: 17,
                                     color: Colors.black.withOpacity(0.8),
