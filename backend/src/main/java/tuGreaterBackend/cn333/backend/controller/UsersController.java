@@ -14,9 +14,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import tuGreaterBackend.cn333.backend.entity.Users;
 import jakarta.validation.Valid;
-import tuGreaterBackend.cn333.backend.dto.*;
+import tuGreaterBackend.cn333.backend.dto.DisplayNameResponse;
+import tuGreaterBackend.cn333.backend.dto.UpdateDisplayNameRequest;
+import tuGreaterBackend.cn333.backend.entity.Users;
 import tuGreaterBackend.cn333.backend.service.UsersService;
 
 @RestController
@@ -43,13 +44,13 @@ public class UsersController {
 
     }
 
-    @GetMapping("/{studentId}")
-    public ResponseEntity<?> getUser(@PathVariable String studentId) {
+    @GetMapping("/{userId}")
+    public ResponseEntity<?> getUserById(@PathVariable String userId) {
         try {
-            Users user = usersService.getUserByStudentId(studentId);
+            Users user = usersService.getUserById(userId);
             if (user == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body(Map.of("message", "User not found by id: " + studentId));
+                        .body(Map.of("message", "User not found by id: " + userId));
             }
             return ResponseEntity.ok(user);
         } catch (Exception e) {

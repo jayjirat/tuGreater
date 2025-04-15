@@ -84,12 +84,15 @@ class GridItems extends ConsumerWidget {
                             child: SizedBox(
                               width: double.infinity,
                               height: 175,
-                              child: Image.network(
-                                product.productImageUrls.isNotEmpty
-                                    ? product.productImageUrls[0]
-                                    : 'https://via.placeholder.com/175',
-                                fit: BoxFit.cover,
-                              ),
+                              child: product.productImageUrls.isNotEmpty
+                                  ? Image.network(
+                                      product.productImageUrls[0],
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Container(
+                                      decoration: BoxDecoration(
+                                          color: Colors.grey.shade100),
+                                    ),
                             ),
                           ),
                           Padding(

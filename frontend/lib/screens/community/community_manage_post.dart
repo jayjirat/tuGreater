@@ -265,7 +265,7 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
                         await uploadImage();
                       }
                       await communityPostController.createPost(
-                          userId: user!.studentId,
+                          userId: user!.id,
                           username: user.displayName,
                           title: titleCtrl.text,
                           description: descriptionCtrl.text,

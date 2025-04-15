@@ -28,11 +28,11 @@ public class UsersService {
         }
     }
 
-    public Users getUserByStudentId(String studentId) throws Exception{
+    public Users getUserById(String userId) throws Exception{
         try {
-            return usersRepository.findByStudentId(studentId);
+            return usersRepository.findById(userId).orElse(null);
         } catch (Exception e) {
-            throw  new Exception("An error occurred while fetching user by id: " + studentId ,e);
+            throw  new Exception("An error occurred while fetching user by id: " + userId ,e);
         }
     }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/components/community_post.dart';
+import 'package:frontend/models/user.dart';
 import 'package:frontend/providers/community_provider.dart';
 import 'package:frontend/providers/product_provider.dart';
 import 'package:frontend/providers/user_provider.dart';
@@ -9,8 +10,8 @@ import 'package:frontend/screens/shop/edit_items.dart';
 import 'package:tuple/tuple.dart';
 
 class CommunityMe extends ConsumerStatefulWidget {
-  final String studentId;
-  const CommunityMe({super.key, required this.studentId});
+  final String userId;
+  const CommunityMe({super.key, required this.userId});
 
   @override
   CommunityMeState createState() => CommunityMeState();
@@ -30,9 +31,26 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
     _initState();
   }
 
+  User? loadedUser;
+
   void _initState() async {
     Future.microtask(() async {
-      await ref.read(communityProvider.notifier).fetchMyPosts(widget.studentId);
+      await ref.read(communityProvider.notifier).fetchMyPosts(widget.userId);
+      final currentUser = ref.read(userProvider);
+      if (widget.userId != currentUser!.id) {
+        final postUser = await ref
+            .read(userProvider.notifier)
+            .getUserById(userId: widget.userId);
+        if (postUser != null) {
+          setState(() {
+            loadedUser = postUser;
+          });
+        }
+      } else {
+        setState(() {
+          loadedUser = currentUser;
+        });
+      }
     });
   }
 
@@ -40,18 +58,22 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (mounted) {
-      ref.refresh(productProviderByProductOwnerId(widget.studentId));
+      ref.refresh(productProviderByProductOwnerId(widget.userId));
     }
   }
 
   int _selectedIndex = 0;
   @override
   Widget build(BuildContext context) {
-    final user = ref.read(userProvider);
+    if (loadedUser == null) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
     final posts = ref.watch(communityProvider);
     final communityPostController = ref.read(communityProvider.notifier);
     final productManageAsyncValue =
-        ref.watch(productProviderByProductOwnerId(user!.id));
+        ref.watch(productProviderByProductOwnerId(loadedUser!.id));
     final List<Widget> swapPage = [
       Expanded(
         child: ListView.builder(
@@ -132,7 +154,8 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
                                           MaterialPageRoute(
                                               builder: (context) => EditItems(
                                                   productId: product.productId,
-                                                  productOwnerId: user.id)));
+                                                  productOwnerId:
+                                                      loadedUser!.id)));
                                     },
                                     style: FilledButton.styleFrom(
                                       backgroundColor:
@@ -180,8 +203,8 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
 
                                   await Future.delayed(
                                       Duration(milliseconds: 100));
-                                  ref.refresh(
-                                      productProviderByProductOwnerId(user.id));
+                                  ref.refresh(productProviderByProductOwnerId(
+                                      loadedUser!.id));
 
                                   ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
@@ -209,10 +232,10 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
     ];
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFFFF914D),
+        backgroundColor: Theme.of(context).primaryColor,
         elevation: 2,
         title: Text(
-          'My Community Posts',
+          loadedUser!.displayName,
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -226,26 +249,26 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
           children: [
             CircleAvatar(
               radius: 52,
-              backgroundColor: Color(0xFFFF914D),
+              backgroundColor: Theme.of(context).primaryColorDark,
               child: Icon(
                 Icons.account_circle,
                 size: 100,
-                color: Colors.white,
+                color: Theme.of(context).cardColor,
               ),
             ),
             const SizedBox(
               height: 10,
             ),
             Text(
-              "${capitalize(user!.username.split(" ")[0])} ${capitalize(user.username.split(" ")[1])}", //username
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              "${capitalize(loadedUser!.username.split(" ")[0])} ${capitalize(loadedUser!.username.split(" ")[1])}", //username
+              style: Theme.of(context).textTheme.bodySmall,
             ),
             Text(
-              user.displayName, //displayname
+              loadedUser!.displayName, //displayname
               style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black38),
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
             ),
             const SizedBox(
               height: 24,
@@ -257,7 +280,8 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
                 color: Colors.transparent,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.05),
+                    color:
+                        Theme.of(context).canvasColor.withValues(alpha: 0.05),
                     spreadRadius: 1,
                     blurRadius: 1,
                   ),
@@ -316,7 +340,7 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
   ButtonStyle inactiveSwapBarStyle() {
     return TextButton.styleFrom(
       textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-      foregroundColor: Colors.black45,
+      foregroundColor: Theme.of(context).canvasColor.withValues(alpha: 0.5),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
@@ -326,8 +350,8 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
   ButtonStyle activeSwapBarStyle() {
     return TextButton.styleFrom(
       textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-      backgroundColor: Colors.black.withValues(alpha: 0.08),
-      foregroundColor: Color(0xFFFF914D),
+      backgroundColor: Theme.of(context).canvasColor.withValues(alpha: 0.05),
+      foregroundColor: Theme.of(context).primaryColor,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),

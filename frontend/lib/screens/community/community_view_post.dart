@@ -34,7 +34,7 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
     final user = ref.read(userProvider);
     bool liked = await ref
         .read(communityProvider.notifier)
-        .isLiked(user!.studentId, widget.id);
+        .isLiked(user!.id, widget.id);
 
     if (mounted) {
       setState(() {
@@ -78,11 +78,17 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       InkWell(
-                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => CommunityMe(),)),
+                        onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  CommunityMe(userId: post.userId),
+                            )),
                         child: ListTile(
                             leading: CircleAvatar(
                               radius: 25,
-                              backgroundColor: Theme.of(context).primaryColorDark,
+                              backgroundColor:
+                                  Theme.of(context).primaryColorDark,
                               child: Icon(
                                 Icons.account_circle,
                                 size: 48,
@@ -107,7 +113,7 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                                 ),
                               ],
                             ),
-                            trailing: post.userId == user!.studentId
+                            trailing: post.userId == user!.id
                                 ? PopupMenuButton(
                                     onSelected: (value) async {
                                       if (value == "edit") {
@@ -121,9 +127,9 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                                               ),
                                             ));
                                       } else if (value == "delete") {
-                                        await communityPostController.deletePost(
-                                            id: post.id);
-                        
+                                        await communityPostController
+                                            .deletePost(id: post.id);
+
                                         if (context.mounted) {
                                           Navigator.pop(context);
                                         }
@@ -168,7 +174,7 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                                     ),
                                   ),
                                   if (post.userId !=
-                                      user.studentId) // owner can't report own post
+                                      user.id) // owner can't report own post
                                     IconButton(
                                         onPressed: () => showReportPopup(
                                               context: context,
@@ -209,7 +215,7 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                             onTap: isLiked
                                 ? () async {
                                     await communityPostController.unlikePost(
-                                        user.studentId, post.id);
+                                        user.id, post.id);
                                     setState(() {
                                       isLiked = false;
                                       post.likeCount--;
@@ -217,7 +223,7 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                                   }
                                 : () async {
                                     await communityPostController.likePost(
-                                        user.studentId, post.id);
+                                        user.id, post.id);
                                     setState(() {
                                       isLiked = true;
                                       post.likeCount++;
@@ -303,12 +309,12 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                                                       .canvasColor),
                                               children: [
                                                 if (comments[index].userId ==
-                                                    user.studentId)
+                                                    user.id)
                                                   WidgetSpan(
                                                     child: SizedBox(height: 8),
                                                   ),
                                                 if (comments[index].userId ==
-                                                    user.studentId)
+                                                    user.id)
                                                   TextSpan(
                                                     text: "\nDelete",
                                                     style: TextStyle(
@@ -374,7 +380,7 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                         await commentController.addComment(
                             postId: post!.id,
                             content: commentCtrl.text,
-                            userId: user!.studentId,
+                            userId: user!.id,
                             username: user.displayName);
 
                         setState(() {
