@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/components/custom_bottom_navigationbar.dart';
 import 'package:frontend/providers/user_provider.dart';
 import 'package:frontend/screens/community/community.dart';
+import 'package:frontend/screens/community/community_manage_post.dart';
 import 'package:frontend/screens/profile/profile_page.dart';
+import 'package:frontend/screens/shop/add_items.dart';
 import 'package:frontend/screens/shop/shop.dart';
 
 class Main extends ConsumerStatefulWidget {
@@ -17,10 +19,17 @@ class MainState extends ConsumerState<Main> {
   int currentIndex = 0;
   @override
   Widget build(BuildContext context) {
-  final user = ref.read(userProvider);
-  final screens = [Community(), Shop(), ProfilePage(studentId: user!.studentId,)];
+    final user = ref.read(userProvider);
+    final screens = [
+      Community(),
+      Shop(),
+      ProfilePage(
+        studentId: user!.studentId,
+      )
+    ];
+
     return Scaffold(
-      body: screens[currentIndex],
+      body: SafeArea(child: screens[currentIndex]),
       bottomNavigationBar: customBottomNavigationBar(
           currentIndex: currentIndex,
           onTap: (index) {
@@ -28,6 +37,23 @@ class MainState extends ConsumerState<Main> {
               currentIndex = index;
             });
           }),
+      floatingActionButton: (currentIndex == 0 || currentIndex == 1)
+          ? FloatingActionButton(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (context) {
+                    if (currentIndex == 0) {
+                      return CommunityManagePost(mode: "Add");
+                    } else {
+                      return AddItems();
+                    }
+                  },
+                ));
+              },
+              backgroundColor: Color(0xFFFF914D),
+              child: Icon(Icons.add, color: Colors.white),
+            )
+          : null,
     );
   }
 }

@@ -4,8 +4,10 @@ import 'package:frontend/app_theme.dart';
 class ThemeProvider extends ChangeNotifier {
   ThemeMode _themeMode = ThemeMode.light;
 
-  ThemeData get lightTheme => AppThemes.lightTheme;
-  ThemeData get darkTheme => AppThemes.darkTheme;
+  ThemeData get lightTheme => AppThemes.lightTheme
+      .copyWith(primaryColor: Color(0xFFE95C00), cardColor: Color(0xFFE95C00));
+  ThemeData get darkTheme => AppThemes.darkTheme
+      .copyWith(primaryColor: Colors.redAccent, cardColor: Color(0xFFE95C00));
   ThemeData get currentTheme =>
       _themeMode == ThemeMode.dark ? AppThemes.darkTheme : AppThemes.lightTheme;
 

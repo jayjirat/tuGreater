@@ -36,206 +36,190 @@ class _ShopState extends ConsumerState<Shop> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: Toolbar(title: "Shop"),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => AddItems()));
-        }, // navigate to add items page
-        backgroundColor: Colors.amber,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-        child: Icon(Icons.add),
+    return Column(children: [
+      SizedBox(
+        height: 15,
       ),
-      body: Column(
+      Row(
         children: [
-          SizedBox(
-            height: 15,
+          Padding(padding: EdgeInsets.symmetric(horizontal: 10)),
+          Expanded(
+            flex: 5,
+            child: TextField(
+              onChanged: (value) {
+                setState(() {
+                  searchQuery = value;
+                });
+              },
+              decoration: InputDecoration(
+                hintText: "Search products...",
+                suffixIcon: Icon(Icons.search), // Search icon on the right
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(25),
+                  borderSide: BorderSide.none,
+                ),
+                filled: true,
+                fillColor: Colors.grey[200], // Light background for input
+              ),
+            ),
           ),
-          Row(
-            children: [
-              Padding(padding: EdgeInsets.symmetric(horizontal: 10)),
-              Expanded(
-                flex: 5,
-                child: TextField(
-                  onChanged: (value) {
-                    setState(() {
-                      searchQuery = value;
-                    });
+          Expanded(
+            flex: 1,
+            child: GestureDetector(
+              onTap: () async {
+                setState(() {
+                  isClicked = !isClicked;
+                });
+
+                final filterData = await showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  builder: (context) {
+                    return FilterModal(
+                      minPrice: minPrice,
+                      maxPrice: maxPrice,
+                      isCheckedHighToLowPrice: isCheckedHighToLowPrice,
+                      isCheckedLowToHighPrice: isCheckedLowToHighPrice,
+                      isCheckedNewFirst: isCheckedNewFirst,
+                      isCheckedOldFirst: isCheckedOldFirst,
+                      isCheckedFirstHanded: selectedTags.contains('มือหนึ่ง'),
+                      isCheckedSecondHanded: selectedTags.contains('มือสอง'),
+                      isCheckedGood: selectedTags.contains('สภาพดี'),
+                      isCheckedDelicious: selectedTags.contains('อร่อย'),
+                      isCheckedClean: selectedTags.contains('สะอาด'),
+                      selectedTags: selectedTags,
+                    );
                   },
-                  decoration: InputDecoration(
-                    hintText: "Search products...",
-                    suffixIcon: Icon(Icons.search), // Search icon on the right
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(25),
-                      borderSide: BorderSide.none,
+                );
+
+                if (filterData != null) {
+                  setState(() {
+                    minPrice = filterData['minPrice'];
+                    maxPrice = filterData['maxPrice'];
+                    isCheckedHighToLowPrice =
+                        filterData['isCheckedHighToLowPrice'];
+                    isCheckedLowToHighPrice =
+                        filterData['isCheckedLowToHighPrice'];
+                    isCheckedNewFirst = filterData['isCheckedNewFirst'];
+                    isCheckedOldFirst = filterData['isCheckedOldFirst'];
+                    selectedTags =
+                        List<String>.from(filterData['selectedTags'] ?? []);
+                  });
+                }
+
+                setState(() {
+                  isClicked = false;
+                });
+              },
+              child: SvgPicture.asset(
+                "assets/svg/filter.svg",
+                height: 40,
+                width: 40,
+                colorFilter: ColorFilter.mode(
+                  isClicked
+                      ? const Color.fromARGB(255, 243, 221, 19)
+                      : Colors.black,
+                  BlendMode.srcIn,
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
+      SizedBox(
+        height: 15,
+      ),
+      Padding(
+        padding: EdgeInsets.symmetric(horizontal: 5),
+        child: Row(
+          children: [
+            Expanded(
+              child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    selectedCategory = -1;
+                  });
+                },
+                child: Container(
+                  // ช่องสี่เหลี่ยม for "All"
+                  height: 45,
+                  width: 48,
+                  margin: EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: selectedCategory == -1
+                        ? Colors.white
+                        : Color.fromARGB(255, 254, 227, 121),
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 4,
+                        spreadRadius: 2,
+                      )
+                    ],
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.all(6),
+                    child: Center(
+                      child: Text("All",
+                          style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold)),
                     ),
-                    filled: true,
-                    fillColor: Colors.grey[200], // Light background for input
                   ),
                 ),
               ),
+            ),
+            for (var i = 0; i < 5; i++)
               Expanded(
-                flex: 1,
                 child: GestureDetector(
-                  onTap: () async {
+                  onTap: () {
                     setState(() {
-                      isClicked = !isClicked;
-                    });
-
-                    final filterData = await showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      builder: (context) {
-                        return FilterModal(
-                          minPrice: minPrice,
-                          maxPrice: maxPrice,
-                          isCheckedHighToLowPrice: isCheckedHighToLowPrice,
-                          isCheckedLowToHighPrice: isCheckedLowToHighPrice,
-                          isCheckedNewFirst: isCheckedNewFirst,
-                          isCheckedOldFirst: isCheckedOldFirst,
-                          isCheckedFirstHanded:
-                              selectedTags.contains('มือหนึ่ง'),
-                          isCheckedSecondHanded:
-                              selectedTags.contains('มือสอง'),
-                          isCheckedGood: selectedTags.contains('สภาพดี'),
-                          isCheckedDelicious: selectedTags.contains('อร่อย'),
-                          isCheckedClean: selectedTags.contains('สะอาด'),
-                          selectedTags: selectedTags,
-                        );
-                      },
-                    );
-
-                    if (filterData != null) {
-                      setState(() {
-                        minPrice = filterData['minPrice'];
-                        maxPrice = filterData['maxPrice'];
-                        isCheckedHighToLowPrice =
-                            filterData['isCheckedHighToLowPrice'];
-                        isCheckedLowToHighPrice =
-                            filterData['isCheckedLowToHighPrice'];
-                        isCheckedNewFirst = filterData['isCheckedNewFirst'];
-                        isCheckedOldFirst = filterData['isCheckedOldFirst'];
-                        selectedTags =
-                            List<String>.from(filterData['selectedTags'] ?? []);
-                      });
-                    }
-
-                    setState(() {
-                      isClicked = false;
+                      selectedCategory = i;
                     });
                   },
-                  child: SvgPicture.asset(
-                    "assets/svg/filter.svg",
-                    height: 40,
-                    width: 40,
-                    colorFilter: ColorFilter.mode(
-                      isClicked
-                          ? const Color.fromARGB(255, 243, 221, 19)
-                          : Colors.black,
-                      BlendMode.srcIn,
+                  child: Container(
+                    // ช่องสี่เหลี่ยม for categories
+                    height: 45,
+                    width: 48,
+                    margin: EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: selectedCategory == i
+                          ? Colors.white
+                          : Color.fromARGB(255, 254, 227, 121),
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black26,
+                          blurRadius: 4,
+                          spreadRadius: 2,
+                        )
+                      ],
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.all(6),
+                      child: SvgPicture.asset(iconCategoriesList[i]),
                     ),
                   ),
                 ),
-              )
-            ],
-          ),
-          SizedBox(
-            height: 15,
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 5),
-            child: Row(
-              children: [
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        selectedCategory = -1;
-                      });
-                    },
-                    child: Container(
-                      // ช่องสี่เหลี่ยม for "All"
-                      height: 45,
-                      width: 48,
-                      margin: EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: selectedCategory == -1
-                            ? Colors.white
-                            : Color.fromARGB(255, 254, 227, 121),
-                        borderRadius: BorderRadius.circular(10),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black26,
-                            blurRadius: 4,
-                            spreadRadius: 2,
-                          )
-                        ],
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.all(6),
-                        child: Center(
-                          child: Text("All",
-                              style: TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold)),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                for (var i = 0; i < 5; i++)
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          selectedCategory = i;
-                        });
-                      },
-                      child: Container(
-                        // ช่องสี่เหลี่ยม for categories
-                        height: 45,
-                        width: 48,
-                        margin: EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: selectedCategory == i
-                              ? Colors.white
-                              : Color.fromARGB(255, 254, 227, 121),
-                          borderRadius: BorderRadius.circular(10),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black26,
-                              blurRadius: 4,
-                              spreadRadius: 2,
-                            )
-                          ],
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.all(6),
-                          child: SvgPicture.asset(iconCategoriesList[i]),
-                        ),
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          ),
-          SizedBox(
-            height: 15,
-          ),
-          GridItems(
-              searchQuery: searchQuery,
-              selectedCategory: selectedCategory,
-              minPrice: minPrice,
-              maxPrice: maxPrice,
-              isCheckedHighToLowPrice: isCheckedHighToLowPrice,
-              isCheckedLowToHighPrice: isCheckedLowToHighPrice,
-              isCheckedNewFirst: isCheckedNewFirst,
-              isCheckedOldFirst: isCheckedOldFirst,
-              selectedTags: selectedTags),
-        ],
+              ),
+          ],
+        ),
       ),
-    );
+      SizedBox(
+        height: 15,
+      ),
+      GridItems(
+          searchQuery: searchQuery,
+          selectedCategory: selectedCategory,
+          minPrice: minPrice,
+          maxPrice: maxPrice,
+          isCheckedHighToLowPrice: isCheckedHighToLowPrice,
+          isCheckedLowToHighPrice: isCheckedLowToHighPrice,
+          isCheckedNewFirst: isCheckedNewFirst,
+          isCheckedOldFirst: isCheckedOldFirst,
+          selectedTags: selectedTags),
+    ]);
   }
 }
