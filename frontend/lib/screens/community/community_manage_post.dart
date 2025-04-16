@@ -96,9 +96,12 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
           });
         }
       } else {
-        showToast(
-            message: "Fail to upload post's images, please try again",
-            toastType: ToastType.error);
+        if (mounted) {
+          showToast(
+              message:
+                  "${AppLocalizations.of(context)!.uploadPostImageFail} ${AppLocalizations.of(context)!.pleaseTryAgain}",
+              toastType: ToastType.error);
+        }
       }
     } catch (e) {
       if (mounted) {
@@ -107,7 +110,7 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
             MaterialPageRoute(
               builder: (context) => ErrorPage(
                   errorMessage:
-                      "Unable to upload post's images. Please check your connection and try again."),
+                      "${AppLocalizations.of(context)!.unableUploadPostImage} ${AppLocalizations.of(context)!.pleaseTryAgain}"),
             ));
       }
     }

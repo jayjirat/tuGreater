@@ -131,5 +131,7 @@
     "editUserFail":"Fail to edit user,",
     "unableLogin":"Unable to login.",
     "unableEditUser":"Unable to edit user.",
-    "prefLoadUserFail":"Fail to load user in prefs,"
+    "prefLoadUserFail":"Fail to load user in prefs,",
+    "uploadPostImageFail" : "Fail to upload post's images,",
+    "unableUploadPostImage" : "Unable to upload post's images."
 }
