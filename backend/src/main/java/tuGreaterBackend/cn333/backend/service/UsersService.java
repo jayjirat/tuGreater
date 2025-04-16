@@ -22,15 +22,24 @@ public class UsersService {
         try {
             return usersRepository.findAll();
         } catch (Exception e) {
-            throw new Exception("An error occurred while fetching users ", e);
+            throw  new Exception("An error occurred while fetching users " ,e);
         }
     }
+
 
     public Users getUserByStudentId(String studentId) throws Exception {
         try {
             return usersRepository.findByStudentId(studentId);
         } catch (Exception e) {
             throw new Exception("An error occurred while fetching user by id: " + studentId, e);
+        }
+    }
+
+    public Users getUserById(String userId) throws Exception {
+        try {
+            return usersRepository.findById(userId).orElse(null);
+        } catch (Exception e) {
+            throw new Exception("An error occurred while fetching user by id: " + userId, e);
         }
     }
 

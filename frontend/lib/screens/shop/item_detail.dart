@@ -38,8 +38,12 @@ class ItemDetail extends ConsumerWidget {
                   child: Stack(
                     children: [
                       Center(
-                        child:
-                            ItemImageSlider(images: product.productImageUrls),
+                        child: product.productImageUrls.isNotEmpty
+                            ? ItemImageSlider(images: product.productImageUrls)
+                            : Container(
+                                decoration:
+                                    BoxDecoration(color: Colors.grey.shade100),
+                              ),
                       )
                     ],
                   ),

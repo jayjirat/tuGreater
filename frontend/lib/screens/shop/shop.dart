@@ -84,43 +84,41 @@ class _ShopState extends ConsumerState<Shop> {
                       isClicked = !isClicked;
                     });
 
-                    final filterData = await showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      builder: (context) {
-                        return FilterModal(
-                          minPrice: minPrice,
-                          maxPrice: maxPrice,
-                          isCheckedHighToLowPrice: isCheckedHighToLowPrice,
-                          isCheckedLowToHighPrice: isCheckedLowToHighPrice,
-                          isCheckedNewFirst: isCheckedNewFirst,
-                          isCheckedOldFirst: isCheckedOldFirst,
-                          isCheckedFirstHanded:
-                              selectedTags.contains('มือหนึ่ง'),
-                          isCheckedSecondHanded:
-                              selectedTags.contains('มือสอง'),
-                          isCheckedGood: selectedTags.contains('สภาพดี'),
-                          isCheckedDelicious: selectedTags.contains('อร่อย'),
-                          isCheckedClean: selectedTags.contains('สะอาด'),
-                          selectedTags: selectedTags,
-                        );
-                      },
+                final filterData = await showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  builder: (context) {
+                    return FilterModal(
+                      minPrice: minPrice,
+                      maxPrice: maxPrice,
+                      isCheckedHighToLowPrice: isCheckedHighToLowPrice,
+                      isCheckedLowToHighPrice: isCheckedLowToHighPrice,
+                      isCheckedNewFirst: isCheckedNewFirst,
+                      isCheckedOldFirst: isCheckedOldFirst,
+                      isCheckedFirstHanded: selectedTags.contains('มือหนึ่ง'),
+                      isCheckedSecondHanded: selectedTags.contains('มือสอง'),
+                      isCheckedGood: selectedTags.contains('สภาพดี'),
+                      isCheckedDelicious: selectedTags.contains('อร่อย'),
+                      isCheckedClean: selectedTags.contains('สะอาด'),
+                      selectedTags: selectedTags,
                     );
+                  },
+                );
 
-                    if (filterData != null) {
-                      setState(() {
-                        minPrice = filterData['minPrice'];
-                        maxPrice = filterData['maxPrice'];
-                        isCheckedHighToLowPrice =
-                            filterData['isCheckedHighToLowPrice'];
-                        isCheckedLowToHighPrice =
-                            filterData['isCheckedLowToHighPrice'];
-                        isCheckedNewFirst = filterData['isCheckedNewFirst'];
-                        isCheckedOldFirst = filterData['isCheckedOldFirst'];
-                        selectedTags =
-                            List<String>.from(filterData['selectedTags'] ?? []);
-                      });
-                    }
+                if (filterData != null) {
+                  setState(() {
+                    minPrice = filterData['minPrice'];
+                    maxPrice = filterData['maxPrice'];
+                    isCheckedHighToLowPrice =
+                        filterData['isCheckedHighToLowPrice'];
+                    isCheckedLowToHighPrice =
+                        filterData['isCheckedLowToHighPrice'];
+                    isCheckedNewFirst = filterData['isCheckedNewFirst'];
+                    isCheckedOldFirst = filterData['isCheckedOldFirst'];
+                    selectedTags =
+                        List<String>.from(filterData['selectedTags'] ?? []);
+                  });
+                }
 
                     setState(() {
                       isClicked = false;

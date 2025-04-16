@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/models/com_post.dart';
 import 'package:frontend/providers/community_provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 Widget communityPost(
     {required BuildContext context,
@@ -22,19 +23,26 @@ Widget communityPost(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
+      color: Theme.of(context).cardColor,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ListTile(
-            leading: CircleAvatar(
-              radius: 18,
-              backgroundColor: Color(0xFFFF914D),
-              child: Icon(
-                Icons.account_circle,
-                size: 30,
-                color: Colors.white,
-              ),
-            ),
+            leading: post.postedByImageUrl == ""
+                ? CircleAvatar(
+                    radius: 18,
+                    backgroundColor: Theme.of(context).primaryColorDark,
+                    child: Icon(
+                      Icons.account_circle,
+                      size: 36,
+                      color: Theme.of(context).cardColor,
+                    ),
+                  )
+                : CircleAvatar(
+                    radius: 24,
+                    backgroundImage: NetworkImage(post.postedByImageUrl!),
+                    backgroundColor: Colors.transparent,
+                  ),
             title: Text(
               post.username,
               style: TextStyle(fontWeight: FontWeight.bold),
@@ -46,7 +54,9 @@ Widget communityPost(
                   style: TextStyle(color: Colors.grey[600]),
                 ),
                 Text(
-                  post.isEdited ? " (edited)" : "",
+                  post.isEdited
+                      ? " (${AppLocalizations.of(context)!.edit})"
+                      : "",
                   style: TextStyle(color: Colors.grey[600]),
                 ),
               ],
@@ -65,11 +75,7 @@ Widget communityPost(
                         post.title,
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                          color: Colors.black87,
-                        ),
+                        style: Theme.of(context).textTheme.bodySmall,
                       ),
                     ),
                     const SizedBox(width: 8),
@@ -81,7 +87,7 @@ Widget communityPost(
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
-                        post.category,
+                        getLocalizedCategory(post.category, context),
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.bold,
@@ -98,6 +104,39 @@ Widget communityPost(
                     color: Colors.grey[600],
                   ),
                 ),
+                const SizedBox(height: 10),
+                post.imageUrl != ""
+                    ? ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: Image.network(
+                          post.imageUrl!,
+                          fit: BoxFit.cover,
+                          // height: 200,
+                          width: double.infinity,
+                        ),
+                      )
+                    : Container(),
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    buildActionButton(
+                      context: context,
+                      icon: Icons.thumb_up_alt_outlined,
+                      label: "${post.likeCount}",
+                    ),
+                    buildActionButton(
+                      context: context,
+                      icon: Icons.comment_outlined,
+                      label: "${post.commentCount}",
+                    ),
+                    buildActionButton(
+                      context: context,
+                      icon: Icons.cached_outlined,
+                      label: "${post.repostCount}",
+                    ),
+                  ],
+                ),
               ],
             ),
           )
@@ -105,4 +144,33 @@ Widget communityPost(
       ),
     ),
   );
+}
+
+String getLocalizedCategory(String category, BuildContext context) {
+  if (category == "All") {
+    return AppLocalizations.of(context)!.all;
+  } else if (category == "General") {
+    return AppLocalizations.of(context)!.general;
+  } else if (category == "ReviewCourse") {
+    return AppLocalizations.of(context)!.courseReview;
+  } else if (category == "Lost&Found") {
+    return AppLocalizations.of(context)!.lostNfound;
+  } else {
+    return category;
+  }
+}
+
+Widget buildActionButton(
+    {required IconData icon,
+    required String label,
+    required BuildContext context}) {
+  return Padding(
+      padding: const EdgeInsets.all(4),
+      child: Row(
+        children: [
+          Icon(icon, color: Theme.of(context).primaryColor),
+          const SizedBox(width: 8),
+          Text(label, style: TextStyle(color: Theme.of(context).primaryColor)),
+        ],
+      ));
 }

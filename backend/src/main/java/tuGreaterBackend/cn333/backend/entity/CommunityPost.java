@@ -21,7 +21,7 @@ public class CommunityPost {
     private String username;
     private boolean isEdited;
     private String imageUrl;
-
+    private String postedByImageUrl;
 
     public String getId() {
         return this.id;
@@ -122,5 +122,13 @@ public class CommunityPost {
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
-   
+
+    public String getPostedByImageUrl() {
+        return this.postedByImageUrl;
+    }
+
+    public void setPostedByImageUrl(String postedByImageUrl) {
+        this.postedByImageUrl = postedByImageUrl;
+    }
+
 }

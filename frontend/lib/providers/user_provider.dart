@@ -34,16 +34,14 @@ class UserNotifier extends StateNotifier<User?> {
               'TU43dbf40881f67122e5d01de44b07e49b30df28a5025c449497f5caf4fd1b4c3e72a7568e1e011c6ec05690c64ae48982'
         },
       );
-      print(tuResponse.statusCode);
       // Login success
       if (tuResponse.statusCode == 200) {
         final tuResponseData = json.decode(tuResponse.body);
-        final usernameUrl = Uri.parse('$userDBUrl/$username');
+        final usernameUrl =
+            Uri.parse('$userDBUrl/studentId?studentId=$username');
 
         // Fetch user in db
         final existingUser = await http.get(usernameUrl);
-        print("YYYYY");
-        print(existingUser.statusCode);
         final usernameNew = tuResponseData['displayname_en'];
         // User not found in db -> Create new user (First Login)
         if (existingUser.statusCode == 404) {
@@ -57,9 +55,6 @@ class UserNotifier extends StateNotifier<User?> {
 
           final createUserResponse = await http.post(Uri.parse(userDBUrl),
               headers: {"content-type": "application/json"}, body: userBody);
-          print("ZZZZZZZ");
-          print(createUserResponse.body);
-          print("XXXXXXXXXX");
           if (createUserResponse.statusCode == 201) {
             if (context.mounted) {
               final data = json.decode(createUserResponse.body);
@@ -74,7 +69,6 @@ class UserNotifier extends StateNotifier<User?> {
               Navigator.pushReplacementNamed(context, '/set-display-name');
             }
           } else {
-            print("error");
             // TODO  Notify the error to user
           }
 
@@ -94,10 +88,7 @@ class UserNotifier extends StateNotifier<User?> {
           if (context.mounted) {
             Navigator.pushReplacementNamed(context, '/community');
           }
-          print("Community screen");
         } else {
-          print("error");
-          print("xxxxxxxxxx");
           // TODO  Notify the error to user
         }
 
@@ -126,6 +117,31 @@ class UserNotifier extends StateNotifier<User?> {
     await prefs.clear(); // ลบข้อมูล user ที่เซฟไว้
 
     state = null; // ล้าง user ออกจาก provider
+  }
+
+  Future<User?> getUserById({required String userId}) async {
+    final url = Uri.parse('$userDBUrl/$userId');
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return User(
+          id: data['id'],
+          studentId: data['studentId'],
+          username: data['username'],
+          displayName: data['displayName'],
+          profileImageUrl: data['profileImageUrl'],
+          role: parseStringtoRole(data['role']),
+        );
+      } else if (response.statusCode == 404) {
+        return null;
+      } else {
+        throw Exception(
+            'Failed to load user. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
   }
 
   Future<void> updateUser(

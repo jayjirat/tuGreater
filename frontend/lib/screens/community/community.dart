@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/components/community_post.dart';
 import 'package:frontend/providers/community_provider.dart';
-import 'package:frontend/screens/community/community_manage_post.dart';
-import 'package:frontend/screens/community/community_me.dart';
 import 'package:frontend/screens/community/community_view_post.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Community extends ConsumerStatefulWidget {
   const Community({super.key});
@@ -39,116 +38,84 @@ class CommunityState extends ConsumerState<Community> {
     final posts = ref.watch(communityProvider);
     final communityPostController = ref.read(communityProvider.notifier);
 
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color(0xFFFF914D),
-        elevation: 2,
-        title: Text(
-          'Community',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+      child: Column(
+        children: [
+          TextField(
+            controller: searchController,
+            textInputAction: TextInputAction.search,
+            decoration: InputDecoration(
+              hintText: AppLocalizations.of(context)!.searchPost,
+              prefixIcon: Icon(Icons.search, color: Colors.grey),
+            ),
+            onSubmitted: (value) async => await communityPostController
+                .searchPosts(searchController.text),
           ),
-        ),
-      ),
-      backgroundColor: Colors.white,
-      body: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-        child: Column(
-          children: [
-            TextField(
-              controller: searchController,
-              textInputAction: TextInputAction.search,
-              decoration: InputDecoration(
-                hintText: 'Search...',
-                hintStyle: TextStyle(color: Colors.grey),
-                prefixIcon: Icon(Icons.search, color: Colors.grey),
-                filled: true,
-                fillColor: Color(0xFFF4F4F4),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30),
-                  borderSide: BorderSide(color: Color(0xFFF4F4F4)),
-                ),
-              ),
-              onSubmitted: (value) async => await communityPostController
-                  .searchPosts(searchController.text),
-            ),
-            const SizedBox(height: 16),
-            ToggleButtons(
-                isSelected: toggleStatus,
-                borderRadius: BorderRadius.circular(30),
-                onPressed: (index) async {
-                  setState(() {
-                    toggleStatus[index] = true;
-                    toggleStatus[currIndexToggleStatus] = false;
-                    currIndexToggleStatus = index;
-                  });
+          const SizedBox(height: 16),
+          ToggleButtons(
+              isSelected: toggleStatus,
+              borderRadius: BorderRadius.circular(30),
+              onPressed: (index) async {
+                setState(() {
+                  toggleStatus[index] = true;
+                  toggleStatus[currIndexToggleStatus] = false;
+                  currIndexToggleStatus = index;
+                });
 
-                  if (currIndexToggleStatus == 0) {
-                    await communityPostController.fetchPosts();
-                  } else if (currIndexToggleStatus == 1) {
-                    await communityPostController.filterPosts("General");
-                  } else if (currIndexToggleStatus == 2) {
-                    await communityPostController.filterPosts("ReviewCourse");
-                  } else if (currIndexToggleStatus == 3) {
-                    await communityPostController.filterPosts("Lost%26Found");
-                  }
-                },
-                children: [
-                  toggleElement("All"),
-                  toggleElement("General"),
-                  toggleElement("Course Review"),
-                  toggleElement("Lost & Found"),
-                ]),
-            const SizedBox(height: 16),
-            // TODO
-            //! Mock ------------------------------
-            ElevatedButton(
-                onPressed: () async {
-                  await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => CommunityMe(),
-                      ));
+                if (currIndexToggleStatus == 0) {
                   await communityPostController.fetchPosts();
-                },
-                child: Text("MyProfile")),
-            //! -----------------------------------
-            const SizedBox(height: 16),
-            Expanded(
-              child: ListView.builder(
-                itemCount: posts.length,
-                itemBuilder: (context, index) {
-                  final post = posts[index];
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      communityPost(
-                          context: context,
-                          nextRoute: CommunityViewpost(id: post.id),
-                          post: post,
-                          communityPostController: communityPostController),
-                      const SizedBox(height: 12),
-                    ],
-                  );
-                },
-              ),
+                } else if (currIndexToggleStatus == 1) {
+                  await communityPostController.filterPosts("General");
+                } else if (currIndexToggleStatus == 2) {
+                  await communityPostController.filterPosts("ReviewCourse");
+                } else if (currIndexToggleStatus == 3) {
+                  await communityPostController.filterPosts("Lost%26Found");
+                }
+              },
+              children: [
+                toggleElement("All"),
+                toggleElement("General"),
+                toggleElement("Course Review"),
+                toggleElement("Lost & Found"),
+              ]),
+          const SizedBox(height: 16),
+          Expanded(
+            child: ListView.builder(
+              itemCount: posts.length,
+              itemBuilder: (context, index) {
+                final post = posts[index];
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    communityPost(
+                        context: context,
+                        nextRoute: CommunityViewpost(id: post.id),
+                        post: post,
+                        communityPostController: communityPostController),
+                    const SizedBox(height: 12),
+                  ],
+                );
+              },
             ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => CommunityManagePost(mode: "Add"),
-              ));
-        },
-        backgroundColor: Color(0xFFFF914D),
-        child: Icon(Icons.add, color: Colors.white),
+          ),
+        ],
       ),
     );
+  }
+
+  String getLocalizedCategory(String category) {
+    if (category == "All") {
+      return AppLocalizations.of(context)!.all;
+    } else if (category == "General") {
+      return AppLocalizations.of(context)!.general;
+    } else if (category == "Course Review") {
+      return AppLocalizations.of(context)!.courseReview;
+    } else if (category == "Lost & Found") {
+      return AppLocalizations.of(context)!.lostNfound;
+    } else {
+      return category;
+    }
   }
 
   Widget toggleElement(String text) {
@@ -158,7 +125,7 @@ class CommunityState extends ConsumerState<Community> {
           width: 8,
         ),
         Text(
-          text,
+          getLocalizedCategory(text),
           style: TextStyle(fontSize: 16),
         ),
         const SizedBox(
