@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/components/custom_bottom_navigation.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:frontend/providers/locale_provider.dart';
 import 'package:frontend/providers/theme_provider.dart';
+import 'package:frontend/providers/user_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' as rp;
 
-class SettingPage extends StatefulWidget {
+class SettingPage extends rp.ConsumerStatefulWidget {
   const SettingPage({super.key});
 
   @override
-  State<SettingPage> createState() => _SettingPageState();
+  rp.ConsumerState<SettingPage> createState() => _SettingPageState();
 }
 
-class _SettingPageState extends State<SettingPage> {
+class _SettingPageState extends rp.ConsumerState<SettingPage> {
   @override
   Widget build(BuildContext context) {
+    final user = ref.watch(userProvider);
     final localeProvider = context.watch<LocaleProvider>();
     final themeProvider = Provider.of<ThemeProvider>(context);
     return Scaffold(
@@ -38,19 +40,29 @@ class _SettingPageState extends State<SettingPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Image.network(
-                        "https://static.vecteezy.com/system/resources/previews/020/765/399/non_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg",
+                        user?.profileImageUrl ??
+                            'https://default-placeholder-url.com/image.png',
                         width: 100,
                         fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            width: 100,
+                            height: 100,
+                            color: Colors.grey[300],
+                            child: Icon(Icons.person,
+                                size: 50, color: Colors.grey[600]),
+                          );
+                        },
                       ),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            "Name Surname",
+                            user?.displayName ?? "NO DATA",
                             style: TextStyle(color: Colors.black, fontSize: 20),
                           ),
                           Text(
-                            "65106150888",
+                            user?.studentId ?? "NO DATA",
                             style: TextStyle(color: Colors.black, fontSize: 20),
                           ),
                         ],

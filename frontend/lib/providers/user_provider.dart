@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/models/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:frontend/services/user_api.dart';
 
 class UserNotifier extends StateNotifier<User?> {
   UserNotifier() : super(null);
@@ -229,6 +230,11 @@ class UserNotifier extends StateNotifier<User?> {
     }
 
     return false;
+  }
+
+  Future<void> loadUser(String studentId) async {
+    final user = await UserApi.fetchUser(studentId);
+    state = user;
   }
 }
 

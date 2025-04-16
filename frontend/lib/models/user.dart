@@ -5,7 +5,7 @@ class User {
   final String studentId;
   final String username;
   final String displayName;
-  final String profileImageUrl;
+  String profileImageUrl;
   final Role role;
 
   User(
@@ -15,4 +15,15 @@ class User {
       required this.displayName,
       required this.profileImageUrl,
       required this.role});
+
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      id: json['id'],
+      studentId: json['studentId'],
+      username: json['username'],
+      displayName: json['displayName'],
+      profileImageUrl: json['profileImageUrl'],
+      role: json['role'],
+    );
+  }
 }
