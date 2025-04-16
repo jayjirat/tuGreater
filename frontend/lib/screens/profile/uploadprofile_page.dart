@@ -81,7 +81,12 @@ class _UploadProfilePageState extends ConsumerState<UploadProfilePage> {
             "https://static.vecteezy.com/system/resources/previews/020/765/399/non_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg";
         isUploading = false;
       });
-
+      await updateProfileImage(studentId,
+          "https://static.vecteezy.com/system/resources/previews/020/765/399/non_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg");
+      final user = ref.read(userProvider);
+      user!.profileImageUrl =
+          "https://static.vecteezy.com/system/resources/previews/020/765/399/non_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg";
+      ref.read(userProvider.notifier).loadUser(studentId);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Profile image reset to default')),
       );

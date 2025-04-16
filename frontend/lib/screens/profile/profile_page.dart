@@ -179,7 +179,10 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                       ),
                       const SizedBox(height: 20),
                       ElevatedButton(
-                        onPressed: _loadStudentDisplayName,
+                        onPressed: () {
+                          _loadStudentDisplayName;
+                          ref.invalidate(userProvider);
+                        },
                         child: const Text('Try Again'),
                       ),
                     ],
