@@ -97,6 +97,8 @@
     "postEditedSuccess":"Post edited successfully.",
     "postDeletedSuccess":"Post deleted successfully.",
     "commentDeletedSuccess":"Comment deleted successfully.",
+    "noPosts":"No posts available yet",
+    "noPostsContent":"Be the first one to share something!",
     "productDeletedSuccess":"Product deleted successfully.",
     "reportSubmittedSuccess":"Your report has been submitted successfully.",
     "errorOops":"Oops! Something went wrong",

@@ -136,7 +136,33 @@ class CommunityState extends ConsumerState<Community> {
                     },
                   ),
                 )
-              : Container(),
+              : Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.hourglass_empty,
+                        size: 120,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      const SizedBox(height: 32),
+                      Text(
+                        AppLocalizations.of(context)!.noPosts,
+                        style:
+                            Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        AppLocalizations.of(context)!.noPostsContent,
+                        style: Theme.of(context).textTheme.bodyMedium,
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
         ],
       ),
     );
