@@ -85,18 +85,25 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                                   CommunityMe(userId: post.userId),
                             )),
                         child: ListTile(
-                            leading: CircleAvatar(
-                              radius: 25,
-                              backgroundColor:
-                                  Theme.of(context).primaryColorDark,
-                              child: Icon(
-                                Icons.account_circle,
-                                size: 48,
-                                color: Theme.of(context).cardColor,
-                              ),
-                            ),
+                            leading: post!.postedByImageUrl == ""
+                                ? CircleAvatar(
+                                    radius: 18,
+                                    backgroundColor:
+                                        Theme.of(context).primaryColorDark,
+                                    child: Icon(
+                                      Icons.account_circle,
+                                      size: 36,
+                                      color: Theme.of(context).cardColor,
+                                    ),
+                                  )
+                                : CircleAvatar(
+                                    radius: 28,
+                                    backgroundImage:
+                                        NetworkImage(post.postedByImageUrl!),
+                                    backgroundColor: Colors.transparent,
+                                  ),
                             title: Text(
-                              post!.username,
+                              post.username,
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                             subtitle: Row(

@@ -11,6 +11,7 @@ class CommuPost {
   final String username;
   final bool isEdited;
   final String? imageUrl;
+  String? postedByImageUrl;
 
   int repostCount;
   final bool? isReposted;
@@ -37,7 +38,8 @@ class CommuPost {
       this.repostedUserId,
       this.repostedPostId,
       this.isOriginalDeleted,
-      this.repostCreatedAt});
+      this.repostCreatedAt,
+      this.postedByImageUrl});
 
   // ฟังก์ชันแปลง JSON เป็น CommuPost
   factory CommuPost.fromJson(Map<String, dynamic> json) {
@@ -66,6 +68,7 @@ class CommuPost {
       repostCreatedAt: json['repostCreatedAt'] != null
           ? DateTime.parse(json['repostCreatedAt'] as String)
           : null,
+      postedByImageUrl: json['postedByImageUrl'] as String?,
     );
   }
 }

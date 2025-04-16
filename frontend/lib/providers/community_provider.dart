@@ -77,7 +77,8 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
       required String category,
       required String userId,
       required String username,
-      String? imageUrl}) async {
+      String? imageUrl,
+      required String postedByImageUrl}) async {
     final url = '$baseURL/community';
     try {
       final Map<String, dynamic> newPost = {
@@ -92,6 +93,7 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
         'updatedAt': DateTime.now().toIso8601String(),
         'imageUrl': imageUrl,
         'repostCount': 0,
+        'postedByImageUrl': postedByImageUrl
       };
 
       final header = {'Content-Type': 'application/json'};

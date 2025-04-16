@@ -284,7 +284,8 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
                           title: titleCtrl.text,
                           description: descriptionCtrl.text,
                           category: selectedValueDropdown!,
-                          imageUrl: imageUrl);
+                          imageUrl: imageUrl,
+                          postedByImageUrl: user.profileImageUrl);
                     } else if (widget.mode == "Edit") {
                       if (isChangeInEditMode) {
                         await uploadImage();

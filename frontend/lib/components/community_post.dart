@@ -28,15 +28,21 @@ Widget communityPost(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ListTile(
-            leading: CircleAvatar(
-              radius: 18,
-              backgroundColor: Theme.of(context).primaryColorDark,
-              child: Icon(
-                Icons.account_circle,
-                size: 36,
-                color: Theme.of(context).cardColor,
-              ),
-            ),
+            leading: post.postedByImageUrl == ""
+                ? CircleAvatar(
+                    radius: 18,
+                    backgroundColor: Theme.of(context).primaryColorDark,
+                    child: Icon(
+                      Icons.account_circle,
+                      size: 36,
+                      color: Theme.of(context).cardColor,
+                    ),
+                  )
+                : CircleAvatar(
+                    radius: 24,
+                    backgroundImage: NetworkImage(post.postedByImageUrl!),
+                    backgroundColor: Colors.transparent,
+                  ),
             title: Text(
               post.username,
               style: TextStyle(fontWeight: FontWeight.bold),
