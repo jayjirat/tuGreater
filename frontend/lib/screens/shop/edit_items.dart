@@ -10,6 +10,7 @@ import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:tuple/tuple.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class EditItems extends ConsumerStatefulWidget {
   final String productId;
@@ -95,7 +96,7 @@ class _EditItemsState extends ConsumerState<EditItems> {
             children: <Widget>[
               ListTile(
                 leading: Icon(Icons.photo_library),
-                title: Text('Photo Library'),
+                title: Text(AppLocalizations.of(context)!.product_images_popup),
                 onTap: () {
                   Navigator.pop(context);
                   _pickImagesFromGallery();
@@ -103,7 +104,7 @@ class _EditItemsState extends ConsumerState<EditItems> {
               ),
               ListTile(
                 leading: Icon(Icons.photo_camera),
-                title: Text('Camera'),
+                title: Text(AppLocalizations.of(context)!.product_camera_popup),
                 onTap: () {
                   Navigator.pop(context);
                   _pickImageFromCamera();
@@ -161,7 +162,7 @@ class _EditItemsState extends ConsumerState<EditItems> {
     final productDetailsAsyncValue = ref.watch(productProviderById(productId));
 
     return Scaffold(
-      appBar: Toolbar(title: "Edit Product"),
+      appBar: Toolbar(title: AppLocalizations.of(context)!.edit_product_title),
       body: productDetailsAsyncValue.when(
         data: (product) {
           if (!_hasInitialized) {
@@ -214,7 +215,9 @@ class _EditItemsState extends ConsumerState<EditItems> {
                                     children: [
                                       SvgPicture.asset("assets/svg/upload.svg"),
                                       SizedBox(height: 5),
-                                      Text("Upload Images",
+                                      Text(
+                                          AppLocalizations.of(context)!
+                                              .product_images,
                                           style: TextStyle(fontSize: 16)),
                                     ],
                                   ),
@@ -314,21 +317,35 @@ class _EditItemsState extends ConsumerState<EditItems> {
                   children: [
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text("Name",
+                      child: SizedBox(
+                        width: 180,
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            AppLocalizations.of(context)!.product_name,
                             style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold)),
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
-                    SizedBox(width: 148),
+                    SizedBox(width: 20),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text("Price",
+                      child: SizedBox(
+                        width: 100,
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            AppLocalizations.of(context)!.product_price,
                             style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold)),
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ],
@@ -365,7 +382,8 @@ class _EditItemsState extends ConsumerState<EditItems> {
                             FilteringTextInputFormatter.digitsOnly
                           ],
                           decoration: InputDecoration(
-                            hintText: "Baht",
+                            hintText: AppLocalizations.of(context)!
+                                .product_price_placeholder,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(25),
                               borderSide: BorderSide.none,
@@ -385,7 +403,7 @@ class _EditItemsState extends ConsumerState<EditItems> {
                   padding: EdgeInsets.symmetric(horizontal: 20),
                   child: Align(
                     alignment: Alignment.centerLeft,
-                    child: Text("Category",
+                    child: Text(AppLocalizations.of(context)!.product_category,
                         style: TextStyle(
                             fontSize: 20, fontWeight: FontWeight.bold)),
                   ),
@@ -405,7 +423,8 @@ class _EditItemsState extends ConsumerState<EditItems> {
                         ? null
                         : product.productCategory,
                     hint: product.productCategory.isEmpty
-                        ? Text("Select Category")
+                        ? Text(AppLocalizations.of(context)!
+                            .product_select_category)
                         : null,
                     items: ["Food", "Drink", "Dormitory", "Clothes", "Others"]
                         .map((category) {
@@ -426,7 +445,7 @@ class _EditItemsState extends ConsumerState<EditItems> {
                   padding: EdgeInsets.symmetric(horizontal: 20),
                   child: Align(
                     alignment: Alignment.centerLeft,
-                    child: Text("Tag",
+                    child: Text(AppLocalizations.of(context)!.product_tag,
                         style: TextStyle(
                             fontSize: 20, fontWeight: FontWeight.bold)),
                   ),
@@ -435,64 +454,79 @@ class _EditItemsState extends ConsumerState<EditItems> {
                   padding: EdgeInsets.symmetric(horizontal: 20),
                   child: Row(
                     children: [
-                      Row(
-                        children: [
-                          Checkbox(
-                            value: tagsOld.contains("มือหนึ่ง"),
-                            onChanged: (value) {
-                              setState(() {
-                                if (value!) {
-                                  if (!tagsOld.contains("มือหนึ่ง")) {
-                                    tagsOld.add("มือหนึ่ง");
+                      SizedBox(
+                        width: 110,
+                        child: Row(
+                          children: [
+                            Checkbox(
+                              value: tagsOld.contains("มือหนึ่ง"),
+                              onChanged: (value) {
+                                setState(() {
+                                  if (value!) {
+                                    if (!tagsOld.contains("มือหนึ่ง")) {
+                                      tagsOld.add("มือหนึ่ง");
+                                    }
+                                  } else {
+                                    tagsOld.remove("มือหนึ่ง");
                                   }
-                                } else {
-                                  tagsOld.remove("มือหนึ่ง");
-                                }
-                              });
-                            },
-                          ),
-                          Text("มือหนึ่ง"),
-                        ],
+                                });
+                              },
+                            ),
+                            Flexible(
+                                child: Text(AppLocalizations.of(context)!
+                                    .tag_first_hand)),
+                          ],
+                        ),
                       ),
                       SizedBox(width: 10),
-                      Row(
-                        children: [
-                          Checkbox(
-                            value: tagsOld.contains("มือสอง"),
-                            onChanged: (value) {
-                              setState(() {
-                                if (value!) {
-                                  if (!tagsOld.contains("มือสอง")) {
-                                    tagsOld.add("มือสอง");
+                      SizedBox(
+                        width: 110,
+                        child: Row(
+                          children: [
+                            Checkbox(
+                              value: tagsOld.contains("มือสอง"),
+                              onChanged: (value) {
+                                setState(() {
+                                  if (value!) {
+                                    if (!tagsOld.contains("มือสอง")) {
+                                      tagsOld.add("มือสอง");
+                                    }
+                                  } else {
+                                    tagsOld.remove("มือสอง");
                                   }
-                                } else {
-                                  tagsOld.remove("มือสอง");
-                                }
-                              });
-                            },
-                          ),
-                          Text("มือสอง"),
-                        ],
+                                });
+                              },
+                            ),
+                            Flexible(
+                                child: Text(AppLocalizations.of(context)!
+                                    .tag_second_hand)),
+                          ],
+                        ),
                       ),
                       SizedBox(width: 10),
-                      Row(
-                        children: [
-                          Checkbox(
-                            value: tagsOld.contains("สภาพดี"),
-                            onChanged: (value) {
-                              setState(() {
-                                if (value!) {
-                                  if (!tagsOld.contains("สภาพดี")) {
-                                    tagsOld.add("สภาพดี");
+                      SizedBox(
+                        width: 130,
+                        child: Row(
+                          children: [
+                            Checkbox(
+                              value: tagsOld.contains("สภาพดี"),
+                              onChanged: (value) {
+                                setState(() {
+                                  if (value!) {
+                                    if (!tagsOld.contains("สภาพดี")) {
+                                      tagsOld.add("สภาพดี");
+                                    }
+                                  } else {
+                                    tagsOld.remove("สภาพดี");
                                   }
-                                } else {
-                                  tagsOld.remove("สภาพดี");
-                                }
-                              });
-                            },
-                          ),
-                          Text("สภาพดี"),
-                        ],
+                                });
+                              },
+                            ),
+                            Flexible(
+                                child: Text(AppLocalizations.of(context)!
+                                    .tag_good_quality)),
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -501,123 +535,136 @@ class _EditItemsState extends ConsumerState<EditItems> {
                   padding: EdgeInsets.symmetric(horizontal: 20),
                   child: Row(
                     children: [
-                      // First checkbox with fixed text
-                      Row(
-                        children: [
-                          Checkbox(
-                            value: tagsOld.contains("อร่อย"),
-                            onChanged: (value) {
-                              setState(() {
-                                if (value!) {
-                                  if (!tagsOld.contains("อร่อย")) {
-                                    tagsOld.add("อร่อย");
-                                  }
-                                } else {
-                                  tagsOld.remove("อร่อย");
-                                }
-                              });
-                            },
-                          ),
-                          Text("อร่อย"),
-                        ],
-                      ),
-                      SizedBox(width: 19), // Spacing
-
-                      // Second checkbox with fixed text
-                      Row(
-                        children: [
-                          Checkbox(
-                            value: tagsOld.contains("สะอาด"),
-                            onChanged: (value) {
-                              setState(() {
-                                if (value!) {
-                                  if (!tagsOld.contains("สะอาด")) {
-                                    tagsOld.add("สะอาด");
-                                  }
-                                } else {
-                                  tagsOld.remove("สะอาด");
-                                }
-                              });
-                            },
-                          ),
-                          Text("สะอาด"),
-                        ],
-                      ),
-
-                      SizedBox(width: 11), // Spacing
-
-                      // Third checkbox with a text field
-                      Row(
-                        children: [
-                          Checkbox(
-                            value: isCheckedOthers,
-                            onChanged: (value) {
-                              setState(() {
-                                isCheckedOthers = value ?? false;
-                                final text = otherTagController.text.trim();
-
-                                if (isCheckedOthers) {
-                                  if (text.isNotEmpty &&
-                                      !excludedTags.contains(text) &&
-                                      !tagsOld.contains(text)) {
-                                    tagsOld.add(text);
-                                  }
-                                } else {
-                                  tagsOld.removeWhere((tag) =>
-                                      !excludedTags.contains(tag) &&
-                                      tag == text);
-                                  otherTagController.clear();
-                                }
-
-                                tagsOld.removeWhere((tag) => tag.isEmpty);
-                              });
-                            },
-                          ),
-                          SizedBox(
-                            width: 100,
-                            child: TextField(
-                              controller: otherTagController,
-                              enabled: isCheckedOthers,
-                              decoration: InputDecoration(
-                                hintText: "อื่นๆ",
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide.none,
-                                ),
-                                filled: true,
-                                fillColor: Colors.grey[200],
-                                contentPadding: EdgeInsets.symmetric(
-                                    horizontal: 8, vertical: 4),
-                              ),
-                              onChanged: (text) {
-                                if (isCheckedOthers) {
-                                  setState(() {
-                                    tagsOld.removeWhere((tag) => tag.isEmpty);
-                                    tagsOld.removeWhere((tag) =>
-                                        !excludedTags.contains(tag) &&
-                                        tag != text.trim() &&
-                                        tag.isNotEmpty);
-
-                                    final trimmedText = text.trim();
-                                    if (trimmedText.isNotEmpty &&
-                                        !tagsOld.contains(trimmedText)) {
-                                      tagsOld.add(trimmedText);
+                      SizedBox(
+                        width: 110,
+                        child: Row(
+                          children: [
+                            Checkbox(
+                              value: tagsOld.contains("อร่อย"),
+                              onChanged: (value) {
+                                setState(() {
+                                  if (value!) {
+                                    if (!tagsOld.contains("อร่อย")) {
+                                      tagsOld.add("อร่อย");
                                     }
-                                  });
-                                }
+                                  } else {
+                                    tagsOld.remove("อร่อย");
+                                  }
+                                });
                               },
                             ),
-                          ),
-                        ],
+                            Flexible(
+                                child: Text(AppLocalizations.of(context)!
+                                    .tag_delicious)),
+                          ],
+                        ),
+                      ),
+                      SizedBox(width: 10),
+                      SizedBox(
+                        width: 110,
+                        child: Row(
+                          children: [
+                            Checkbox(
+                              value: tagsOld.contains("สะอาด"),
+                              onChanged: (value) {
+                                setState(() {
+                                  if (value!) {
+                                    if (!tagsOld.contains("สะอาด")) {
+                                      tagsOld.add("สะอาด");
+                                    }
+                                  } else {
+                                    tagsOld.remove("สะอาด");
+                                  }
+                                });
+                              },
+                            ),
+                            Flexible(
+                                child: Text(
+                                    AppLocalizations.of(context)!.tag_clean)),
+                          ],
+                        ),
+                      ),
+                      SizedBox(width: 10),
+                      SizedBox(
+                        width: 130,
+                        child: Row(
+                          children: [
+                            Checkbox(
+                              value: isCheckedOthers,
+                              onChanged: (value) {
+                                setState(() {
+                                  isCheckedOthers = value ?? false;
+                                  final text = otherTagController.text.trim();
+
+                                  if (isCheckedOthers) {
+                                    if (text.isNotEmpty &&
+                                        !excludedTags.contains(text) &&
+                                        !tagsOld.contains(text)) {
+                                      tagsOld.add(text);
+                                    }
+                                  } else {
+                                    tagsOld.removeWhere(
+                                      (tag) =>
+                                          !excludedTags.contains(tag) &&
+                                          tag == text,
+                                    );
+                                    otherTagController.clear();
+                                  }
+
+                                  tagsOld.removeWhere((tag) => tag.isEmpty);
+                                });
+                              },
+                            ),
+                            Flexible(
+                              child: TextField(
+                                controller: otherTagController,
+                                enabled: isCheckedOthers,
+                                decoration: InputDecoration(
+                                  hintText: AppLocalizations.of(context)!
+                                      .product_tag_other,
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  filled: true,
+                                  fillColor: Colors.grey[200],
+                                  contentPadding: EdgeInsets.symmetric(
+                                      horizontal: 8, vertical: 4),
+                                ),
+                                onChanged: (text) {
+                                  if (isCheckedOthers) {
+                                    setState(() {
+                                      tagsOld.removeWhere((tag) => tag.isEmpty);
+                                      tagsOld.removeWhere(
+                                        (tag) =>
+                                            !excludedTags.contains(tag) &&
+                                            tag != text.trim() &&
+                                            tag.isNotEmpty,
+                                      );
+
+                                      final trimmedText = text.trim();
+                                      if (trimmedText.isNotEmpty &&
+                                          !tagsOld.contains(trimmedText)) {
+                                        tagsOld.add(trimmedText);
+                                      }
+                                    });
+                                  }
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
                 ),
+
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20),
                   child: Align(
                     alignment: Alignment.centerLeft,
-                    child: Text("Description",
+                    child: Text(
+                        AppLocalizations.of(context)!.product_description,
                         style: TextStyle(
                             fontSize: 20, fontWeight: FontWeight.bold)),
                   ),
@@ -649,7 +696,7 @@ class _EditItemsState extends ConsumerState<EditItems> {
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      "*โปรดตรวจสอบว่าได้ใส่ช่องทางการติดต่อลงไปในรายละเอียด",
+                      AppLocalizations.of(context)!.product_caution,
                       style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
@@ -657,6 +704,7 @@ class _EditItemsState extends ConsumerState<EditItems> {
                     ),
                   ),
                 ),
+                SizedBox(height: 20),
                 // Post Button
                 FilledButton(
                   onPressed: () async {
@@ -679,7 +727,9 @@ class _EditItemsState extends ConsumerState<EditItems> {
                               children: [
                                 CircularProgressIndicator(),
                                 SizedBox(height: 15),
-                                Text("กำลังแก้ไขสินค้า...",
+                                Text(
+                                    AppLocalizations.of(context)!
+                                        .edit_product_waiting,
                                     style: TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold)),
@@ -724,10 +774,11 @@ class _EditItemsState extends ConsumerState<EditItems> {
                     backgroundColor: MaterialStateProperty.all(Colors.orange),
                   ),
                   child: Text(
-                    "บันทึก",
+                    AppLocalizations.of(context)!.edit_product_save,
                     style: TextStyle(color: Colors.black, fontSize: 18),
                   ),
                 ),
+                SizedBox(height: 20),
               ],
             ),
           );

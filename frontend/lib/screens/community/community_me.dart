@@ -122,6 +122,7 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
                                 children: [
                                   Text(
                                     product.productName,
+                                    overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
                                       color: Colors.black,
                                       fontSize: 18,

@@ -23,4 +23,8 @@ public class ReportService {
             throw new RuntimeException("Failed to create new post", e);
         }
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> shop2

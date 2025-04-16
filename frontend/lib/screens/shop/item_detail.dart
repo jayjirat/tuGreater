@@ -6,6 +6,7 @@ import 'package:frontend/components/toolbar.dart';
 import 'package:frontend/providers/product_provider.dart';
 import 'package:frontend/providers/user_provider.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ItemDetail extends ConsumerWidget {
   final String productId;
@@ -17,7 +18,8 @@ class ItemDetail extends ConsumerWidget {
         ref.watch(productProviderById(productId)); // Watch the product directly
     final user = ref.read(userProvider);
     return Scaffold(
-      appBar: Toolbar(title: "Item Detail"),
+      appBar:
+          Toolbar(title: AppLocalizations.of(context)!.product_detail_title),
       body: productAsyncValue.when(
         data: (product) {
           return SingleChildScrollView(
@@ -45,12 +47,20 @@ class ItemDetail extends ConsumerWidget {
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Padding(
-                    padding:
-                        EdgeInsets.only(left: 5, top: 10), //ที่ว่างขอบจอซ้าย
+                    padding: EdgeInsets.only(left: 5, top: 10),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: product.productTags.map((tag) {
-                        // Loop over tags
+                        final localizations = AppLocalizations.of(context)!;
+                        final displayTag = {
+                              "มือหนึ่ง": localizations.tag_first_hand,
+                              "มือสอง": localizations.tag_second_hand,
+                              "สภาพดี": localizations.tag_good_quality,
+                              "อร่อย": localizations.tag_delicious,
+                              "สะอาด": localizations.tag_clean,
+                            }[tag] ??
+                            tag;
+
                         return Container(
                           height: 40,
                           margin: EdgeInsets.all(8),
@@ -68,13 +78,15 @@ class ItemDetail extends ConsumerWidget {
                           child: Padding(
                             padding: EdgeInsets.all(6),
                             child: Center(
-                              child: Text(tag, // Display tag inside container
-                                  style: TextStyle(fontSize: 16),
-                                  textAlign: TextAlign.center),
+                              child: Text(
+                                displayTag,
+                                style: TextStyle(fontSize: 16),
+                                textAlign: TextAlign.center,
+                              ),
                             ),
                           ),
                         );
-                      }).toList(), // Convert map() result into a List
+                      }).toList(),
                     ),
                   ),
                 ),
@@ -90,7 +102,7 @@ class ItemDetail extends ConsumerWidget {
                         child: Text(
                           product.productName,
                           style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
+                              fontSize: 23, fontWeight: FontWeight.bold),
                         ),
                       ),
                       Text(
@@ -142,14 +154,16 @@ class ItemDetail extends ConsumerWidget {
                             context: context,
                             isScrollControlled: true,
                             builder: (context) {
-                              return ReportModal();
+                              return ReportModal(
+                                id: product.productId,
+                              );
                             });
                       },
                       style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.all(Colors.red),
                       ),
                       child: Text(
-                        "Report",
+                        AppLocalizations.of(context)!.product_detail_report,
                         style: TextStyle(color: Colors.black, fontSize: 18),
                       ),
                     ),

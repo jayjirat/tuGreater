@@ -7,4 +7,8 @@ import tuGreaterBackend.cn333.backend.entity.Report;
 
 @Repository
 public interface ReportRepository extends MongoRepository<Report, String>{
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> shop2
