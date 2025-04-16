@@ -219,7 +219,12 @@ class _AddItemsState extends ConsumerState<AddItems> {
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    SvgPicture.asset("assets/svg/upload.svg"),
+                                    SvgPicture.asset(
+                                      "assets/svg/upload.svg",
+                                      color: _selectedImages.length == 0
+                                          ? Theme.of(context).canvasColor
+                                          : Theme.of(context).cardColor,
+                                    ),
                                     SizedBox(height: 5),
                                     Text(
                                         AppLocalizations.of(context)!
