@@ -21,13 +21,7 @@ public class CommunityPost {
     private String username;
     private boolean isEdited;
     private String imageUrl;
-
-    private int repostCount;
-    private boolean isReposted;
-    private String repostedUserId;
-    private String repostedPostId;
-    private boolean isOriginalDeleted;
-    private LocalDateTime repostCreatedAt;
+    private String postedByImageUrl;
 
     public String getId() {
         return this.id;
@@ -129,61 +123,12 @@ public class CommunityPost {
         this.imageUrl = imageUrl;
     }
 
-    public int getRepostCount() {
-        return this.repostCount;
+    public String getPostedByImageUrl() {
+        return this.postedByImageUrl;
     }
 
-    public void setRepostCount(int repostCount) {
-        this.repostCount = repostCount;
+    public void setPostedByImageUrl(String postedByImageUrl) {
+        this.postedByImageUrl = postedByImageUrl;
     }
 
-    public boolean isIsReposted() {
-        return this.isReposted;
-    }
-
-    public boolean getIsReposted() {
-        return this.isReposted;
-    }
-
-    public void setIsReposted(boolean isReposted) {
-        this.isReposted = isReposted;
-    }
-
-    public String getRepostedUserId() {
-        return this.repostedUserId;
-    }
-
-    public void setRepostedUserId(String repostedUserId) {
-        this.repostedUserId = repostedUserId;
-    }
-
-    public String getRepostedPostId() {
-        return this.repostedPostId;
-    }
-
-    public void setRepostedPostId(String repostedPostId) {
-        this.repostedPostId = repostedPostId;
-    }
-
-    public boolean isIsOriginalDeleted() {
-        return this.isOriginalDeleted;
-    }
-
-    public boolean getIsOriginalDeleted() {
-        return this.isOriginalDeleted;
-    }
-
-    public void setIsOriginalDeleted(boolean isOriginalDeleted) {
-        this.isOriginalDeleted = isOriginalDeleted;
-    }
-
-    public LocalDateTime getRepostCreatedAt() {
-        return this.repostCreatedAt;
-    }
-
-    public void setRepostCreatedAt(LocalDateTime repostCreatedAt) {
-        this.repostCreatedAt = repostCreatedAt;
-    }
-
-  
 }
