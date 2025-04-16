@@ -15,7 +15,8 @@ class CommentNotifier extends StateNotifier<List<Comment>> {
       {required String postId,
       required String content,
       required String userId,
-      required String username}) async {
+      required String username,
+      required String commentedByImageUrl}) async {
     final url = Uri.parse('$baseURL/community/$postId/comment');
     try {
       final commentBody = {
@@ -23,7 +24,8 @@ class CommentNotifier extends StateNotifier<List<Comment>> {
         'createdAt': DateTime.now().toIso8601String(),
         'postId': postId,
         'userId': userId,
-        'username': username
+        'username': username,
+        'commentedByImageUrl':commentedByImageUrl
       };
       final header = {'Content-Type': 'application/json'};
       final response = await http.post((url),

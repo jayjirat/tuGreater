@@ -290,16 +290,28 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                                       child: ListTile(
                                         contentPadding: EdgeInsets.symmetric(
                                             horizontal: 16, vertical: 4),
-                                        leading: CircleAvatar(
-                                          radius: 20,
-                                          backgroundColor: Theme.of(context)
-                                              .primaryColorDark,
-                                          child: Icon(
-                                            Icons.account_circle,
-                                            size: 38,
-                                            color: Theme.of(context).cardColor,
-                                          ),
-                                        ),
+                                        leading: comments[index]
+                                                    .commentedByImageUrl ==
+                                                ""
+                                            ? CircleAvatar(
+                                                radius: 20,
+                                                backgroundColor:
+                                                    Theme.of(context)
+                                                        .primaryColorDark,
+                                                child: Icon(
+                                                  Icons.account_circle,
+                                                  size: 38,
+                                                  color: Theme.of(context)
+                                                      .cardColor,
+                                                ),
+                                              )
+                                            : CircleAvatar(
+                                                radius: 20,
+                                                backgroundImage: NetworkImage(
+                                                    post.postedByImageUrl!),
+                                                backgroundColor:
+                                                    Colors.transparent,
+                                              ),
                                         title: Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
@@ -394,7 +406,8 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                             postId: post!.id,
                             content: commentCtrl.text,
                             userId: user!.id,
-                            username: user.displayName);
+                            username: user.displayName,
+                            commentedByImageUrl: user.profileImageUrl);
 
                         setState(() {
                           post.commentCount++;

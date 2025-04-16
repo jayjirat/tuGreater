@@ -30,11 +30,11 @@ Widget communityPost(
           ListTile(
             leading: post.postedByImageUrl == ""
                 ? CircleAvatar(
-                    radius: 18,
+                    radius: 24,
                     backgroundColor: Theme.of(context).primaryColorDark,
                     child: Icon(
                       Icons.account_circle,
-                      size: 36,
+                      size: 48,
                       color: Theme.of(context).cardColor,
                     ),
                   )

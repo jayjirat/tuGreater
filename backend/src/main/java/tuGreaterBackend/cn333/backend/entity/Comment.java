@@ -16,6 +16,8 @@ public class Comment {
     private String postId;
     private String username;
     private String userId;
+    private String commentedByImageUrl;
+
 
     public String getId() {
         return this.id;
@@ -65,5 +67,12 @@ public class Comment {
         this.userId = userId;
     }
 
+    public String getCommentedByImageUrl() {
+        return this.commentedByImageUrl;
+    }
+
+    public void setCommentedByImageUrl(String commentedByImageUrl) {
+        this.commentedByImageUrl = commentedByImageUrl;
+    }
 
 }
