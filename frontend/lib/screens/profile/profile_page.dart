@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/components/toast.dart';
 import 'package:frontend/screens/profile/setting_page.dart';
 import 'package:frontend/screens/profile/uploadprofile_page.dart';
 import 'package:frontend/services/displayname_api_service.dart';
@@ -52,14 +53,14 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   // Separate method to show snackbar to avoid context issues
-  void _showSnackBar(String message, {bool isError = false}) {
-    if (!mounted) return;
+  // void _showSnackBar(String message, {bool isError = false}) {
+  //   if (!mounted) return;
 
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(message),
-      backgroundColor: isError ? Colors.red : null,
-    ));
-  }
+  //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+  //     content: Text(message),
+  //     backgroundColor: isError ? Colors.red : null,
+  //   ));
+  // }
 
   Future<void> _updateDisplayName(String newName) async {
     if (newName.trim().isEmpty || newName == displayName) {
@@ -80,7 +81,11 @@ class _ProfilePageState extends State<ProfilePage> {
       if (!mounted) return;
 
       if (success) {
-        _showSnackBar('Display name updated successfully!');
+        showToast(
+          message: "Display name updated successfully!",
+          toastType: ToastType.success,
+        );
+        // _showSnackBar('Display name updated successfully!');
 
         // Refresh the display name from server to ensure consistency
         _loadStudentDisplayName();
@@ -89,7 +94,11 @@ class _ProfilePageState extends State<ProfilePage> {
         setState(() {
           displayName = previousName; // Revert to previous name
         });
-        _showSnackBar('Failed to update display name', isError: true);
+        showToast(
+          message: 'Failed to update display name',
+          toastType: ToastType.error,
+        );
+        // _showSnackBar('Failed to update display name', isError: true);
       }
     } catch (e) {
       if (!mounted) return;
@@ -99,7 +108,8 @@ class _ProfilePageState extends State<ProfilePage> {
         displayName = previousName;
       });
 
-      _showSnackBar('Error: ${e.toString()}', isError: true);
+      // TODO push error screen
+      // _showSnackBar('Error: ${e.toString()}', isError: true);
     }
   }
 

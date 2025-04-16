@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:frontend/components/toast.dart';
 import 'package:frontend/models/role.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/models/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:frontend/services/user_api.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class UserNotifier extends StateNotifier<User?> {
   UserNotifier() : super(null);
@@ -36,7 +38,6 @@ class UserNotifier extends StateNotifier<User?> {
       );
       // Login success
       if (tuResponse.statusCode == 200) {
-        print("Login success");
         final tuResponseData = json.decode(tuResponse.body);
         final usernameUrl =
             Uri.parse('$userDBUrl/studentId?studentId=$username');
@@ -44,7 +45,6 @@ class UserNotifier extends StateNotifier<User?> {
         // Fetch user in db
         final existingUser = await http.get(usernameUrl);
         final usernameNew = tuResponseData['displayname_en'];
-        print(existingUser.statusCode);
         // User not found in db -> Create new user (First Login)
         if (existingUser.statusCode == 404) {
           final userBody = json.encode({
@@ -87,31 +87,26 @@ class UserNotifier extends StateNotifier<User?> {
             role: parseStringtoRole(data['role']),
           );
           await _saveUserToPrefs(state!);
-          // TODO  push -> community screen
           if (context.mounted) {
             Navigator.pushReplacementNamed(context, '/community');
           }
         } else {
-          // TODO  Notify the error to user
+          // TODO  push to error screen
         }
 
         // Login unsuccessful
       } else {
         if (context.mounted) {
           {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(
-                SnackBar(content: Text('Invalid username or password')));
+            showToast(
+              message: AppLocalizations.of(context)!.loginInvalidMessage,
+              toastType: ToastType.error,
+            );
           }
         }
       }
     } catch (error) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Error: $error')));
-      }
+      // TODO  push to error screen
     }
   }
 
@@ -185,11 +180,7 @@ class UserNotifier extends StateNotifier<User?> {
         }
       }
     } catch (e) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Error: $e')));
-      }
+      // TODO  push to error screen
     }
   }
 

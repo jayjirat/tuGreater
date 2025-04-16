@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:frontend/components/toast.dart';
 import 'package:frontend/models/report.dart';
 import 'package:frontend/providers/comment_provider.dart';
 import 'package:frontend/providers/community_provider.dart';
@@ -587,10 +588,10 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                         postCategory: PostCategory.community);
                     if (context.mounted) {
                       Navigator.pop(context);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text("Report submitted!"),
-                        ),
+                      showToast(
+                        message: AppLocalizations.of(context)!
+                            .reportSubmittedSuccess,
+                        toastType: ToastType.success,
                       );
                     }
                   },

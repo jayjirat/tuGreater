@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/components/community_post.dart';
+import 'package:frontend/components/toast.dart';
 import 'package:frontend/models/user.dart';
 import 'package:frontend/providers/community_provider.dart';
 import 'package:frontend/providers/product_provider.dart';
@@ -220,10 +221,11 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
                                   ref.refresh(productProviderByProductOwnerId(
                                       loadedUser!.id));
 
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                          content: Text(
-                                              'Product deleted successfully')));
+                                  showToast(
+                                    message: AppLocalizations.of(context)!
+                                        .productDeletedSuccess,
+                                    toastType: ToastType.success,
+                                  );
                                 }
                               },
                               icon: Icon(Icons.delete),

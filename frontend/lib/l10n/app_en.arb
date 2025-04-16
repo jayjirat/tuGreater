@@ -91,5 +91,9 @@
     "report_Other_please_specify":"Other (please specify)",
     "report_description":"Report Description",
     "report_description_placeholder":"Enter Description...",
-    "report_submit":"Submit Report"
+    "report_submit":"Submit Report",
+    "loginInvalidMessage":"Invalid username or password.",
+    "postCreatedSuccess":"Post created successfully.",
+    "productDeletedSuccess":"Product deleted successfully.",
+    "reportSubmittedSuccess":"Your report has been submitted successfully."
 }

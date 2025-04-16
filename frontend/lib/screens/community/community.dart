@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/components/community_post.dart';
+import 'package:frontend/components/toast.dart';
 import 'package:frontend/providers/community_provider.dart';
 import 'package:frontend/screens/community/community_view_post.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -80,25 +81,27 @@ class CommunityState extends ConsumerState<Community> {
                 toggleElement("Lost & Found"),
               ]),
           const SizedBox(height: 16),
-          Expanded(
-            child: ListView.builder(
-              itemCount: posts.length,
-              itemBuilder: (context, index) {
-                final post = posts[index];
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    communityPost(
-                        context: context,
-                        nextRoute: CommunityViewpost(id: post.id),
-                        post: post,
-                        communityPostController: communityPostController),
-                    const SizedBox(height: 12),
-                  ],
-                );
-              },
-            ),
-          ),
+          posts.isNotEmpty
+              ? Expanded(
+                  child: ListView.builder(
+                    itemCount: posts.length,
+                    itemBuilder: (context, index) {
+                      final post = posts[index];
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          communityPost(
+                              context: context,
+                              nextRoute: CommunityViewpost(id: post.id),
+                              post: post,
+                              communityPostController: communityPostController),
+                          const SizedBox(height: 12),
+                        ],
+                      );
+                    },
+                  ),
+                )
+              : Container(),
         ],
       ),
     );
