@@ -103,5 +103,8 @@
     "english": "English",
     "thai": "Thai",
     "lightmode": "Lightmode",
-    "darkmode": "Darkmode"
+    "darkmode": "Darkmode",
+    "tap_to_add": "Tap to add",
+    "take_a_photo": "Take a photo",
+    "choose_from_gallery": "Choose from gallery"
 }

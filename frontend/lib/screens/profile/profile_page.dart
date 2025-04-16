@@ -243,7 +243,11 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                                 fontSize: 20),
                                           ),
                                           const SizedBox(width: 5),
-                                          const Icon(Icons.edit, size: 16),
+                                          const Icon(
+                                            Icons.edit,
+                                            size: 16,
+                                            color: Colors.black,
+                                          ),
                                         ],
                                       ),
                                     ),
@@ -268,16 +272,14 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                           );
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white, // Button color
-                          minimumSize: const Size(350, 75),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 10),
-                        ),
+                            minimumSize: const Size(350, 75),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 10),
+                            elevation: 5),
                         child: Text(
                             AppLocalizations.of(context)!
                                 .upload_profile_picture,
-                            style:
-                                TextStyle(color: Colors.black, fontSize: 20)),
+                            style: TextStyle(fontSize: 20)),
                       )),
                       Center(
                           child: ElevatedButton(
@@ -289,14 +291,12 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                           );
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white, // Button color
-                          minimumSize: const Size(350, 75),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 10),
-                        ),
+                            minimumSize: const Size(350, 75),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 10),
+                            elevation: 5),
                         child: Text(AppLocalizations.of(context)!.settings,
-                            style:
-                                TextStyle(color: Colors.black, fontSize: 20)),
+                            style: TextStyle(fontSize: 20)),
                       )),
                       Center(
                           child: ElevatedButton(
@@ -310,11 +310,11 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                           );
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.redAccent, // Button color
-                          minimumSize: const Size(350, 75),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 10),
-                        ),
+                            backgroundColor: Colors.redAccent, // Button color
+                            minimumSize: const Size(350, 75),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 10),
+                            elevation: 5),
                         child: Text(AppLocalizations.of(context)!.signout,
                             style:
                                 TextStyle(color: Colors.black, fontSize: 20)),

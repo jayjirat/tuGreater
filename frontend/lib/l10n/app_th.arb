@@ -100,5 +100,8 @@
   "english": "ภาษาอังกฤษ",
   "thai": "ภาษาไทย",
   "lightmode": "โหมดสว่าง",
-  "darkmode": "โหมดมืด"
+  "darkmode": "โหมดมืด",
+  "tap_to_add": "กดเพื่อเพิ่ม",
+  "take_a_photo": "ถ่ายรูปภาพ",
+  "choose_from_gallery": "เลือกรูปจากแกลลอรี่"
 }

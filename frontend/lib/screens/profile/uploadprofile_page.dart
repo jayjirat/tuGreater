@@ -25,10 +25,6 @@ class _UploadProfilePageState extends ConsumerState<UploadProfilePage> {
     super.initState();
     profileImageUrl = ref.read(userProvider)?.profileImageUrl ??
         "https://static.vecteezy.com/system/resources/previews/020/765/399/non_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg";
-    if (profileImageUrl == "") {
-      profileImageUrl =
-          "https://static.vecteezy.com/system/resources/previews/020/765/399/non_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg";
-    }
     studentId = ref.read(userProvider)?.studentId ?? "NOT FOUND";
   }
 
@@ -111,7 +107,6 @@ class _UploadProfilePageState extends ConsumerState<UploadProfilePage> {
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.profile),
       ),
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Consumer(
         builder: (context, ref, child) {
           final user = ref.watch(userProvider);
@@ -124,7 +119,7 @@ class _UploadProfilePageState extends ConsumerState<UploadProfilePage> {
                 Center(
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Theme.of(context).secondaryHeaderColor,
+                      color: Theme.of(context).hoverColor,
                       borderRadius: BorderRadius.circular(30),
                     ),
                     padding: EdgeInsets.all(10),
@@ -157,12 +152,12 @@ class _UploadProfilePageState extends ConsumerState<UploadProfilePage> {
                     child: ElevatedButton(
                   onPressed: isUploading ? null : resetProfileImage,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.redAccent, // Button color
-                    minimumSize: Size(350, 75),
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  ),
-                  child: Text(
-                      AppLocalizations.of(context)!.upload_profile_picture,
+                      backgroundColor: Colors.redAccent, // Button color
+                      minimumSize: Size(350, 75),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      elevation: 5),
+                  child: Text(AppLocalizations.of(context)!.return_to_default,
                       style: TextStyle(color: Colors.black, fontSize: 20)),
                 )),
               ],
