@@ -29,10 +29,5 @@ public class ReportController {
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }
-<<<<<<< HEAD
-    
 }
-=======
 
-}
->>>>>>> shop2

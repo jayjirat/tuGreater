@@ -91,11 +91,6 @@ public class Report {
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
-<<<<<<< HEAD
-    
 }
 
-=======
 
-}
->>>>>>> shop2
