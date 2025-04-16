@@ -124,7 +124,7 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Form(
           key: _formKey,
           child: ListView(

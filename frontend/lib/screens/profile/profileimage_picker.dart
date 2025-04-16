@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProfileImagePicker extends StatefulWidget {
   final String existingImageUrl;
@@ -47,7 +48,7 @@ class _ProfileImagePickerState extends State<ProfileImagePicker> {
                 children: [
                   ListTile(
                     leading: Icon(Icons.photo_camera),
-                    title: Text('Take a photo'),
+                    title: Text(AppLocalizations.of(context)!.take_a_photo),
                     onTap: () {
                       Navigator.pop(context);
                       _pickImage(ImageSource.camera);
@@ -55,7 +56,8 @@ class _ProfileImagePickerState extends State<ProfileImagePicker> {
                   ),
                   ListTile(
                     leading: Icon(Icons.photo_library),
-                    title: Text('Choose from gallery'),
+                    title:
+                        Text(AppLocalizations.of(context)!.choose_from_gallery),
                     onTap: () {
                       Navigator.pop(context);
                       _pickImage(ImageSource.gallery);
@@ -65,14 +67,24 @@ class _ProfileImagePickerState extends State<ProfileImagePicker> {
               ),
             );
           },
-          child: CircleAvatar(
-            radius: 125,
-            backgroundImage: NetworkImage(widget.existingImageUrl),
-            backgroundColor: Colors.grey[300],
-          ),
+          child: widget.existingImageUrl.isEmpty
+              ? CircleAvatar(
+                  radius: 125,
+                  backgroundColor: Colors.grey[300],
+                  child: Icon(Icons.person, size: 120, color: Colors.grey[600]),
+                )
+              : CircleAvatar(
+                  radius: 125,
+                  backgroundImage: NetworkImage(widget.existingImageUrl),
+                ),
         ),
-        SizedBox(height: 10),
-        Text('Tap to change profile image'),
+        SizedBox(height: 15),
+        Text(
+          widget.existingImageUrl.isEmpty
+              ? AppLocalizations.of(context)!.tap_to_add
+              : AppLocalizations.of(context)!.tap_to_change,
+          style: TextStyle(fontSize: 18),
+        ),
       ],
     );
   }
