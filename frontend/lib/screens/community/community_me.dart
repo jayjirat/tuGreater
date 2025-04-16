@@ -253,15 +253,21 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            CircleAvatar(
-              radius: 52,
-              backgroundColor: Theme.of(context).primaryColorDark,
-              child: Icon(
-                Icons.account_circle,
-                size: 100,
-                color: Theme.of(context).cardColor,
-              ),
-            ),
+            loadedUser!.profileImageUrl == ""
+                ? CircleAvatar(
+                    radius: 60,
+                    backgroundColor: Theme.of(context).primaryColorDark,
+                    child: Icon(
+                      Icons.account_circle,
+                      size: 120,
+                      color: Theme.of(context).cardColor,
+                    ),
+                  )
+                : CircleAvatar(
+                    radius: 60,
+                    backgroundImage: NetworkImage(loadedUser!.profileImageUrl),
+                    backgroundColor: Colors.transparent,
+                  ),
             const SizedBox(
               height: 10,
             ),
