@@ -4,8 +4,8 @@ import 'package:frontend/login.dart';
 import 'package:frontend/screens/profile/setting_page.dart';
 import 'package:frontend/screens/profile/uploadprofile_page.dart';
 import 'package:frontend/services/displayname_api_service.dart';
-import 'test_page.dart';
 import 'package:frontend/providers/user_provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProfilePage extends ConsumerStatefulWidget {
   final String studentId;
@@ -154,17 +154,6 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
   Widget build(BuildContext context) {
     final user = ref.watch(userProvider);
     return Scaffold(
-      // backgroundColor: Theme.of(context).canvasColor,
-      appBar: AppBar(
-        title: const Text('Profile'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: _loadStudentDisplayName,
-            tooltip: 'Refresh profile',
-          ),
-        ],
-      ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator(color: Colors.white))
           : _errorMessage.isNotEmpty
@@ -177,7 +166,6 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                         style:
                             const TextStyle(color: Colors.white, fontSize: 18),
                       ),
-                      const SizedBox(height: 20),
                       ElevatedButton(
                         onPressed: () {
                           _loadStudentDisplayName;
@@ -194,6 +182,16 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
+                      Row(
+                        children: [
+                          Spacer(),
+                          IconButton(
+                            icon: const Icon(Icons.refresh),
+                            onPressed: _loadStudentDisplayName,
+                            tooltip: 'Refresh profile',
+                          ),
+                        ],
+                      ),
                       const SizedBox(height: 5),
                       Center(
                         child: Container(
@@ -275,7 +273,9 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 20, vertical: 10),
                         ),
-                        child: const Text("Upload profile picture",
+                        child: Text(
+                            AppLocalizations.of(context)!
+                                .upload_profile_picture,
                             style:
                                 TextStyle(color: Colors.black, fontSize: 20)),
                       )),
@@ -294,7 +294,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 20, vertical: 10),
                         ),
-                        child: const Text("Settings",
+                        child: Text(AppLocalizations.of(context)!.settings,
                             style:
                                 TextStyle(color: Colors.black, fontSize: 20)),
                       )),
@@ -315,7 +315,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 20, vertical: 10),
                         ),
-                        child: const Text("SIGN OUT",
+                        child: Text(AppLocalizations.of(context)!.signout,
                             style:
                                 TextStyle(color: Colors.black, fontSize: 20)),
                       )),

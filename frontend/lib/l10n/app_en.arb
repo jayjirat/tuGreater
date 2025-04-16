@@ -54,5 +54,17 @@
     "report_Other_please_specify":"Other (please specify)",
     "report_description":"Report Description",
     "report_description_placeholder":"Enter Description...",
-    "report_submit":"Submit Report"
+    "report_submit":"Submit Report",
+    "profile": "Profile",
+    "upload_profile_picture": "Upload profile picture",
+    "settings": "Settings",
+    "signout": "Sign out",
+    "tap_to_change": "tap to change profile image",
+    "return_to_default": "return to default picture",
+    "language": "Language",
+    "theme": "Theme",
+    "english": "English",
+    "thai": "Thai",
+    "lightmode": "Lightmode",
+    "darkmode": "Darkmode"
 }

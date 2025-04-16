@@ -5,6 +5,7 @@ import 'package:frontend/providers/locale_provider.dart';
 import 'package:frontend/providers/theme_provider.dart';
 import 'package:frontend/providers/user_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as rp;
+import 'package:flutter_svg/flutter_svg.dart';
 
 class SettingPage extends rp.ConsumerStatefulWidget {
   const SettingPage({super.key});
@@ -20,6 +21,9 @@ class _SettingPageState extends rp.ConsumerState<SettingPage> {
     final localeProvider = context.watch<LocaleProvider>();
     final themeProvider = Provider.of<ThemeProvider>(context);
     return Scaffold(
+      appBar: AppBar(
+        title: Text(AppLocalizations.of(context)!.settings),
+      ),
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -30,7 +34,7 @@ class _SettingPageState extends rp.ConsumerState<SettingPage> {
             Center(
               child: Container(
                   decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor,
+                    color: Theme.of(context).secondaryHeaderColor,
                     borderRadius: BorderRadius.circular(30),
                   ),
                   padding: EdgeInsets.all(10),
@@ -59,11 +63,11 @@ class _SettingPageState extends rp.ConsumerState<SettingPage> {
                         children: [
                           Text(
                             user?.displayName ?? "NO DATA",
-                            style: TextStyle(color: Colors.black, fontSize: 20),
+                            style: TextStyle(fontSize: 20),
                           ),
                           Text(
                             user?.studentId ?? "NO DATA",
-                            style: TextStyle(color: Colors.black, fontSize: 20),
+                            style: TextStyle(fontSize: 20),
                           ),
                         ],
                       ),
@@ -72,41 +76,106 @@ class _SettingPageState extends rp.ConsumerState<SettingPage> {
             ),
             // Language Selection
             Text(
-              "Language",
-              style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold),
+              AppLocalizations.of(context)!.language,
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            Text(AppLocalizations.of(context)!
-                .helloWorld), // Text based on localization
-            Switch(
-              value: localeProvider.locale.languageCode ==
-                  'th', // Check if the current language is Thai
-              onChanged: (_) {
-                localeProvider
-                    .toggleLanguage(); // Toggle language using the provider
-              },
+            Row(
+              children: [
+                SvgPicture.network(
+                  'https://flagcdn.com/gb.svg',
+                  width: 25,
+                  height: 25,
+                  placeholderBuilder: (context) =>
+                      const CircularProgressIndicator(),
+                ),
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      AppLocalizations.of(context)!.english,
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: Switch(
+                    value: localeProvider.locale.languageCode == 'th',
+                    onChanged: (_) {
+                      localeProvider.toggleLanguage();
+                    },
+                  ),
+                ),
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      AppLocalizations.of(context)!.thai,
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ),
+                ),
+                SvgPicture.network(
+                  'https://flagcdn.com/th.svg', // Thailand 🇹🇭
+                  width: 28,
+                  height: 28,
+                  placeholderBuilder: (context) =>
+                      const CircularProgressIndicator(),
+                )
+              ],
             ),
+
             // Theme Selection
             Text(
-              "Theme",
-              style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold),
+              AppLocalizations.of(context)!.theme,
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            Switch(
-                value: themeProvider.isDarkMode,
-                onChanged: (_) {
-                  themeProvider.toggleTheme();
-                },
-                activeColor: Theme.of(context).colorScheme.secondary,
-                activeTrackColor:
-                    Theme.of(context).colorScheme.secondaryContainer,
-                inactiveThumbColor: Theme.of(context).colorScheme.primary,
-                inactiveTrackColor:
-                    Theme.of(context).colorScheme.primaryContainer),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SvgPicture.asset(
+                  'assets/svg/sun.svg',
+                  width: 50,
+                  height: 50,
+                  colorFilter: ColorFilter.mode(Colors.orange, BlendMode.srcIn),
+                ),
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      AppLocalizations.of(context)!.lightmode,
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: Switch(
+                    value: themeProvider.isDarkMode,
+                    onChanged: (_) {
+                      themeProvider.toggleTheme();
+                    },
+                  ),
+                ),
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      AppLocalizations.of(context)!.darkmode,
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ),
+                ),
+                SvgPicture.asset(
+                  'assets/svg/moon.svg',
+                  width: 50,
+                  height: 50,
+                  colorFilter: ColorFilter.mode(
+                      const Color.fromARGB(255, 255, 195, 67), BlendMode.srcIn),
+                )
+              ],
+            )
           ],
         ),
       ),

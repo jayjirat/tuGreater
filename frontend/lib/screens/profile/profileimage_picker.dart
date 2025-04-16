@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProfileImagePicker extends StatefulWidget {
   final String existingImageUrl;
@@ -72,7 +73,10 @@ class _ProfileImagePickerState extends State<ProfileImagePicker> {
           ),
         ),
         SizedBox(height: 10),
-        Text('Tap to change profile image'),
+        Text(
+          AppLocalizations.of(context)!.tap_to_change,
+          style: TextStyle(fontSize: 18),
+        ),
       ],
     );
   }
