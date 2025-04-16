@@ -18,8 +18,14 @@ class AppThemes {
     brightness: Brightness.light,
     scaffoldBackgroundColor: const Color.fromARGB(255, 240, 239, 236),
     appBarTheme: AppBarTheme(
-      color: Color(0xFFFF5722),
+      color: Color(0xFFFF914D),
       foregroundColor: Colors.white,
+      elevation: 4.0,
+      centerTitle: true,
+      titleTextStyle: TextStyle(
+        fontSize: 20.0,
+        fontWeight: FontWeight.bold,
+      ),
     ),
     colorScheme: ColorScheme.light(
       primary: Color(0xFFFF5722),

@@ -1,4 +1,5 @@
 {
     "java.compile.nullAnalysis.mode": "automatic",
-    "cmake.sourceDirectory": "C:/Users/Chaisiri/Desktop/CN/CN333/tuGreater/frontend/windows/runner"
+    "cmake.sourceDirectory": "C:/Users/Chaisiri/Desktop/CN/CN333/tuGreater/frontend/windows/runner",
+    "java.configuration.updateBuildConfiguration": "interactive"
 }

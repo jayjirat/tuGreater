@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import tuGreaterBackend.cn333.backend.entity.Users;
@@ -121,4 +122,22 @@ public class UsersController {
         }
     }
 
+    @PutMapping("/profile-image/{studentId}")
+    public ResponseEntity<?> updateProfileImage(
+            @PathVariable String studentId,
+            @RequestBody Map<String, String> payload) {
+        try {
+            String imageUrl = payload.get("imageUrl");
+            Users updatedUser = usersService.updateProfileImage(studentId, imageUrl);
+
+            if (updatedUser != null) {
+                return ResponseEntity.ok(updatedUser);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to update profile image: " + e.getMessage());
+        }
+    }
 }
