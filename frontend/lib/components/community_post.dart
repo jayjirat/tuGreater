@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/models/com_post.dart';
 import 'package:frontend/providers/community_provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 Widget communityPost(
     {required BuildContext context,
@@ -47,7 +48,9 @@ Widget communityPost(
                   style: TextStyle(color: Colors.grey[600]),
                 ),
                 Text(
-                  post.isEdited ? " (edited)" : "",
+                  post.isEdited
+                      ? " (${AppLocalizations.of(context)!.edit})"
+                      : "",
                   style: TextStyle(color: Colors.grey[600]),
                 ),
               ],
@@ -78,7 +81,7 @@ Widget communityPost(
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
-                        post.category,
+                        getLocalizedCategory(post.category, context),
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.bold,
@@ -135,6 +138,20 @@ Widget communityPost(
       ),
     ),
   );
+}
+
+String getLocalizedCategory(String category, BuildContext context) {
+  if (category == "All") {
+    return AppLocalizations.of(context)!.all;
+  } else if (category == "General") {
+    return AppLocalizations.of(context)!.general;
+  } else if (category == "ReviewCourse") {
+    return AppLocalizations.of(context)!.courseReview;
+  } else if (category == "Lost&Found") {
+    return AppLocalizations.of(context)!.lostNfound;
+  } else {
+    return category;
+  }
 }
 
 Widget buildActionButton(

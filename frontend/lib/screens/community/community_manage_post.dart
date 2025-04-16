@@ -9,6 +9,7 @@ import 'package:frontend/providers/community_provider.dart';
 import 'package:frontend/providers/user_provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CommunityManagePost extends ConsumerStatefulWidget {
   final String mode;
@@ -108,7 +109,9 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          widget.mode == "Add" ? 'Create a Post' : 'Edit a Post',
+          widget.mode == "Add"
+              ? AppLocalizations.of(context)!.createPost
+              : AppLocalizations.of(context)!.editPost,
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -122,24 +125,26 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
           child: ListView(
             children: [
               const SizedBox(height: 30),
-              labelText("Title"),
+              labelText(AppLocalizations.of(context)!.title),
               const SizedBox(height: 8),
               TextFormField(
                 controller: titleCtrl,
                 decoration: InputDecoration(
-                  hintText: 'Title',
+                  hintText: AppLocalizations.of(context)!.title,
                   contentPadding:
                       EdgeInsets.symmetric(vertical: 14, horizontal: 16),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter a title';
+                    return AppLocalizations.of(context)!
+                        .commuTitleValidateMessage;
                   }
                   return null;
                 },
               ),
               const SizedBox(height: 16),
-              labelText("Description (Optional)"),
+              labelText(
+                  "${AppLocalizations.of(context)!.description} (${AppLocalizations.of(context)!.optional})"),
               const SizedBox(height: 8),
               TextFormField(
                 controller: descriptionCtrl,
@@ -147,19 +152,20 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
                 minLines: 5,
                 keyboardType: TextInputType.multiline,
                 decoration: InputDecoration(
-                  hintText: 'Description',
+                  hintText: AppLocalizations.of(context)!.description,
                   contentPadding:
                       EdgeInsets.symmetric(vertical: 14, horizontal: 16),
                 ),
               ),
               const SizedBox(height: 16),
-              labelText("Upload Image (Optional)"),
+              labelText(
+                  "${AppLocalizations.of(context)!.uploadImage} (${AppLocalizations.of(context)!.optional})"),
               const SizedBox(height: 8),
               if (widget.mode == "Add")
                 image == null
                     ? ElevatedButton(
                         onPressed: pickImage,
-                        child: Text('Select Image'),
+                        child: Text(AppLocalizations.of(context)!.uploadImage),
                       )
                     : Column(
                         children: [
@@ -176,14 +182,15 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
                               onPressed: () => setState(() {
                                     image = null;
                                   }),
-                              child: Text("Delete image"))
+                              child: Text(
+                                  AppLocalizations.of(context)!.deleteImage))
                         ],
                       ),
               if (widget.mode == "Edit")
                 imageUrl == "" && image == null
                     ? ElevatedButton(
                         onPressed: pickImage,
-                        child: Text('Select Image'),
+                        child: Text(AppLocalizations.of(context)!.uploadImage),
                       )
                     : Column(
                         children: [
@@ -208,18 +215,19 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
                                     imageUrl = "";
                                     image = null;
                                   }),
-                              child: Text("Delete image"))
+                              child: Text(
+                                  AppLocalizations.of(context)!.deleteImage))
                         ],
                       ),
               const SizedBox(height: 16),
-              labelText("Select Category"),
+              labelText(AppLocalizations.of(context)!.selectCategory),
               const SizedBox(height: 8),
               DropdownButtonFormField<String>(
                 borderRadius: BorderRadius.circular(25),
                 dropdownColor: Theme.of(context).cardColor,
                 value: selectedValueDropdown,
                 hint: Text(
-                  'Category',
+                  AppLocalizations.of(context)!.category,
                 ),
                 isExpanded: true,
                 decoration: InputDecoration(
@@ -227,8 +235,11 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
                       EdgeInsets.symmetric(vertical: 14, horizontal: 16),
                   border: InputBorder.none,
                 ),
-                items: <String>['General', 'ReviewCourse', 'Lost&Found']
-                    .map<DropdownMenuItem<String>>((String value) {
+                items: <String>[
+                  AppLocalizations.of(context)!.general,
+                  AppLocalizations.of(context)!.courseReview,
+                  AppLocalizations.of(context)!.lostNfound
+                ].map<DropdownMenuItem<String>>((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
                     child: Text(value),
@@ -236,19 +247,21 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
                 }).toList(),
                 onChanged: (String? newValue) {
                   setState(() {
-                    selectedValueDropdown = newValue ?? "General";
+                    selectedValueDropdown =
+                        newValue ?? AppLocalizations.of(context)!.general;
                   });
                 },
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please select category';
+                    return AppLocalizations.of(context)!
+                        .commuCategoryValidateMessage;
                   }
                   return null;
                 },
               ),
               const SizedBox(height: 10),
               Text(
-                "Disclaimer: Posts containing inappropriate, offensive, or harmful content will be removed without prior notice. Please adhere to the community guidelines.",
+                AppLocalizations.of(context)!.commuDisclaimer,
                 style: TextStyle(
                     fontSize: 12, color: Theme.of(context).primaryColor),
               ),
@@ -304,7 +317,9 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      widget.mode == "Add" ? "Post" : "Edit",
+                      widget.mode == "Add"
+                          ? AppLocalizations.of(context)!.createPost
+                          : AppLocalizations.of(context)!.editPost,
                       style: TextStyle(color: Colors.white, fontSize: 16),
                     ),
                     if (isLoading)

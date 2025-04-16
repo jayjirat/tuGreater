@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/components/community_post.dart';
 import 'package:frontend/providers/community_provider.dart';
 import 'package:frontend/screens/community/community_view_post.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Community extends ConsumerStatefulWidget {
   const Community({super.key});
@@ -45,7 +46,7 @@ class CommunityState extends ConsumerState<Community> {
             controller: searchController,
             textInputAction: TextInputAction.search,
             decoration: InputDecoration(
-              hintText: 'Search Posts...',
+              hintText: AppLocalizations.of(context)!.searchPost,
               prefixIcon: Icon(Icons.search, color: Colors.grey),
             ),
             onSubmitted: (value) async => await communityPostController
@@ -103,6 +104,20 @@ class CommunityState extends ConsumerState<Community> {
     );
   }
 
+  String getLocalizedCategory(String category) {
+    if (category == "All") {
+      return AppLocalizations.of(context)!.all;
+    } else if (category == "General") {
+      return AppLocalizations.of(context)!.general;
+    } else if (category == "Course Review") {
+      return AppLocalizations.of(context)!.courseReview;
+    } else if (category == "Lost & Found") {
+      return AppLocalizations.of(context)!.lostNfound;
+    } else {
+      return category;
+    }
+  }
+
   Widget toggleElement(String text) {
     return Row(
       children: [
@@ -110,7 +125,7 @@ class CommunityState extends ConsumerState<Community> {
           width: 8,
         ),
         Text(
-          text,
+          getLocalizedCategory(text),
           style: TextStyle(fontSize: 16),
         ),
         const SizedBox(

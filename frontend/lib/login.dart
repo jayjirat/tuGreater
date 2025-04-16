@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/components/label_input.dart';
 import 'package:frontend/components/login_stack.dart';
 import 'package:frontend/providers/user_provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Login extends ConsumerStatefulWidget {
   const Login({super.key});
@@ -48,7 +49,7 @@ class LoginState extends ConsumerState<Login> {
                   height: 30,
                 ),
                 Text(
-                  "The platform connects Thammasat students for discussions, lost and found, course reviews, and a marketplace to buy and sell items like used goods, food, and dorm contracts.",
+                  AppLocalizations.of(context)!.loginScreenMessage,
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.grey,
@@ -62,14 +63,14 @@ class LoginState extends ConsumerState<Login> {
                 inputWithLabel(
                   context: context,
                   controller: usernameController,
-                  hintText: "Student ID",
+                  hintText: AppLocalizations.of(context)!.studentId,
                   obscureText: false,
                 ),
                 SizedBox(height: 20),
                 inputWithLabel(
                   context: context,
                   controller: passwordController,
-                  hintText: "Password",
+                  hintText: AppLocalizations.of(context)!.password,
                   obscureText: true,
                 ),
                 SizedBox(height: 32.0),
@@ -83,7 +84,7 @@ class LoginState extends ConsumerState<Login> {
                           );
                     }
                   },
-                  child: Text('SIGN IN'),
+                  child: Text(AppLocalizations.of(context)!.signIn),
                 ),
               ],
             ),

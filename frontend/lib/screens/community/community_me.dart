@@ -8,6 +8,7 @@ import 'package:frontend/providers/user_provider.dart';
 import 'package:frontend/screens/community/community_view_post.dart';
 import 'package:frontend/screens/shop/edit_items.dart';
 import 'package:tuple/tuple.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CommunityMe extends ConsumerStatefulWidget {
   final String userId;
@@ -163,7 +164,8 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
                                       foregroundColor: Colors.black,
                                       elevation: 0,
                                     ),
-                                    child: Text("Edit"),
+                                    child: Text(
+                                        AppLocalizations.of(context)!.edit),
                                   ),
                                 ],
                               ),
@@ -176,20 +178,23 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
                                 final confirm = await showDialog<bool>(
                                   context: context,
                                   builder: (context) => AlertDialog(
-                                    title: Text("Confirm Deletion"),
-                                    content: Text(
-                                        "Are you sure you want to delete this product?"),
+                                    title: Text(AppLocalizations.of(context)!
+                                        .confirmDelete),
+                                    content: Text(AppLocalizations.of(context)!
+                                        .confirmDeleteMessage),
                                     actions: [
                                       TextButton(
                                         onPressed: () =>
                                             Navigator.pop(context, false),
-                                        child: Text("Cancel"),
+                                        child: Text(
+                                            AppLocalizations.of(context)!
+                                                .cancel),
                                       ),
                                       TextButton(
                                         onPressed: () =>
                                             Navigator.pop(context, true),
                                         child: Text(
-                                          "Delete",
+                                          AppLocalizations.of(context)!.delete,
                                           style: TextStyle(color: Colors.red),
                                         ),
                                       ),
@@ -214,7 +219,7 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
                               },
                               icon: Icon(Icons.delete),
                               color: Colors.redAccent,
-                              tooltip: 'Delete',
+                              tooltip: AppLocalizations.of(context)!.delete,
                             ),
                           )
                         ],
@@ -292,7 +297,7 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   swapBar(
-                      text: "Posts",
+                      text: AppLocalizations.of(context)!.posts,
                       onPressed: () {
                         setState(() {
                           _selectedIndex = 0;
@@ -303,7 +308,7 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
                     width: 4,
                   ),
                   swapBar(
-                      text: "Shops",
+                      text: AppLocalizations.of(context)!.shops,
                       onPressed: () {
                         setState(() {
                           _selectedIndex = 1;

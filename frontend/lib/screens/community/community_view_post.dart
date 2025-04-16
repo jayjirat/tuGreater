@@ -8,6 +8,7 @@ import 'package:frontend/providers/report_provider.dart';
 import 'package:frontend/providers/user_provider.dart';
 import 'package:frontend/screens/community/community_manage_post.dart';
 import 'package:frontend/screens/community/community_me.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CommunityViewpost extends ConsumerStatefulWidget {
   final String id;
@@ -59,7 +60,7 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          isLoading ? "Loading..." : post!.title,
+          isLoading ? AppLocalizations.of(context)!.loading : post!.title,
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -106,7 +107,9 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                                       color: Colors.grey[600], fontSize: 13),
                                 ),
                                 Text(
-                                  post.isEdited ? " (edited)" : "",
+                                  post.isEdited
+                                      ? " (${AppLocalizations.of(context)!.edit})"
+                                      : "",
                                   style: TextStyle(
                                       color: Colors.grey[600], fontSize: 13),
                                 ),
@@ -137,11 +140,14 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                                     itemBuilder: (context) => [
                                       PopupMenuItem<String>(
                                         value: 'edit',
-                                        child: Text('Edit'),
+                                        child: Text(
+                                            AppLocalizations.of(context)!.edit),
                                       ),
                                       PopupMenuItem<String>(
                                         value: 'delete',
-                                        child: Text('Delete'),
+                                        child: Text(
+                                            AppLocalizations.of(context)!
+                                                .delete),
                                       ),
                                     ],
                                   )
@@ -172,7 +178,7 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                                           Theme.of(context).textTheme.bodySmall,
                                     ),
                                   ),
-                                  if (post.userId !=
+                                  if (post.userId ==
                                       user.id) // owner can't report own post
                                     IconButton(
                                         onPressed: () => showReportPopup(
@@ -255,7 +261,7 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                       comments.isEmpty
                           // comments.length == post.commentCount
                           ? Column(children: [
-                              Text("No comments"),
+                              Text(AppLocalizations.of(context)!.noComment),
                               const SizedBox(
                                 height: 60,
                               )
@@ -315,7 +321,8 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                                                 if (comments[index].userId ==
                                                     user.id)
                                                   TextSpan(
-                                                    text: "\nDelete",
+                                                    text:
+                                                        "\n${AppLocalizations.of(context)!.delete}",
                                                     style: TextStyle(
                                                       color: Theme.of(context)
                                                           .primaryColor,
@@ -368,7 +375,7 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                       focusNode: commentFocusNode,
                       controller: commentCtrl,
                       decoration: InputDecoration(
-                        hintText: "Write a public comment...",
+                        hintText: AppLocalizations.of(context)!.writeComment,
                       ),
                     ),
                   ),
@@ -450,7 +457,7 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                 borderRadius: BorderRadius.circular(12),
               ),
               title: Text(
-                "Report post: ${post!.title}",
+                "${AppLocalizations.of(context)!.reportPost} ${post!.title}",
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               content: SingleChildScrollView(
@@ -458,7 +465,8 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     CheckboxListTile(
-                      title: Text("Uses harsh or offensive language"),
+                      title:
+                          Text(AppLocalizations.of(context)!.commuReportTopic1),
                       value: isChecked1,
                       onChanged: (bool? value) {
                         setState(() {
@@ -474,7 +482,8 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                       },
                     ),
                     CheckboxListTile(
-                      title: Text("Causes misunderstandings or confusion"),
+                      title:
+                          Text(AppLocalizations.of(context)!.commuReportTopic2),
                       value: isChecked2,
                       onChanged: (bool? value) {
                         setState(() {
@@ -490,7 +499,8 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                       },
                     ),
                     CheckboxListTile(
-                      title: Text("Contains inappropriate images"),
+                      title:
+                          Text(AppLocalizations.of(context)!.commuReportTopic3),
                       value: isChecked3,
                       onChanged: (bool? value) {
                         setState(() {
@@ -505,7 +515,8 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                       },
                     ),
                     CheckboxListTile(
-                      title: Text("Others"),
+                      title:
+                          Text(AppLocalizations.of(context)!.commuReportTopic4),
                       value: isChecked4,
                       onChanged: (bool? value) {
                         setState(() {
@@ -525,7 +536,7 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                         maxLength: 200,
                         maxLines: 5,
                         decoration: InputDecoration(
-                          hintText: "Description",
+                          hintText: AppLocalizations.of(context)!.description,
                           border: OutlineInputBorder(),
                         ),
                         keyboardType: TextInputType.multiline,
@@ -537,7 +548,7 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: Text("Cancel"),
+                  child: Text(AppLocalizations.of(context)!.cancel),
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -563,7 +574,7 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                       );
                     }
                   },
-                  child: Text("Report"),
+                  child: Text(AppLocalizations.of(context)!.report),
                 ),
               ],
             );
