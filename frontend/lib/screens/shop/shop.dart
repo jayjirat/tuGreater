@@ -54,13 +54,8 @@ class _ShopState extends ConsumerState<Shop> {
               },
               decoration: InputDecoration(
                 hintText: AppLocalizations.of(context)!.shop_search,
-                suffixIcon: Icon(Icons.search), // Search icon on the right
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(25),
-                  borderSide: BorderSide.none,
-                ),
-                filled: true,
-                fillColor: Colors.grey[200], // Light background for input
+                suffixIcon: Icon(Icons
+                    .search), // Search icon on the right         // Light background for input
               ),
             ),
           ),
@@ -118,8 +113,8 @@ class _ShopState extends ConsumerState<Shop> {
                 width: 40,
                 colorFilter: ColorFilter.mode(
                   isClicked
-                      ? const Color.fromARGB(255, 243, 221, 19)
-                      : Colors.black,
+                      ? Theme.of(context).primaryColor
+                      : Theme.of(context).canvasColor,
                   BlendMode.srcIn,
                 ),
               ),
@@ -147,8 +142,8 @@ class _ShopState extends ConsumerState<Shop> {
                   margin: EdgeInsets.all(8),
                   decoration: BoxDecoration(
                     color: selectedCategory == -1
-                        ? Colors.white
-                        : Color.fromARGB(255, 254, 227, 121),
+                        ? Theme.of(context).primaryColor
+                        : Theme.of(context).cardColor,
                     borderRadius: BorderRadius.circular(10),
                     boxShadow: [
                       BoxShadow(
@@ -163,7 +158,9 @@ class _ShopState extends ConsumerState<Shop> {
                       AppLocalizations.of(context)!.shop_category,
                       style: TextStyle(
                         fontSize: 18,
-                        color: Colors.black,
+                        color: selectedCategory == -1
+                            ? Theme.of(context).cardColor
+                            : Theme.of(context).canvasColor,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -186,8 +183,8 @@ class _ShopState extends ConsumerState<Shop> {
                     margin: EdgeInsets.all(8),
                     decoration: BoxDecoration(
                       color: selectedCategory == i
-                          ? Colors.white
-                          : Color.fromARGB(255, 254, 227, 121),
+                          ? Theme.of(context).primaryColor
+                          : Theme.of(context).cardColor,
                       borderRadius: BorderRadius.circular(10),
                       boxShadow: [
                         BoxShadow(
@@ -199,7 +196,12 @@ class _ShopState extends ConsumerState<Shop> {
                     ),
                     child: Padding(
                       padding: EdgeInsets.all(6),
-                      child: SvgPicture.asset(iconCategoriesList[i]),
+                      child: SvgPicture.asset(
+                        iconCategoriesList[i],
+                        color: selectedCategory == i
+                            ? Theme.of(context).cardColor
+                            : Theme.of(context).canvasColor,
+                      ),
                     ),
                   ),
                 ),

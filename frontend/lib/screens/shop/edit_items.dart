@@ -359,14 +359,7 @@ class _EditItemsState extends ConsumerState<EditItems> {
                         width: 200,
                         child: TextField(
                           controller: nameController,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(25),
-                              borderSide: BorderSide.none,
-                            ),
-                            filled: true,
-                            fillColor: Colors.grey[200],
-                          ),
+                          decoration: InputDecoration(),
                         ),
                       ),
                     ),
@@ -384,12 +377,6 @@ class _EditItemsState extends ConsumerState<EditItems> {
                           decoration: InputDecoration(
                             hintText: AppLocalizations.of(context)!
                                 .product_price_placeholder,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(25),
-                              borderSide: BorderSide.none,
-                            ),
-                            filled: true,
-                            fillColor: Colors.grey[200],
                           ),
                         ),
                       ),
@@ -411,14 +398,8 @@ class _EditItemsState extends ConsumerState<EditItems> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                   child: DropdownButtonFormField<String>(
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(25),
-                        borderSide: BorderSide.none,
-                      ),
-                      filled: true,
-                      fillColor: Colors.grey[200],
-                    ),
+                    dropdownColor: Theme.of(context).cardColor,
+                    decoration: InputDecoration(),
                     value: product.productCategory.isEmpty
                         ? null
                         : product.productCategory,
@@ -622,12 +603,6 @@ class _EditItemsState extends ConsumerState<EditItems> {
                                 decoration: InputDecoration(
                                   hintText: AppLocalizations.of(context)!
                                       .product_tag_other,
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    borderSide: BorderSide.none,
-                                  ),
-                                  filled: true,
-                                  fillColor: Colors.grey[200],
                                   contentPadding: EdgeInsets.symmetric(
                                       horizontal: 8, vertical: 4),
                                 ),
@@ -679,14 +654,7 @@ class _EditItemsState extends ConsumerState<EditItems> {
                         controller: descriptionController,
                         maxLines: null,
                         minLines: 5,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(25),
-                            borderSide: BorderSide.none,
-                          ),
-                          filled: true,
-                          fillColor: Colors.grey[200],
-                        ),
+                        decoration: InputDecoration(),
                       ),
                     ),
                   ),
@@ -771,7 +739,8 @@ class _EditItemsState extends ConsumerState<EditItems> {
                     Navigator.pop(context, true);
                   },
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.orange),
+                    backgroundColor: MaterialStateProperty.all(
+                        Theme.of(context).primaryColor),
                   ),
                   child: Text(
                     AppLocalizations.of(context)!.edit_product_save,

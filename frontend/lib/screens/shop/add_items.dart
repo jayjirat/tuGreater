@@ -304,12 +304,6 @@ class _AddItemsState extends ConsumerState<AddItems> {
                           decoration: InputDecoration(
                             hintText: AppLocalizations.of(context)!
                                 .product_name_placeholder,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(25),
-                              borderSide: BorderSide.none,
-                            ),
-                            filled: true,
-                            fillColor: Colors.grey[200],
                           ),
                         ),
                       ),
@@ -331,12 +325,6 @@ class _AddItemsState extends ConsumerState<AddItems> {
                           decoration: InputDecoration(
                             hintText: AppLocalizations.of(context)!
                                 .product_price_placeholder,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(25),
-                              borderSide: BorderSide.none,
-                            ),
-                            filled: true,
-                            fillColor: Colors.grey[200],
                           ),
                         ),
                       ),
@@ -362,14 +350,10 @@ class _AddItemsState extends ConsumerState<AddItems> {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                 child: DropdownButtonFormField<String>(
+                  dropdownColor: Theme.of(context).cardColor,
                   decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(25),
-                      borderSide: BorderSide.none,
-                    ),
-                    filled: true,
-                    fillColor: Colors.grey[200], // Background color
-                  ),
+                      // Background color
+                      ),
                   value: selectedCategory,
                   hint: Text(
                       AppLocalizations.of(context)!.product_select_category),
@@ -559,12 +543,6 @@ class _AddItemsState extends ConsumerState<AddItems> {
                               decoration: InputDecoration(
                                 hintText: AppLocalizations.of(context)!
                                     .product_tag_other,
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide.none,
-                                ),
-                                filled: true,
-                                fillColor: Colors.grey[200],
                                 contentPadding: EdgeInsets.symmetric(
                                     horizontal: 8, vertical: 4),
                               ),
@@ -599,12 +577,6 @@ class _AddItemsState extends ConsumerState<AddItems> {
                       decoration: InputDecoration(
                         hintText: AppLocalizations.of(context)!
                             .product_description_placeholder,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(25),
-                          borderSide: BorderSide.none,
-                        ),
-                        filled: true,
-                        fillColor: Colors.grey[200],
                       ),
                     ),
                   ),
@@ -677,8 +649,8 @@ class _AddItemsState extends ConsumerState<AddItems> {
                           Navigator.pop(context, true);
                         },
                         style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all(Colors.orange),
+                          backgroundColor: MaterialStateProperty.all(
+                              Theme.of(context).primaryColor),
                         ),
                         child: Text(
                           AppLocalizations.of(context)!.create_product,

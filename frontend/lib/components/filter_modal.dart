@@ -126,12 +126,6 @@ class _FilterModalState extends State<FilterModal> {
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     decoration: InputDecoration(
                       hintText: AppLocalizations.of(context)!.filter_low,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(25),
-                        borderSide: BorderSide.none,
-                      ),
-                      filled: true,
-                      fillColor: Colors.grey[200],
                     ),
                     onChanged: (value) {
                       minPrice = value.isEmpty ? null : double.tryParse(value);
@@ -154,12 +148,6 @@ class _FilterModalState extends State<FilterModal> {
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     decoration: InputDecoration(
                       hintText: AppLocalizations.of(context)!.filter_high,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(25),
-                        borderSide: BorderSide.none,
-                      ),
-                      filled: true,
-                      fillColor: Colors.grey[200],
                     ),
                     onChanged: (value) {
                       maxPrice = value.isEmpty ? null : double.tryParse(value);
@@ -518,7 +506,9 @@ class _FilterModalState extends State<FilterModal> {
                     },
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(
-                          const Color.fromARGB(255, 236, 104, 95)),
+                          Theme.of(context)
+                              .primaryColor
+                              .withValues(alpha: 0.5)),
                     ),
                     child: Text(
                       AppLocalizations.of(context)!.filter_reset,
@@ -546,7 +536,7 @@ class _FilterModalState extends State<FilterModal> {
                     },
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(
-                          Color.fromARGB(255, 243, 221, 19)),
+                          Theme.of(context).primaryColor),
                     ),
                     child: Text(
                       AppLocalizations.of(context)!.filter_apply,

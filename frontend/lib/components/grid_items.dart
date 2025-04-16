@@ -64,7 +64,7 @@ class GridItems extends ConsumerWidget {
                     child: Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15),
-                        color: Color.fromARGB(255, 254, 227, 121),
+                        color: Theme.of(context).cardColor,
                         boxShadow: [
                           BoxShadow(
                             color: Colors.black26,
@@ -105,7 +105,6 @@ class GridItems extends ConsumerWidget {
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
                                     fontSize: 17,
-                                    color: Colors.black.withOpacity(0.8),
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -114,7 +113,6 @@ class GridItems extends ConsumerWidget {
                                   "฿ ${NumberFormat('#,###').format(product.productPrice)}",
                                   style: TextStyle(
                                     fontSize: 15,
-                                    color: Colors.black,
                                     fontWeight: FontWeight.w500,
                                   ),
                                 )

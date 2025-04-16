@@ -36,6 +36,7 @@ class UserNotifier extends StateNotifier<User?> {
       );
       // Login success
       if (tuResponse.statusCode == 200) {
+        print("Login success");
         final tuResponseData = json.decode(tuResponse.body);
         final usernameUrl =
             Uri.parse('$userDBUrl/studentId?studentId=$username');
@@ -43,6 +44,7 @@ class UserNotifier extends StateNotifier<User?> {
         // Fetch user in db
         final existingUser = await http.get(usernameUrl);
         final usernameNew = tuResponseData['displayname_en'];
+        print(existingUser.statusCode);
         // User not found in db -> Create new user (First Login)
         if (existingUser.statusCode == 404) {
           final userBody = json.encode({
@@ -53,6 +55,7 @@ class UserNotifier extends StateNotifier<User?> {
             "role": "User"
           });
 
+          print("login3");
           final createUserResponse = await http.post(Uri.parse(userDBUrl),
               headers: {"content-type": "application/json"}, body: userBody);
           if (createUserResponse.statusCode == 201) {

@@ -69,7 +69,7 @@ class ItemDetail extends ConsumerWidget {
                           height: 40,
                           margin: EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            color: Color.fromARGB(255, 254, 227, 121),
+                            color: Theme.of(context).primaryColor,
                             borderRadius: BorderRadius.circular(10),
                             boxShadow: [
                               BoxShadow(
