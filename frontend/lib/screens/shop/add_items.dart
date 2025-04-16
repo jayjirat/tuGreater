@@ -59,7 +59,7 @@ class _AddItemsState extends ConsumerState<AddItems> {
         'productOwner': displayname,
         'productOwnerId': userId
       }),
-    );
+    ).timeout(Duration(seconds: 10));
 
     if (response.statusCode == 200) {
       print('Product created successfully');

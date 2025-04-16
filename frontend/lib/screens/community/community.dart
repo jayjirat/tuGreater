@@ -60,7 +60,7 @@ class CommunityState extends ConsumerState<Community> {
   Widget build(BuildContext context) {
     final posts = ref.watch(communityProvider);
     final communityPostController = ref.read(communityProvider.notifier);
-
+    final isLoading = ref.watch(communityProvider.notifier).isLoading;
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
       child: Column(
@@ -116,53 +116,55 @@ class CommunityState extends ConsumerState<Community> {
                 toggleElement("Lost & Found"),
               ]),
           const SizedBox(height: 16),
-          posts.isNotEmpty
-              ? Expanded(
-                  child: ListView.builder(
-                    itemCount: posts.length,
-                    itemBuilder: (context, index) {
-                      final post = posts[index];
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          communityPost(
-                              context: context,
-                              nextRoute: CommunityViewpost(id: post.id),
-                              post: post,
-                              communityPostController: communityPostController),
-                          const SizedBox(height: 12),
-                        ],
-                      );
-                    },
-                  ),
-                )
-              : Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+          if (posts.isNotEmpty && !isLoading)
+            Expanded(
+              child: ListView.builder(
+                itemCount: posts.length,
+                itemBuilder: (context, index) {
+                  final post = posts[index];
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Icon(
-                        Icons.forum_outlined,
-                        size: 120,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                      const SizedBox(height: 32),
-                      Text(
-                        AppLocalizations.of(context)!.noPosts,
-                        style:
-                            Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        AppLocalizations.of(context)!.noPostsContent,
-                        style: Theme.of(context).textTheme.bodyMedium,
-                        textAlign: TextAlign.center,
-                      ),
+                      communityPost(
+                          context: context,
+                          nextRoute: CommunityViewpost(id: post.id),
+                          post: post,
+                          communityPostController: communityPostController),
+                      const SizedBox(height: 12),
                     ],
+                  );
+                },
+              ),
+            )
+          else if (posts.isEmpty && !isLoading)
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.forum_outlined,
+                    size: 120,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
-                ),
+                  const SizedBox(height: 32),
+                  Text(
+                    AppLocalizations.of(context)!.noPosts,
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    AppLocalizations.of(context)!.noPostsContent,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            )
+          else
+            const Expanded(child: Center(child: CircularProgressIndicator()))
         ],
       ),
     );

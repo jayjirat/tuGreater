@@ -19,13 +19,12 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
   Future<void> fetchPosts({required BuildContext context}) async {
     final url = Uri.parse('$baseURL/community');
     try {
-      // isLoading = true;
-      final response = await http.get(url);
+      isLoading = true;
+      final response = await http.get(url).timeout(Duration(seconds: 15));
       if (response.statusCode == 200) {
         final List<dynamic> data = jsonDecode(response.body);
         final posts = data.map((json) => CommuPost.fromJson(json)).toList();
         state = posts;
-        // isLoading = false;
       } else {
         if (context.mounted) {
           showToast(
@@ -39,6 +38,8 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
         throw Exception(
             "${AppLocalizations.of(context)!.unableLoadPosts} ${AppLocalizations.of(context)!.checkYourConnection}");
       }
+    } finally {
+      isLoading = false;
     }
   }
 
@@ -46,13 +47,12 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
       {required String userId, required BuildContext context}) async {
     final url = Uri.parse('$baseURL/community/me/$userId');
     try {
-      // isLoading = true;
-      final response = await http.get(url);
+      isLoading = true;
+      final response = await http.get(url).timeout(Duration(seconds: 10));
       if (response.statusCode == 200) {
         final List<dynamic> data = jsonDecode(response.body);
         final posts = data.map((json) => CommuPost.fromJson(json)).toList();
         state = posts;
-        // isLoading = false;
       } else {
         if (context.mounted) {
           showToast(
@@ -66,6 +66,8 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
         throw Exception(
             "${AppLocalizations.of(context)!.unableLoadPosts} ${AppLocalizations.of(context)!.checkYourConnection}");
       }
+    } finally {
+      isLoading = false;
     }
   }
 
@@ -75,11 +77,10 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
 
     try {
       isLoading = true;
-      final response = await http.get(url);
+      final response = await http.get(url).timeout(Duration(seconds: 10));
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         post = CommuPost.fromJson(data);
-        isLoading = false;
         state = [...state];
       } else {
         if (context.mounted) {
@@ -94,6 +95,8 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
         throw Exception(
             "${AppLocalizations.of(context)!.unableLoadPosts} ${AppLocalizations.of(context)!.checkYourConnection}");
       }
+    } finally {
+      isLoading = false;
     }
   }
 
@@ -108,6 +111,7 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
       required BuildContext context}) async {
     final url = '$baseURL/community';
     try {
+      isLoading = true;
       final Map<String, dynamic> newPost = {
         'title': title,
         'description': description ?? '',
@@ -125,8 +129,9 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
 
       final header = {'Content-Type': 'application/json'};
 
-      final response = await http.post(Uri.parse(url),
-          headers: header, body: jsonEncode(newPost));
+      final response = await http
+          .post(Uri.parse(url), headers: header, body: jsonEncode(newPost))
+          .timeout(Duration(seconds: 10));
       if (response.statusCode == 201) {
         final data = jsonDecode(response.body);
         final newPostModel = CommuPost.fromJson(data);
@@ -144,6 +149,8 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
         throw Exception(
             "${AppLocalizations.of(context)!.unableCreatePost} ${AppLocalizations.of(context)!.checkYourConnection}");
       }
+    } finally {
+      isLoading = false;
     }
   }
 
@@ -156,6 +163,7 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
       required BuildContext context}) async {
     final url = '$baseURL/community/${oriPost.id}';
     try {
+      isLoading = true;
       final Map<String, dynamic> editPost = {
         'title': title,
         'description': description,
@@ -171,8 +179,9 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
 
       final header = {'Content-Type': 'application/json'};
 
-      final response = await http.put(Uri.parse(url),
-          headers: header, body: jsonEncode(editPost));
+      final response = await http
+          .put(Uri.parse(url), headers: header, body: jsonEncode(editPost))
+          .timeout(Duration(seconds: 10));
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         final newPostModel = CommuPost.fromJson(data);
@@ -190,6 +199,8 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
         throw Exception(
             "${AppLocalizations.of(context)!.unableEditPost} ${AppLocalizations.of(context)!.checkYourConnection}");
       }
+    } finally {
+      isLoading = false;
     }
   }
 
@@ -197,7 +208,8 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
       {required String id, required BuildContext context}) async {
     final url = Uri.parse("$baseURL/community/$id");
     try {
-      final response = await http.delete(url);
+      isLoading = true;
+      final response = await http.delete(url).timeout(Duration(seconds: 5));
       if (response.statusCode != 200) {
         if (context.mounted) {
           showToast(
@@ -211,6 +223,8 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
         throw Exception(
             "${AppLocalizations.of(context)!.unableDeletePost} ${AppLocalizations.of(context)!.checkYourConnection}");
       }
+    } finally {
+      isLoading = false;
     }
   }
 
@@ -218,13 +232,12 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
       {required String category, required BuildContext context}) async {
     final url = Uri.parse('$baseURL/community/filter?category=$category');
     try {
-      // isLoading = true;
-      final response = await http.get(url);
+      isLoading = true;
+      final response = await http.get(url).timeout(Duration(seconds: 15));
       if (response.statusCode == 200) {
         final List<dynamic> data = jsonDecode(response.body);
         final posts = data.map((json) => CommuPost.fromJson(json)).toList();
         state = posts;
-        // isLoading = false;
       } else if (response.statusCode == 404) {
         state = [];
       } else {
@@ -240,6 +253,8 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
         throw Exception(
             "${AppLocalizations.of(context)!.unableFilterPosts} ${AppLocalizations.of(context)!.checkYourConnection}");
       }
+    } finally {
+      isLoading = false;
     }
   }
 
@@ -247,13 +262,12 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
       {required String query, required BuildContext context}) async {
     final url = Uri.parse('$baseURL/community/search?query=$query');
     try {
-      // isLoading = true;
-      final response = await http.get(url);
+      isLoading = true;
+      final response = await http.get(url).timeout(Duration(seconds: 15));
       if (response.statusCode == 200) {
         final List<dynamic> data = jsonDecode(response.body);
         final posts = data.map((json) => CommuPost.fromJson(json)).toList();
         state = posts;
-        // isLoading = false;
       } else if (response.statusCode == 404) {
         state = [];
       } else {
@@ -269,6 +283,8 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
         throw Exception(
             "${AppLocalizations.of(context)!.unableSearchPosts} ${AppLocalizations.of(context)!.checkYourConnection}");
       }
+    } finally {
+      isLoading = false;
     }
   }
 
@@ -280,8 +296,9 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
     try {
       final likeBody = {'userId': userId, 'postId': postId};
       final header = {'Content-Type': 'application/json'};
-      final response =
-          await http.post((url), headers: header, body: jsonEncode(likeBody));
+      final response = await http
+          .post((url), headers: header, body: jsonEncode(likeBody))
+          .timeout(Duration(seconds: 10));
       if (response.statusCode == 200) {
         state = [...state];
       } else {
@@ -308,8 +325,9 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
     try {
       final likeBody = {'userId': userId, 'postId': postId};
       final header = {'Content-Type': 'application/json'};
-      final response =
-          await http.delete((url), headers: header, body: jsonEncode(likeBody));
+      final response = await http
+          .delete((url), headers: header, body: jsonEncode(likeBody))
+          .timeout(Duration(seconds: 5));
       if (response.statusCode == 200) {
         state = [...state];
       } else {
@@ -335,7 +353,8 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
     final url =
         Uri.parse('$baseURL/community/like?userId=$userId&postId=$postId');
     try {
-      final response = await http.get(url);
+      isLoading = true;
+      final response = await http.get(url).timeout(Duration(seconds: 10));
       if (response.statusCode == 200) {
         return response.body.contains('true');
       } else {
@@ -353,6 +372,8 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
         throw Exception(
             "${AppLocalizations.of(context)!.unableCheckLikeStatusPost} ${AppLocalizations.of(context)!.checkYourConnection}");
       }
+    } finally {
+      isLoading = false;
     }
     return false;
   }

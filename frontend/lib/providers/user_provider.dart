@@ -23,7 +23,7 @@ class UserNotifier extends StateNotifier<User?> {
 
   final userDBUrl = "http://10.0.2.2:8080/users";
 
-  Future<void> login(
+  Future<bool> login(
       String username, String password, BuildContext context) async {
     final url = 'https://restapi.tu.ac.th/api/v1/auth/Ad/verify';
 
@@ -36,7 +36,7 @@ class UserNotifier extends StateNotifier<User?> {
           'Application-Key':
               'TU43dbf40881f67122e5d01de44b07e49b30df28a5025c449497f5caf4fd1b4c3e72a7568e1e011c6ec05690c64ae48982'
         },
-      );
+      ).timeout(Duration(seconds: 15));
       // Login success
       if (tuResponse.statusCode == 200) {
         final tuResponseData = json.decode(tuResponse.body);
@@ -44,7 +44,7 @@ class UserNotifier extends StateNotifier<User?> {
             Uri.parse('$userDBUrl/studentId?studentId=$username');
 
         // Fetch user in db
-        final existingUser = await http.get(usernameUrl);
+        final existingUser = await http.get(usernameUrl).timeout(Duration(seconds: 10));
         final usernameNew = tuResponseData['displayname_en'];
         // User not found in db -> Create new user (First Login)
         if (existingUser.statusCode == 404) {
@@ -57,7 +57,7 @@ class UserNotifier extends StateNotifier<User?> {
           });
 
           final createUserResponse = await http.post(Uri.parse(userDBUrl),
-              headers: {"content-type": "application/json"}, body: userBody);
+              headers: {"content-type": "application/json"}, body: userBody).timeout(Duration(seconds: 10));
           if (context.mounted) {
             if (createUserResponse.statusCode == 201) {
               final data = json.decode(createUserResponse.body);
@@ -70,6 +70,7 @@ class UserNotifier extends StateNotifier<User?> {
                 role: parseStringtoRole(data["user"]['role']),
               );
               Navigator.pushReplacementNamed(context, '/set-display-name');
+              return true;
             } else {
               Navigator.push(
                   context,
@@ -77,6 +78,7 @@ class UserNotifier extends StateNotifier<User?> {
                     builder: (context) => ErrorPage(
                         errorMessage: "Create User Failed, pleast try again"),
                   ));
+              return false;
             }
           }
 
@@ -94,6 +96,7 @@ class UserNotifier extends StateNotifier<User?> {
           await _saveUserToPrefs(state!);
           if (context.mounted) {
             Navigator.pushReplacementNamed(context, '/community');
+            return true;
           }
         } else {
           if (context.mounted) {
@@ -104,6 +107,7 @@ class UserNotifier extends StateNotifier<User?> {
                       errorMessage:
                           "An unknown error occurred, please try again"),
                 ));
+            return false;
           }
         }
 
@@ -117,6 +121,7 @@ class UserNotifier extends StateNotifier<User?> {
             );
           }
         }
+        return false;
       }
     } catch (error) {
       if (context.mounted) {
@@ -127,8 +132,10 @@ class UserNotifier extends StateNotifier<User?> {
                   errorMessage:
                       "An unknown error occurred while logging in, please try again"),
             ));
+        return false;
       }
     }
+    return false;
   }
 
   Future<void> logout() async {
@@ -141,7 +148,7 @@ class UserNotifier extends StateNotifier<User?> {
   Future<User?> getUserById({required String userId}) async {
     final url = Uri.parse('$userDBUrl/$userId');
     try {
-      final response = await http.get(url);
+      final response = await http.get(url).timeout(Duration(seconds: 10));
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         return User(
@@ -182,7 +189,7 @@ class UserNotifier extends StateNotifier<User?> {
         Uri.parse("$userDBUrl/${user.id}"),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(editUser),
-      );
+      ).timeout(Duration(seconds: 10));
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         state = User(
@@ -250,7 +257,7 @@ class UserNotifier extends StateNotifier<User?> {
       final id = prefs.getString('id'); // ต้องเซฟเพิ่มตอน login
       if (id == null) return false;
 
-      final userResponse = await http.get(Uri.parse('$userDBUrl/$id'));
+      final userResponse = await http.get(Uri.parse('$userDBUrl/$id')).timeout(Duration(seconds: 10));
       if (userResponse.statusCode == 200) {
         final data = json.decode(userResponse.body);
         state = User(

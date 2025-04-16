@@ -14,7 +14,7 @@ Future<void> updateProfileImage(String studentId, String imageUrl) async {
         'Content-Type': 'application/json',
       },
       body: body,
-    );
+    ).timeout(Duration(seconds: 10));
 
     if (response.statusCode == 200) {
       print('Profile image updated successfully');

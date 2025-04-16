@@ -7,7 +7,7 @@ class ProductService {
 
   // Fetch all products
   Future<List<Products>> fetchProducts() async {
-    final response = await http.get(Uri.parse(baseUrl));
+    final response = await http.get(Uri.parse(baseUrl)).timeout(Duration(seconds: 15));
 
     if (response.statusCode == 200) {
       // Decode the response body with UTF-8
@@ -21,7 +21,7 @@ class ProductService {
 
   // Fetch product by id
   Future<Products> fetchProductDetail(String productId) async {
-    final response = await http.get(Uri.parse(baseUrl + "/${productId}"));
+    final response = await http.get(Uri.parse("$baseUrl/$productId")).timeout(Duration(seconds: 10));
 
     if (response.statusCode == 200) {
       // Decode the response body with UTF-8
@@ -35,7 +35,7 @@ class ProductService {
 
   Future<List<Products>> searchProducts(String query) async {
     final response =
-        await http.get(Uri.parse("$baseUrl/search?productName=$query"));
+        await http.get(Uri.parse("$baseUrl/search?productName=$query")).timeout(Duration(seconds: 10));
 
     if (response.statusCode == 200) {
       String decodedResponse = utf8.decode(response.bodyBytes);
@@ -47,7 +47,7 @@ class ProductService {
   }
 
   Future<List<Products>> selectCategory(String category) async {
-    final response = await http.get(Uri.parse("$baseUrl/product/$category"));
+    final response = await http.get(Uri.parse("$baseUrl/product/$category")).timeout(Duration(seconds: 10));
 
     if (response.statusCode == 200) {
       String decodedResponse = utf8.decode(response.bodyBytes);
@@ -74,7 +74,7 @@ class ProductService {
     final response = await http.get(
       Uri.parse(
           "$baseUrl/searchByCategoryAndName?category=$category&name=$query"),
-    );
+    ).timeout(Duration(seconds: 10));
 
     if (response.statusCode == 200) {
       String decodedResponse = utf8.decode(response.bodyBytes);
@@ -86,10 +86,8 @@ class ProductService {
   }
 
   Future<List<Products>> fetchAllManageProducts(String productOwnerId) async {
-    print("In fetchAllManageProducts");
     final response =
-        await http.get(Uri.parse(baseUrl + "/manage/${productOwnerId}"));
-    print(response.statusCode);
+        await http.get(Uri.parse("$baseUrl/manage/$productOwnerId")).timeout(Duration(seconds: 15));
     if (response.statusCode == 200) {
       // Decode the response body with UTF-8
       String decodedResponse = utf8.decode(response.bodyBytes);
@@ -102,7 +100,7 @@ class ProductService {
 
   Future<void> deleteProduct(String productOwnerId, String productId) async {
     final response = await http
-        .delete(Uri.parse(baseUrl + "/${productOwnerId}/${productId}"));
+        .delete(Uri.parse("$baseUrl/$productOwnerId/$productId")).timeout(Duration(seconds: 5));
     if (response.statusCode != 200) {
       throw Exception('Failed to delete product');
     }
@@ -115,12 +113,12 @@ class ProductService {
   ) async {
     const String baseUrl = 'http://10.0.2.2:8080/shop';
     final response = await http.put(
-      Uri.parse("$baseUrl/${productOwnerId}/${productId}"),
+      Uri.parse("$baseUrl/$productOwnerId/$productId"),
       headers: {
         "Content-Type": "application/json",
       },
       body: jsonEncode(updatedFields),
-    );
+    ).timeout(Duration(seconds: 10));
 
     if (response.statusCode == 200) {
       final jsonData = jsonDecode(response.body);

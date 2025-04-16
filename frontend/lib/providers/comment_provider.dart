@@ -29,8 +29,9 @@ class CommentNotifier extends StateNotifier<List<Comment>> {
         'commentedByImageUrl': commentedByImageUrl
       };
       final header = {'Content-Type': 'application/json'};
-      final response = await http.post((url),
-          headers: header, body: jsonEncode(commentBody));
+      final response = await http
+          .post((url), headers: header, body: jsonEncode(commentBody))
+          .timeout(Duration(seconds: 10));
       if (response.statusCode == 201) {
         final newComment = Comment.fromJson(jsonDecode(response.body));
         state = [...state, newComment];
@@ -48,7 +49,7 @@ class CommentNotifier extends StateNotifier<List<Comment>> {
   Future<void> fetchCommentByPostId(String postId) async {
     final url = Uri.parse('$baseURL/community/$postId/comment');
     try {
-      final response = await http.get(url);
+      final response = await http.get(url).timeout(Duration(seconds: 15));
       if (response.statusCode == 200) {
         final List<dynamic> data = jsonDecode(response.body);
         final commentsData =
@@ -68,7 +69,7 @@ class CommentNotifier extends StateNotifier<List<Comment>> {
   Future<void> deleteComment(String postId, String commentId) async {
     final url = Uri.parse('$baseURL/community/$postId/comment/$commentId');
     try {
-      final response = await http.delete(url);
+      final response = await http.delete(url).timeout(Duration(seconds: 5));
       if (response.statusCode != 200) {
         showToast(
             message: "Fail to delete a comment, please try again",
