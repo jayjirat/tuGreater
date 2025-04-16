@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/providers/user_provider.dart';
 import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:frontend/services/profile_service.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class UploadProfilePage extends ConsumerStatefulWidget {
   const UploadProfilePage({super.key});
@@ -24,6 +25,10 @@ class _UploadProfilePageState extends ConsumerState<UploadProfilePage> {
     super.initState();
     profileImageUrl = ref.read(userProvider)?.profileImageUrl ??
         "https://static.vecteezy.com/system/resources/previews/020/765/399/non_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg";
+    if (profileImageUrl == "") {
+      profileImageUrl =
+          "https://static.vecteezy.com/system/resources/previews/020/765/399/non_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg";
+    }
     studentId = ref.read(userProvider)?.studentId ?? "NOT FOUND";
   }
 
@@ -81,7 +86,12 @@ class _UploadProfilePageState extends ConsumerState<UploadProfilePage> {
             "https://static.vecteezy.com/system/resources/previews/020/765/399/non_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg";
         isUploading = false;
       });
-
+      await updateProfileImage(studentId,
+          "https://static.vecteezy.com/system/resources/previews/020/765/399/non_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg");
+      final user = ref.read(userProvider);
+      user!.profileImageUrl =
+          "https://static.vecteezy.com/system/resources/previews/020/765/399/non_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg";
+      ref.read(userProvider.notifier).loadUser(studentId);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Profile image reset to default')),
       );
@@ -99,7 +109,7 @@ class _UploadProfilePageState extends ConsumerState<UploadProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile'),
+        title: Text(AppLocalizations.of(context)!.profile),
       ),
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Consumer(
@@ -147,11 +157,12 @@ class _UploadProfilePageState extends ConsumerState<UploadProfilePage> {
                     child: ElevatedButton(
                   onPressed: isUploading ? null : resetProfileImage,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red, // Button color
+                    backgroundColor: Colors.redAccent, // Button color
                     minimumSize: Size(350, 75),
                     padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   ),
-                  child: Text("Return to default picture",
+                  child: Text(
+                      AppLocalizations.of(context)!.upload_profile_picture,
                       style: TextStyle(color: Colors.black, fontSize: 20)),
                 )),
               ],

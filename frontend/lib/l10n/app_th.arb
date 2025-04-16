@@ -88,5 +88,17 @@
   "report_Other_please_specify": "อื่น ๆ (โปรดระบุ)",
   "report_description": "รายละเอียดคำร้อง",
   "report_description_placeholder": "กรอกรายละเอียด...",
-  "report_submit": "ส่งรายงาน"
+  "report_submit": "ส่งรายงาน",
+  "profile": "โปรไฟล์",
+  "upload_profile_picture": "อัปโหลดรูปโปรไฟล์",
+  "settings": "การตั้งค่า",
+  "signout": "ออกจากระบบ",
+  "tap_to_change": "กดเพื่อเปลี่ยนรูปโปรไฟล์",
+  "return_to_default": "ลบรูปโปรไฟล์ของฉัน",
+  "language": "ภาษา",
+  "theme": "ธีม",
+  "english": "ภาษาอังกฤษ",
+  "thai": "ภาษาไทย",
+  "lightmode": "โหมดสว่าง",
+  "darkmode": "โหมดมืด"
 }
