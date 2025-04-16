@@ -104,6 +104,11 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
 
   @override
   Widget build(BuildContext context) {
+    final Map<String, String> categoryOptions = {
+      'General': AppLocalizations.of(context)!.general,
+      'ReviewCourse': AppLocalizations.of(context)!.courseReview,
+      'Lost&Found': AppLocalizations.of(context)!.lostNfound,
+    };
     final user = ref.read(userProvider);
     final communityPostController = ref.read(communityProvider.notifier);
     return Scaffold(
@@ -235,14 +240,10 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
                       EdgeInsets.symmetric(vertical: 14, horizontal: 16),
                   border: InputBorder.none,
                 ),
-                items: <String>[
-                  AppLocalizations.of(context)!.general,
-                  AppLocalizations.of(context)!.courseReview,
-                  AppLocalizations.of(context)!.lostNfound
-                ].map<DropdownMenuItem<String>>((String value) {
+                items: categoryOptions.entries.map((entry) {
                   return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
+                    value: entry.key,
+                    child: Text(entry.value),
                   );
                 }).toList(),
                 onChanged: (String? newValue) {

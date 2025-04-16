@@ -248,7 +248,7 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+        padding: const EdgeInsets.fromLTRB(20, 40, 20, 0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
