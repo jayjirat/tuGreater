@@ -7,6 +7,7 @@ import 'package:frontend/providers/community_provider.dart';
 import 'package:frontend/providers/product_provider.dart';
 import 'package:frontend/providers/user_provider.dart';
 import 'package:frontend/screens/community/community_view_post.dart';
+import 'package:frontend/screens/error_page.dart';
 import 'package:frontend/screens/shop/edit_items.dart';
 import 'package:tuple/tuple.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -37,21 +38,35 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
 
   void _initState() async {
     Future.microtask(() async {
-      await ref.read(communityProvider.notifier).fetchMyPosts(widget.userId);
-      final currentUser = ref.read(userProvider);
-      if (widget.userId != currentUser!.id) {
-        final postUser = await ref
-            .read(userProvider.notifier)
-            .getUserById(userId: widget.userId);
-        if (postUser != null) {
-          setState(() {
-            loadedUser = postUser;
-          });
+      try {
+        if (mounted) {
+          await ref
+              .read(communityProvider.notifier)
+              .fetchMyPosts(userId: widget.userId, context: context);
+          final currentUser = ref.read(userProvider);
+          if (widget.userId != currentUser!.id) {
+            final postUser = await ref
+                .read(userProvider.notifier)
+                .getUserById(userId: widget.userId);
+            if (postUser != null) {
+              setState(() {
+                loadedUser = postUser;
+              });
+            }
+          } else {
+            setState(() {
+              loadedUser = currentUser;
+            });
+          }
         }
-      } else {
-        setState(() {
-          loadedUser = currentUser;
-        });
+      } catch (e) {
+        if (mounted) {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ErrorPage(errorMessage: e.toString()),
+              ));
+        }
       }
     });
   }

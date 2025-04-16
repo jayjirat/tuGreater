@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class Error extends StatelessWidget {
+class ErrorPage extends StatelessWidget {
   final String errorMessage;
 
-  const Error({super.key, required this.errorMessage});
+  const ErrorPage({super.key, required this.errorMessage});
 
   @override
   Widget build(BuildContext context) {
@@ -18,16 +19,16 @@ class Error extends StatelessWidget {
               children: [
                 // 🔸 Mascot / Big Icon
                 Icon(
-                  Icons.sentiment_dissatisfied,
+                  Icons.sentiment_very_dissatisfied_outlined,
                   size: 120,
-                  color: Theme.of(context).colorScheme.error,
+                  color: Theme.of(context).primaryColor,
                 ),
 
                 const SizedBox(height: 32),
 
                 // 🔹 Static Title
                 Text(
-                  'Oops! Something went wrong',
+                  AppLocalizations.of(context)!.errorOops,
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -47,9 +48,15 @@ class Error extends StatelessWidget {
 
                 // 🔹 Button to go back
                 ElevatedButton.icon(
-                  onPressed: () => Navigator.of(context).maybePop(),
-                  icon: const Icon(Icons.arrow_back),
-                  label: const Text('Go back'),
+                  onPressed: () => Navigator.maybePop(context),
+                  icon: Icon(
+                    Icons.arrow_back,
+                    color: Theme.of(context).cardColor,
+                  ),
+                  label: Text(
+                    AppLocalizations.of(context)!.goBack,
+                    style: TextStyle(color: Theme.of(context).cardColor),
+                  ),
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(25),

@@ -15,8 +15,9 @@ Widget communityPost(
         context,
         MaterialPageRoute(builder: (context) => nextRoute),
       );
-
-      communityPostController.fetchPosts();
+      if (context.mounted) {
+        communityPostController.fetchPosts(context: context);
+      }
     },
     child: Card(
       elevation: 6,

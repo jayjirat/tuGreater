@@ -10,6 +10,7 @@ import 'package:frontend/providers/user_provider.dart';
 import 'package:frontend/screens/community/community_manage_post.dart';
 import 'package:frontend/screens/community/community_me.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:frontend/screens/error_page.dart';
 
 class CommunityViewpost extends ConsumerStatefulWidget {
   final String id;
@@ -29,18 +30,31 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
   }
 
   void _initData() async {
-    await ref.read(communityProvider.notifier).fetchPost(id: widget.id);
-    await ref
-        .read(commentProvider(widget.id).notifier)
-        .fetchCommentByPostId(widget.id);
-    final user = ref.read(userProvider);
-    bool liked =
-        await ref.read(communityProvider.notifier).isLiked(user!.id, widget.id);
+    try {
+      await ref
+          .read(communityProvider.notifier)
+          .fetchPost(id: widget.id, context: context);
+      await ref
+          .read(commentProvider(widget.id).notifier)
+          .fetchCommentByPostId(widget.id);
+      final user = ref.read(userProvider);
+      bool liked = await ref
+          .read(communityProvider.notifier)
+          .isLiked(userId: user!.id, postId: widget.id, context: context);
 
-    if (mounted) {
-      setState(() {
-        isLiked = liked;
-      });
+      if (mounted) {
+        setState(() {
+          isLiked = liked;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ErrorPage(errorMessage: e.toString()),
+            ));
+      }
     }
   }
 
@@ -137,11 +151,31 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                                               ),
                                             ));
                                       } else if (value == "delete") {
-                                        await communityPostController
-                                            .deletePost(id: post.id);
-
-                                        if (context.mounted) {
-                                          Navigator.pop(context);
+                                        try {
+                                          await communityPostController
+                                              .deletePost(
+                                                  id: post.id,
+                                                  context: context);
+                                          if (context.mounted) {
+                                            Navigator.pop(context);
+                                            showToast(
+                                              message:
+                                                  AppLocalizations.of(context)!
+                                                      .postDeletedSuccess,
+                                              toastType: ToastType.success,
+                                            );
+                                          }
+                                        } catch (e) {
+                                          if (context.mounted) {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      ErrorPage(
+                                                          errorMessage:
+                                                              e.toString()),
+                                                ));
+                                          }
                                         }
                                       }
                                     },
@@ -227,20 +261,46 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                           _buildActionButton(
                             onTap: isLiked
                                 ? () async {
-                                    await communityPostController.unlikePost(
-                                        user.id, post.id);
-                                    setState(() {
-                                      isLiked = false;
-                                      post.likeCount--;
-                                    });
+                                    try {
+                                      await communityPostController.unlikePost(
+                                          userId: user.id,
+                                          postId: post.id,
+                                          context: context);
+                                      setState(() {
+                                        isLiked = false;
+                                        post.likeCount--;
+                                      });
+                                    } catch (e) {
+                                      if (context.mounted) {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => ErrorPage(
+                                                  errorMessage: e.toString()),
+                                            ));
+                                      }
+                                    }
                                   }
                                 : () async {
-                                    await communityPostController.likePost(
-                                        user.id, post.id);
-                                    setState(() {
-                                      isLiked = true;
-                                      post.likeCount++;
-                                    });
+                                    try {
+                                      await communityPostController.likePost(
+                                          userId: user.id,
+                                          postId: post.id,
+                                          context: context);
+                                      setState(() {
+                                        isLiked = true;
+                                        post.likeCount++;
+                                      });
+                                    } catch (e) {
+                                      if (context.mounted) {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => ErrorPage(
+                                                  errorMessage: e.toString()),
+                                            ));
+                                      }
+                                    }
                                   },
                             icon: isLiked
                                 ? Icons.thumb_up
@@ -354,15 +414,39 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                                                     recognizer:
                                                         TapGestureRecognizer()
                                                           ..onTap = () async {
-                                                            await commentController
-                                                                .deleteComment(
-                                                                    widget.id,
-                                                                    comments[
-                                                                            index]
-                                                                        .id);
-                                                            setState(() {
-                                                              post.commentCount--;
-                                                            });
+                                                            try {
+                                                              await commentController
+                                                                  .deleteComment(
+                                                                      widget.id,
+                                                                      comments[
+                                                                              index]
+                                                                          .id);
+                                                              setState(() {
+                                                                post.commentCount--;
+                                                              });
+                                                              if (context
+                                                                  .mounted) {
+                                                                showToast(
+                                                                  message: AppLocalizations.of(
+                                                                          context)!
+                                                                      .commentDeletedSuccess,
+                                                                  toastType:
+                                                                      ToastType
+                                                                          .success,
+                                                                );
+                                                              }
+                                                            } catch (e) {
+                                                              if (context
+                                                                  .mounted) {
+                                                                Navigator.push(
+                                                                    context,
+                                                                    MaterialPageRoute(
+                                                                      builder: (context) =>
+                                                                          ErrorPage(
+                                                                              errorMessage: e.toString()),
+                                                                    ));
+                                                              }
+                                                            }
                                                           },
                                                   )
                                               ]),
@@ -403,20 +487,31 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                   InkWell(
                     onTap: () async {
                       if (commentCtrl.text.isNotEmpty) {
-                        await commentController.addComment(
-                            postId: post!.id,
-                            content: commentCtrl.text,
-                            userId: user!.id,
-                            username: user.displayName,
-                            commentedByImageUrl: user.profileImageUrl);
+                        try {
+                          await commentController.addComment(
+                              postId: post!.id,
+                              content: commentCtrl.text,
+                              userId: user!.id,
+                              username: user.displayName,
+                              commentedByImageUrl: user.profileImageUrl);
 
-                        setState(() {
-                          post.commentCount++;
-                        });
+                          setState(() {
+                            post.commentCount++;
+                          });
 
-                        commentCtrl.clear();
-                        if (context.mounted) {
-                          FocusScope.of(context).unfocus();
+                          commentCtrl.clear();
+                          if (context.mounted) {
+                            FocusScope.of(context).unfocus();
+                          }
+                        } catch (e) {
+                          if (context.mounted) {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      ErrorPage(errorMessage: e.toString()),
+                                ));
+                          }
                         }
                       }
                     },

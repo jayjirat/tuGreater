@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:frontend/components/toast.dart';
 import 'package:frontend/models/role.dart';
+import 'package:frontend/screens/error_page.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/models/user.dart';
@@ -55,11 +56,10 @@ class UserNotifier extends StateNotifier<User?> {
             "role": "User"
           });
 
-          print("login3");
           final createUserResponse = await http.post(Uri.parse(userDBUrl),
               headers: {"content-type": "application/json"}, body: userBody);
-          if (createUserResponse.statusCode == 201) {
-            if (context.mounted) {
+          if (context.mounted) {
+            if (createUserResponse.statusCode == 201) {
               final data = json.decode(createUserResponse.body);
               state = User(
                 id: data["user"]['id'],
@@ -70,9 +70,14 @@ class UserNotifier extends StateNotifier<User?> {
                 role: parseStringtoRole(data["user"]['role']),
               );
               Navigator.pushReplacementNamed(context, '/set-display-name');
+            } else {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ErrorPage(
+                        errorMessage: "Create User Failed, pleast try again"),
+                  ));
             }
-          } else {
-            // TODO  Notify the error to user
           }
 
           // Found user in db -> Not first login
@@ -91,7 +96,15 @@ class UserNotifier extends StateNotifier<User?> {
             Navigator.pushReplacementNamed(context, '/community');
           }
         } else {
-          // TODO  push to error screen
+          if (context.mounted) {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ErrorPage(
+                      errorMessage:
+                          "An unknown error occurred, please try again"),
+                ));
+          }
         }
 
         // Login unsuccessful
@@ -106,7 +119,15 @@ class UserNotifier extends StateNotifier<User?> {
         }
       }
     } catch (error) {
-      // TODO  push to error screen
+      if (context.mounted) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ErrorPage(
+                  errorMessage:
+                      "An unknown error occurred while logging in, please try again"),
+            ));
+      }
     }
   }
 
@@ -180,7 +201,15 @@ class UserNotifier extends StateNotifier<User?> {
         }
       }
     } catch (e) {
-      // TODO  push to error screen
+      if (context.mounted) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ErrorPage(
+                  errorMessage:
+                      "An unknown error occurred while updating user, please try again"),
+            ));
+      }
     }
   }
 
@@ -235,7 +264,6 @@ class UserNotifier extends StateNotifier<User?> {
         return true;
       }
     } catch (e) {
-      print('Error loading user: $e');
       return false;
     }
 

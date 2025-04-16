@@ -29,7 +29,6 @@ class ReportNotifier extends StateNotifier<List<Report>> {
 
       final response =
           await http.post(url, headers: header, body: jsonEncode(newReport));
-      print(response.body);
       if (response.statusCode == 201) {
         final data = jsonDecode(response.body);
         final newReport = Report.fromJson(data);

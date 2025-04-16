@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/components/community_post.dart';
-import 'package:frontend/components/toast.dart';
 import 'package:frontend/providers/community_provider.dart';
 import 'package:frontend/screens/community/community_view_post.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:frontend/screens/error_page.dart';
 
 class Community extends ConsumerStatefulWidget {
   const Community({super.key});
@@ -27,11 +27,33 @@ class CommunityState extends ConsumerState<Community> {
   @override
   void initState() {
     super.initState();
-    _initState();
+    tryFetchPosts();
   }
 
-  void _initState() async {
-    await ref.read(communityProvider.notifier).fetchPosts();
+  Future<void> tryFetchPosts() async {
+    try {
+      await ref.read(communityProvider.notifier).fetchPosts(context: context);
+    } catch (e) {
+      toErrorPage(message: e.toString());
+    }
+  }
+
+  Future<void> tryFilterPosts({required String category}) async {
+    try {
+      await ref
+          .read(communityProvider.notifier)
+          .filterPosts(category: category, context: context);
+    } catch (e) {
+      toErrorPage(message: e.toString());
+    }
+  }
+
+  void toErrorPage({required String message}) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ErrorPage(errorMessage: message),
+        ));
   }
 
   @override
@@ -50,8 +72,21 @@ class CommunityState extends ConsumerState<Community> {
               hintText: AppLocalizations.of(context)!.searchPost,
               prefixIcon: Icon(Icons.search, color: Colors.grey),
             ),
-            onSubmitted: (value) async => await communityPostController
-                .searchPosts(searchController.text),
+            onSubmitted: (value) async {
+              try {
+                await communityPostController.searchPosts(
+                    query: searchController.text, context: context);
+              } catch (e) {
+                if (context.mounted) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            ErrorPage(errorMessage: e.toString()),
+                      ));
+                }
+              }
+            },
           ),
           const SizedBox(height: 16),
           ToggleButtons(
@@ -65,13 +100,13 @@ class CommunityState extends ConsumerState<Community> {
                 });
 
                 if (currIndexToggleStatus == 0) {
-                  await communityPostController.fetchPosts();
+                  await tryFetchPosts();
                 } else if (currIndexToggleStatus == 1) {
-                  await communityPostController.filterPosts("General");
+                  await tryFilterPosts(category: "General");
                 } else if (currIndexToggleStatus == 2) {
-                  await communityPostController.filterPosts("ReviewCourse");
+                  await tryFilterPosts(category: "ReviewCourse");
                 } else if (currIndexToggleStatus == 3) {
-                  await communityPostController.filterPosts("Lost%26Found");
+                  await tryFilterPosts(category: "Lost%26Found");
                 }
               },
               children: [

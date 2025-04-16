@@ -2,10 +2,12 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:frontend/components/toast.dart';
 import 'package:frontend/components/toolbar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/services.dart';
 import 'package:frontend/providers/product_provider.dart';
+import 'package:frontend/screens/error_page.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -137,12 +139,23 @@ class _EditItemsState extends ConsumerState<EditItems> {
           final jsonMap = jsonDecode(responseData);
           return jsonMap['secure_url'];
         } else {
-          print("Failed to upload image: ${response.statusCode}");
-          print(await response.stream.bytesToString());
+          // TODO
+          showToast(
+              message: "Failed to upload image", toastType: ToastType.error);
+          // print("Failed to upload image: ${response.statusCode}");
+          // print(await response.stream.bytesToString());
           return '';
         }
       } catch (e) {
-        print("Error uploading image: $e");
+        if (mounted) {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ErrorPage(
+                    errorMessage:
+                        "An unknown error occurred while uploading image, please try again"),
+              ));
+        }
         return '';
       }
     }).toList();

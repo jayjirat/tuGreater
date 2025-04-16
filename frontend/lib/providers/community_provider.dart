@@ -1,9 +1,12 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:frontend/components/toast.dart';
 import 'package:frontend/models/com_post.dart';
 import 'package:frontend/models/comment.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CommunityNotifier extends StateNotifier<List<CommuPost>> {
   CommunityNotifier() : super([]);
@@ -13,7 +16,7 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
   List<Comment>? comments;
   bool isLoading = false;
 
-  Future<void> fetchPosts() async {
+  Future<void> fetchPosts({required BuildContext context}) async {
     final url = Uri.parse('$baseURL/community');
     try {
       // isLoading = true;
@@ -24,15 +27,23 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
         state = posts;
         // isLoading = false;
       } else {
-        throw Exception(
-            'Failed to load posts. Status code: ${response.statusCode}');
+        if (context.mounted) {
+          showToast(
+              message:
+                  "${AppLocalizations.of(context)!.loadPostsFail} ${AppLocalizations.of(context)!.pleaseTryAgain}",
+              toastType: ToastType.error);
+        }
       }
     } catch (e) {
-      throw Exception('Error: $e');
+      if (context.mounted) {
+        throw Exception(
+            "${AppLocalizations.of(context)!.unableLoadPosts} ${AppLocalizations.of(context)!.checkYourConnection}");
+      }
     }
   }
 
-  Future<void> fetchMyPosts(String userId) async {
+  Future<void> fetchMyPosts(
+      {required String userId, required BuildContext context}) async {
     final url = Uri.parse('$baseURL/community/me/$userId');
     try {
       // isLoading = true;
@@ -43,15 +54,23 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
         state = posts;
         // isLoading = false;
       } else {
-        throw Exception(
-            'Failed to load posts. Status code: ${response.statusCode}');
+        if (context.mounted) {
+          showToast(
+              message:
+                  "${AppLocalizations.of(context)!.loadPostsFail} ${AppLocalizations.of(context)!.pleaseTryAgain}",
+              toastType: ToastType.error);
+        }
       }
     } catch (e) {
-      throw Exception('Error: $e');
+      if (context.mounted) {
+        throw Exception(
+            "${AppLocalizations.of(context)!.unableLoadPosts} ${AppLocalizations.of(context)!.checkYourConnection}");
+      }
     }
   }
 
-  Future<void> fetchPost({required String id}) async {
+  Future<void> fetchPost(
+      {required String id, required BuildContext context}) async {
     final url = Uri.parse('$baseURL/community/$id');
 
     try {
@@ -63,11 +82,18 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
         isLoading = false;
         state = [...state];
       } else {
-        throw Exception(
-            'Failed to load posts. Status code: ${response.statusCode}');
+        if (context.mounted) {
+          showToast(
+              message:
+                  "${AppLocalizations.of(context)!.loadPostsFail} ${AppLocalizations.of(context)!.pleaseTryAgain}",
+              toastType: ToastType.error);
+        }
       }
     } catch (e) {
-      throw Exception('Error: $e');
+      if (context.mounted) {
+        throw Exception(
+            "${AppLocalizations.of(context)!.unableLoadPosts} ${AppLocalizations.of(context)!.checkYourConnection}");
+      }
     }
   }
 
@@ -78,7 +104,8 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
       required String userId,
       required String username,
       String? imageUrl,
-      required String postedByImageUrl}) async {
+      required String postedByImageUrl,
+      required BuildContext context}) async {
     final url = '$baseURL/community';
     try {
       final Map<String, dynamic> newPost = {
@@ -105,21 +132,28 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
         final newPostModel = CommuPost.fromJson(data);
         state = [newPostModel, ...state];
       } else {
-        throw Exception(
-            'Failed to create post. Status code: ${response.statusCode}');
+        if (context.mounted) {
+          showToast(
+              message:
+                  "${AppLocalizations.of(context)!.createPostFail} ${AppLocalizations.of(context)!.pleaseTryAgain}",
+              toastType: ToastType.error);
+        }
       }
     } catch (e) {
-      throw Exception('Error: $e');
+      if (context.mounted) {
+        throw Exception(
+            "${AppLocalizations.of(context)!.unableCreatePost} ${AppLocalizations.of(context)!.checkYourConnection}");
+      }
     }
   }
 
-  Future<void> editPost({
-    required CommuPost oriPost,
-    required String title,
-    required String description,
-    required String category,
-    required String imageUrl,
-  }) async {
+  Future<void> editPost(
+      {required CommuPost oriPost,
+      required String title,
+      required String description,
+      required String category,
+      required String imageUrl,
+      required BuildContext context}) async {
     final url = '$baseURL/community/${oriPost.id}';
     try {
       final Map<String, dynamic> editPost = {
@@ -144,28 +178,44 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
         final newPostModel = CommuPost.fromJson(data);
         state = [newPostModel, ...state];
       } else {
-        throw Exception(
-            'Failed to edit post. Status code: ${response.statusCode}');
+        if (context.mounted) {
+          showToast(
+              message:
+                  "${AppLocalizations.of(context)!.editPostFail} ${AppLocalizations.of(context)!.pleaseTryAgain}",
+              toastType: ToastType.error);
+        }
       }
     } catch (e) {
-      throw Exception('Error: $e');
+      if (context.mounted) {
+        throw Exception(
+            "${AppLocalizations.of(context)!.unableEditPost} ${AppLocalizations.of(context)!.checkYourConnection}");
+      }
     }
   }
 
-  Future<void> deletePost({required String id}) async {
+  Future<void> deletePost(
+      {required String id, required BuildContext context}) async {
     final url = Uri.parse("$baseURL/community/$id");
     try {
       final response = await http.delete(url);
       if (response.statusCode != 200) {
-        throw Exception(
-            'Failed to delete post id: $id. Status code: ${response.statusCode}');
+        if (context.mounted) {
+          showToast(
+              message:
+                  "${AppLocalizations.of(context)!.deletePostFail} ${AppLocalizations.of(context)!.pleaseTryAgain}",
+              toastType: ToastType.error);
+        }
       }
     } catch (e) {
-      throw Exception('Error: $e');
+      if (context.mounted) {
+        throw Exception(
+            "${AppLocalizations.of(context)!.unableDeletePost} ${AppLocalizations.of(context)!.checkYourConnection}");
+      }
     }
   }
 
-  Future<void> filterPosts(String category) async {
+  Future<void> filterPosts(
+      {required String category, required BuildContext context}) async {
     final url = Uri.parse('$baseURL/community/filter?category=$category');
     try {
       // isLoading = true;
@@ -178,15 +228,23 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
       } else if (response.statusCode == 404) {
         state = [];
       } else {
-        throw Exception(
-            'Failed to load posts. Status code: ${response.statusCode}');
+        if (context.mounted) {
+          showToast(
+              message:
+                  "${AppLocalizations.of(context)!.filterPostsFail} ${AppLocalizations.of(context)!.pleaseTryAgain}",
+              toastType: ToastType.error);
+        }
       }
     } catch (e) {
-      throw Exception('Error: $e');
+      if (context.mounted) {
+        throw Exception(
+            "${AppLocalizations.of(context)!.unableFilterPosts} ${AppLocalizations.of(context)!.checkYourConnection}");
+      }
     }
   }
 
-  Future<void> searchPosts(String query) async {
+  Future<void> searchPosts(
+      {required String query, required BuildContext context}) async {
     final url = Uri.parse('$baseURL/community/search?query=$query');
     try {
       // isLoading = true;
@@ -199,15 +257,25 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
       } else if (response.statusCode == 404) {
         state = [];
       } else {
-        throw Exception(
-            'Failed to load posts. Status code: ${response.statusCode}');
+        if (context.mounted) {
+          showToast(
+              message:
+                  "${AppLocalizations.of(context)!.searchPostsFail} $query, ${AppLocalizations.of(context)!.pleaseTryAgain}",
+              toastType: ToastType.error);
+        }
       }
     } catch (e) {
-      throw Exception('Error: $e');
+      if (context.mounted) {
+        throw Exception(
+            "${AppLocalizations.of(context)!.unableSearchPosts} ${AppLocalizations.of(context)!.checkYourConnection}");
+      }
     }
   }
 
-  Future<void> likePost(String userId, String postId) async {
+  Future<void> likePost(
+      {required String userId,
+      required String postId,
+      required BuildContext context}) async {
     final url = Uri.parse('$baseURL/community/like');
     try {
       final likeBody = {'userId': userId, 'postId': postId};
@@ -217,15 +285,25 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
       if (response.statusCode == 200) {
         state = [...state];
       } else {
-        throw Exception(
-            'Failed to like posts. Status code: ${response.statusCode}');
+        if (context.mounted) {
+          showToast(
+              message:
+                  "${AppLocalizations.of(context)!.likePostFail} ${AppLocalizations.of(context)!.pleaseTryAgain}",
+              toastType: ToastType.error);
+        }
       }
     } catch (e) {
-      throw Exception('Error: $e');
+      if (context.mounted) {
+        throw Exception(
+            "${AppLocalizations.of(context)!.unableLikePost} ${AppLocalizations.of(context)!.checkYourConnection}");
+      }
     }
   }
 
-  Future<void> unlikePost(String userId, String postId) async {
+  Future<void> unlikePost(
+      {required String userId,
+      required String postId,
+      required BuildContext context}) async {
     final url = Uri.parse('$baseURL/community/like');
     try {
       final likeBody = {'userId': userId, 'postId': postId};
@@ -235,15 +313,25 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
       if (response.statusCode == 200) {
         state = [...state];
       } else {
-        throw Exception(
-            'Failed to unlike posts. Status code: ${response.statusCode}');
+        if (context.mounted) {
+          showToast(
+              message:
+                  "${AppLocalizations.of(context)!.unlikePostFail} ${AppLocalizations.of(context)!.pleaseTryAgain}",
+              toastType: ToastType.error);
+        }
       }
     } catch (e) {
-      throw Exception('Error: $e');
+      if (context.mounted) {
+        throw Exception(
+            "${AppLocalizations.of(context)!.unableUnlikePost} ${AppLocalizations.of(context)!.checkYourConnection}");
+      }
     }
   }
 
-  Future<bool> isLiked(String userId, String postId) async {
+  Future<bool> isLiked(
+      {required String userId,
+      required String postId,
+      required BuildContext context}) async {
     final url =
         Uri.parse('$baseURL/community/like?userId=$userId&postId=$postId');
     try {
@@ -251,12 +339,22 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
       if (response.statusCode == 200) {
         return response.body.contains('true');
       } else {
-        throw Exception(
-            'Failed to check like status. Status code: ${response.statusCode}');
+        if (context.mounted) {
+          showToast(
+              message:
+                  "${AppLocalizations.of(context)!.checkLikeStatusFail} ${AppLocalizations.of(context)!.pleaseTryAgain}",
+              toastType: ToastType.error);
+        } else {
+          return false;
+        }
       }
     } catch (e) {
-      throw Exception('Error: $e');
+      if (context.mounted) {
+        throw Exception(
+            "${AppLocalizations.of(context)!.unableCheckLikeStatusPost} ${AppLocalizations.of(context)!.checkYourConnection}");
+      }
     }
+    return false;
   }
 }
 
