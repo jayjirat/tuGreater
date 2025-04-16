@@ -99,6 +99,8 @@
     "commentDeletedSuccess":"Comment deleted successfully.",
     "noPosts":"No posts available yet",
     "noPostsContent":"Be the first one to share something!",
+    "noProducts":"No products available yet",
+    "noProductsContent":"No products found. Check back later!",
     "productDeletedSuccess":"Product deleted successfully.",
     "reportSubmittedSuccess":"Your report has been submitted successfully.",
     "errorOops":"Oops! Something went wrong",

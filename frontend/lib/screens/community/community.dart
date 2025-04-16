@@ -141,7 +141,7 @@ class CommunityState extends ConsumerState<Community> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(
-                        Icons.hourglass_empty,
+                        Icons.forum_outlined,
                         size: 120,
                         color: Theme.of(context).colorScheme.primary,
                       ),
