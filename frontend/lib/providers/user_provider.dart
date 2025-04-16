@@ -36,7 +36,8 @@ class UserNotifier extends StateNotifier<User?> {
       // Login success
       if (tuResponse.statusCode == 200) {
         final tuResponseData = json.decode(tuResponse.body);
-        final usernameUrl = Uri.parse('$userDBUrl/$username');
+        final usernameUrl =
+            Uri.parse('$userDBUrl/studentId?studentId=$username');
 
         // Fetch user in db
         final existingUser = await http.get(usernameUrl);
@@ -67,7 +68,6 @@ class UserNotifier extends StateNotifier<User?> {
               Navigator.pushReplacementNamed(context, '/set-display-name');
             }
           } else {
-           
             // TODO  Notify the error to user
           }
 
@@ -87,9 +87,7 @@ class UserNotifier extends StateNotifier<User?> {
           if (context.mounted) {
             Navigator.pushReplacementNamed(context, '/community');
           }
-         
         } else {
-        
           // TODO  Notify the error to user
         }
 
