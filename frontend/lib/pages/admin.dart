@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'ban.dart';
-import 'delete_post.dart';
+import 'reported_post.dart';
 
 class AdminPage extends StatelessWidget {
   const AdminPage({super.key});
@@ -59,7 +59,7 @@ class AdminPage extends StatelessWidget {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => DeletePostPage()),
+            MaterialPageRoute(builder: (context) => ReportedPost()),
           );
         },
         child: Container(

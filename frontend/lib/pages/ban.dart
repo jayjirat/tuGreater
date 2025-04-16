@@ -1,43 +1,37 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/models/reported_account_model.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:frontend/providers/user_list_provider.dart';
 
-class BanPage extends StatefulWidget {
+class BanPage extends ConsumerStatefulWidget {
   const BanPage({super.key});
 
+
   @override
-  State<BanPage> createState() => _BanPageState();
+  BanState createState() => BanState();
 }
 
-class _BanPageState extends State<BanPage> {
-  List<AccountModel> accounts =[];
+class BanState extends ConsumerState<BanPage> {
 
-  void _getAccount() {
-    accounts = AccountModel.getAccountModel();
+  @override
+  void initState() {
+    super.initState();
+    _initState();
+  }
+
+  void _initState() async {
+    await ref.read(userListProvider.notifier).fetchUser();
   }
 
   @override
   Widget build(BuildContext context) {
-    _getAccount();
+    final users = ref.watch(userListProvider);
+
     return Scaffold(
       appBar: appBar(),
-      body: banList(),
-    );
-  }
-  
-  AppBar appBar() {
-    return AppBar(
-      backgroundColor: Color(0xFFFF9000),
-      title: Text(
-        "Ban Account", 
-        style: TextStyle(
-          fontWeight: FontWeight.bold),),
-      centerTitle: true,
-    );
-  }
-
-    ListView banList() {
-    return ListView.builder(
-      itemCount: accounts.length,
+      body: users.isEmpty
+          ? const Center(child: CircularProgressIndicator())
+          :ListView.builder(
+      itemCount: users.length,
       itemBuilder: (context, index) {
         return Container(
           margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -50,7 +44,7 @@ class _BanPageState extends State<BanPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                accounts[index].name,
+                users[index].studentId,
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               ElevatedButton(
@@ -66,6 +60,19 @@ class _BanPageState extends State<BanPage> {
           ),
         );
       },
+    ),
     );
   }
+  
+  AppBar appBar() {
+    return AppBar(
+      backgroundColor: Color(0xFFFF9000),
+      title: Text(
+        "Ban Account", 
+        style: TextStyle(
+          fontWeight: FontWeight.bold),),
+      centerTitle: true,
+    );
+  }
+
 }
