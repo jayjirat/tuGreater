@@ -100,12 +100,12 @@ class _FilterModalState extends State<FilterModal> {
             ),
             Row(
               children: [
-                Text(
-                  AppLocalizations.of(context)!.filter_min_price,
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
                 SizedBox(
-                  width: 100,
+                  width: 188,
+                  child: Text(
+                    AppLocalizations.of(context)!.filter_min_price,
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
                 ),
                 Text(
                   AppLocalizations.of(context)!.filter_max_price,
