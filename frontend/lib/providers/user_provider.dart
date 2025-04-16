@@ -76,7 +76,8 @@ class UserNotifier extends StateNotifier<User?> {
               return true;
             } else {
               showToast(
-                  message: "Create User Failed, pleast try again",
+                  message:
+                      "${AppLocalizations.of(context)!.createUserFail} ${AppLocalizations.of(context)!.pleaseTryAgain}",
                   toastType: ToastType.error);
               return false;
             }
@@ -99,9 +100,13 @@ class UserNotifier extends StateNotifier<User?> {
             return true;
           }
         } else {
-          showToast(
-              message: "Fail to get user, pleast try again",
-              toastType: ToastType.error);
+          if (context.mounted) {
+            showToast(
+                message:
+                    "${AppLocalizations.of(context)!.loadUserFail} ${AppLocalizations.of(context)!.pleaseTryAgain}",
+                toastType: ToastType.error);
+          }
+
           return false;
         }
 
@@ -124,7 +129,7 @@ class UserNotifier extends StateNotifier<User?> {
             MaterialPageRoute(
               builder: (context) => ErrorPage(
                   errorMessage:
-                      "An unknown error occurred while logging in, please try again"),
+                      "${AppLocalizations.of(context)!.unableLogin} ${AppLocalizations.of(context)!.checkYourConnection}"),
             ));
         return false;
       }
@@ -139,7 +144,8 @@ class UserNotifier extends StateNotifier<User?> {
     state = null; // ล้าง user ออกจาก provider
   }
 
-  Future<User?> getUserById({required String userId}) async {
+  Future<User?> getUserById(
+      {required String userId, required BuildContext context}) async {
     final url = Uri.parse('$userDBUrl/$userId');
     try {
       final response = await http.get(url).timeout(Duration(seconds: 10));
@@ -156,13 +162,25 @@ class UserNotifier extends StateNotifier<User?> {
       } else if (response.statusCode == 404) {
         return null;
       } else {
-        showToast(
-            message: "Fail to load user, pleast try again",
-            toastType: ToastType.error);
+        if (context.mounted) {
+          showToast(
+              message:
+                  "${AppLocalizations.of(context)!.loadUserFail} ${AppLocalizations.of(context)!.pleaseTryAgain}",
+              toastType: ToastType.error);
+        }
       }
     } catch (e) {
-      throw Exception('Error: $e');
+      if (context.mounted) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ErrorPage(
+                  errorMessage:
+                      "${AppLocalizations.of(context)!.unableLoadUser} ${AppLocalizations.of(context)!.checkYourConnection}"),
+            ));
+      }
     }
+    return null;
   }
 
   Future<void> updateUser(
@@ -204,9 +222,12 @@ class UserNotifier extends StateNotifier<User?> {
           }
         }
       } else {
-        showToast(
-            message: "Fail to edit user, pleast try again",
-            toastType: ToastType.error);
+        if (context.mounted) {
+          showToast(
+              message:
+                  "${AppLocalizations.of(context)!.editUserFail} ${AppLocalizations.of(context)!.pleaseTryAgain}",
+              toastType: ToastType.error);
+        }
       }
     } catch (e) {
       if (context.mounted) {
@@ -215,7 +236,7 @@ class UserNotifier extends StateNotifier<User?> {
             MaterialPageRoute(
               builder: (context) => ErrorPage(
                   errorMessage:
-                      "An unknown error occurred while updating user, please try again"),
+                      "${AppLocalizations.of(context)!.unableEditUser} ${AppLocalizations.of(context)!.checkYourConnection}"),
             ));
       }
     }
@@ -230,7 +251,8 @@ class UserNotifier extends StateNotifier<User?> {
   }
 
 // โหลดข้อมูล User จาก SharedPreferences
-  Future<bool> checkLoginSessionAndLoadUser() async {
+  Future<bool> checkLoginSessionAndLoadUser(
+      {required BuildContext context}) async {
     final prefs = await SharedPreferences.getInstance();
 
     final isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
@@ -273,14 +295,20 @@ class UserNotifier extends StateNotifier<User?> {
         );
         return true;
       } else {
-        showToast(
-            message: "Fail to get user, pleast try again",
-            toastType: ToastType.error);
+        if (context.mounted) {
+          showToast(
+              message:
+                  "${AppLocalizations.of(context)!.prefLoadUserFail} ${AppLocalizations.of(context)!.pleaseTryAgain}",
+              toastType: ToastType.error);
+        }
       }
     } catch (e) {
-      showToast(
-          message: "Fail to save user in prefs, pleast try again",
-          toastType: ToastType.error);
+      if (context.mounted) {
+        showToast(
+            message:
+                "${AppLocalizations.of(context)!.prefLoadUserFail} ${AppLocalizations.of(context)!.pleaseTryAgain}",
+            toastType: ToastType.error);
+      }
       return false;
     }
 

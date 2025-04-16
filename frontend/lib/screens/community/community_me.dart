@@ -45,13 +45,15 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
               .fetchMyPosts(userId: widget.userId, context: context);
           final currentUser = ref.read(userProvider);
           if (widget.userId != currentUser!.id) {
-            final postUser = await ref
-                .read(userProvider.notifier)
-                .getUserById(userId: widget.userId);
-            if (postUser != null) {
-              setState(() {
-                loadedUser = postUser;
-              });
+            if (mounted) {
+              final postUser = await ref
+                  .read(userProvider.notifier)
+                  .getUserById(userId: widget.userId, context: context);
+              if (postUser != null) {
+                setState(() {
+                  loadedUser = postUser;
+                });
+              }
             }
           } else {
             setState(() {

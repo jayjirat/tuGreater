@@ -124,5 +124,12 @@
     "unlikePostFail":"Fail to unlike a post,",
     "unableUnlikePost":"Unable to unlike a post.",
     "checkLikeStatusFail":"Fail to check like status",
-    "unableCheckLikeStatusPost":"Unable to check like status."
+    "unableCheckLikeStatusPost":"Unable to check like status.",
+    "createUserFail": "Fail to create user,",
+    "loadUserFail": "Fail to load user,",
+    "unableLoadUser":"Unable to load user.",
+    "editUserFail":"Fail to edit user,",
+    "unableLogin":"Unable to login.",
+    "unableEditUser":"Unable to edit user.",
+    "prefLoadUserFail":"Fail to load user in prefs,"
 }

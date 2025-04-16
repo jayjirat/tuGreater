@@ -22,10 +22,10 @@ class LoginState extends ConsumerState<Login> {
     super.initState();
 
     Future.microtask(() async {
-      final isValid =
-          await ref.read(userProvider.notifier).checkLoginSessionAndLoadUser();
-
       if (mounted) {
+        final isValid = await ref
+            .read(userProvider.notifier)
+            .checkLoginSessionAndLoadUser(context: context);
         if (isValid) {
           Navigator.pushReplacementNamed(context, '/community');
         }

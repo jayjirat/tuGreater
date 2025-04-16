@@ -121,5 +121,12 @@
     "unlikePostFail": "ยกเลิกถูกใจโพสต์ไม่สำเร็จ",
     "unableUnlikePost": "ไม่สามารถยกเลิกถูกใจโพสต์ได้",    
     "checkLikeStatusFail": "ตรวจสอบสถานะการกดถูกใจไม่สำเร็จ",
-    "unableCheckLikeStatusPost": "ไม่สามารถตรวจสอบสถานะการกดถูกใจได้"
+    "unableCheckLikeStatusPost": "ไม่สามารถตรวจสอบสถานะการกดถูกใจได้",
+    "createUserFail": "สร้างผู้ใช้ไม่สำเร็จ",
+    "loadUserFail": "โหลดผู้ใช้ไม่สำเร็จ",
+    "unableLoadUser":"ไม่สามารถโหลดผู้ใช้ได้",
+    "editUserFail": "แก้ไขผู้ใช้ไม่สำเร็จ",
+    "unableLogin": "ไม่สามารถเข้าสู่ระบบได้",
+    "unableEditUser": "ไม่สามารถแก้ไขข้อมูลผู้ใช้ได้",
+    "prefLoadUserFail": "โหลดข้อมูลผู้ใช้จากการตั้งค่าไม่สำเร็จ"
   }

@@ -84,7 +84,7 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
       };
       request.fields.addAll(params);
 
-      var response = await request.send();
+      var response = await request.send().timeout(const Duration(seconds: 15));
 
       if (response.statusCode == 200) {
         final responseData = await response.stream.bytesToString();
@@ -95,6 +95,10 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
             imageUrl = result['secure_url'];
           });
         }
+      } else {
+        showToast(
+            message: "Fail to upload post's images, please try again",
+            toastType: ToastType.error);
       }
     } catch (e) {
       if (mounted) {
@@ -103,7 +107,7 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
             MaterialPageRoute(
               builder: (context) => ErrorPage(
                   errorMessage:
-                      "An unknown error occurred while uploading image, please try again"),
+                      "Unable to upload post's images. Please check your connection and try again."),
             ));
       }
     }
