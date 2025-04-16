@@ -195,7 +195,8 @@ class _EditItemsState extends ConsumerState<EditItems> {
                       width: 300,
                       height: 300,
                       decoration: BoxDecoration(
-                        border: Border.all(color: Colors.black54, width: 2),
+                        border: Border.all(
+                            color: Theme.of(context).canvasColor, width: 2),
                       ),
                       child: Stack(
                         children: [
