@@ -9,6 +9,7 @@ import 'package:frontend/models/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:frontend/services/user_api.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class UserNotifier extends StateNotifier<User?> {
   UserNotifier() : super(null);
@@ -25,7 +26,7 @@ class UserNotifier extends StateNotifier<User?> {
 
   Future<bool> login(
       String username, String password, BuildContext context) async {
-    final url = 'https://restapi.tu.ac.th/api/v1/auth/Ad/verify';
+    final url = dotenv.env['TU_API_PATH'] ?? '';
 
     try {
       final tuResponse = await http.post(
@@ -33,8 +34,7 @@ class UserNotifier extends StateNotifier<User?> {
         body: json.encode({'UserName': username, 'PassWord': password}),
         headers: {
           'Content-Type': 'application/json',
-          'Application-Key':
-              'TU43dbf40881f67122e5d01de44b07e49b30df28a5025c449497f5caf4fd1b4c3e72a7568e1e011c6ec05690c64ae48982'
+          'Application-Key': dotenv.env['TU_APPLICATION_KEY'] ?? ''
         },
       ).timeout(Duration(seconds: 15));
       // Login success
@@ -44,7 +44,8 @@ class UserNotifier extends StateNotifier<User?> {
             Uri.parse('$userDBUrl/studentId?studentId=$username');
 
         // Fetch user in db
-        final existingUser = await http.get(usernameUrl).timeout(Duration(seconds: 10));
+        final existingUser =
+            await http.get(usernameUrl).timeout(Duration(seconds: 10));
         final usernameNew = tuResponseData['displayname_en'];
         // User not found in db -> Create new user (First Login)
         if (existingUser.statusCode == 404) {
@@ -56,8 +57,10 @@ class UserNotifier extends StateNotifier<User?> {
             "role": "User"
           });
 
-          final createUserResponse = await http.post(Uri.parse(userDBUrl),
-              headers: {"content-type": "application/json"}, body: userBody).timeout(Duration(seconds: 10));
+          final createUserResponse = await http
+              .post(Uri.parse(userDBUrl),
+                  headers: {"content-type": "application/json"}, body: userBody)
+              .timeout(Duration(seconds: 10));
           if (context.mounted) {
             if (createUserResponse.statusCode == 201) {
               final data = json.decode(createUserResponse.body);
@@ -72,12 +75,9 @@ class UserNotifier extends StateNotifier<User?> {
               Navigator.pushReplacementNamed(context, '/set-display-name');
               return true;
             } else {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ErrorPage(
-                        errorMessage: "Create User Failed, pleast try again"),
-                  ));
+              showToast(
+                  message: "Create User Failed, pleast try again",
+                  toastType: ToastType.error);
               return false;
             }
           }
@@ -99,16 +99,10 @@ class UserNotifier extends StateNotifier<User?> {
             return true;
           }
         } else {
-          if (context.mounted) {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ErrorPage(
-                      errorMessage:
-                          "An unknown error occurred, please try again"),
-                ));
-            return false;
-          }
+          showToast(
+              message: "Fail to get user, pleast try again",
+              toastType: ToastType.error);
+          return false;
         }
 
         // Login unsuccessful
@@ -162,8 +156,9 @@ class UserNotifier extends StateNotifier<User?> {
       } else if (response.statusCode == 404) {
         return null;
       } else {
-        throw Exception(
-            'Failed to load user. Status code: ${response.statusCode}');
+        showToast(
+            message: "Fail to load user, pleast try again",
+            toastType: ToastType.error);
       }
     } catch (e) {
       throw Exception('Error: $e');
@@ -185,11 +180,13 @@ class UserNotifier extends StateNotifier<User?> {
       "role": parseRoletoString(user.role),
     };
     try {
-      final response = await http.put(
-        Uri.parse("$userDBUrl/${user.id}"),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(editUser),
-      ).timeout(Duration(seconds: 10));
+      final response = await http
+          .put(
+            Uri.parse("$userDBUrl/${user.id}"),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode(editUser),
+          )
+          .timeout(Duration(seconds: 10));
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         state = User(
@@ -206,6 +203,10 @@ class UserNotifier extends StateNotifier<User?> {
             Navigator.pushReplacementNamed(context, '/community');
           }
         }
+      } else {
+        showToast(
+            message: "Fail to edit user, pleast try again",
+            toastType: ToastType.error);
       }
     } catch (e) {
       if (context.mounted) {
@@ -257,7 +258,9 @@ class UserNotifier extends StateNotifier<User?> {
       final id = prefs.getString('id'); // ต้องเซฟเพิ่มตอน login
       if (id == null) return false;
 
-      final userResponse = await http.get(Uri.parse('$userDBUrl/$id')).timeout(Duration(seconds: 10));
+      final userResponse = await http
+          .get(Uri.parse('$userDBUrl/$id'))
+          .timeout(Duration(seconds: 10));
       if (userResponse.statusCode == 200) {
         final data = json.decode(userResponse.body);
         state = User(
@@ -269,8 +272,15 @@ class UserNotifier extends StateNotifier<User?> {
           role: parseStringtoRole(data['role']),
         );
         return true;
+      } else {
+        showToast(
+            message: "Fail to get user, pleast try again",
+            toastType: ToastType.error);
       }
     } catch (e) {
+      showToast(
+          message: "Fail to save user in prefs, pleast try again",
+          toastType: ToastType.error);
       return false;
     }
 

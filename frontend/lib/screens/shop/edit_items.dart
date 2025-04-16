@@ -742,7 +742,7 @@ class _EditItemsState extends ConsumerState<EditItems> {
                     final updatedProduct = await ref.read(updateProduct(
                       Tuple3(productOwnerId, productId, updatedFields),
                     ).future);
-
+                    
                     ref.invalidate(productProvider);
                     await Future.delayed(Duration(milliseconds: 100));
                     ref.refresh(

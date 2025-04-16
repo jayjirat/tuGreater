@@ -653,7 +653,7 @@ class _AddItemsState extends ConsumerState<AddItems> {
                               await _uploadImagesToCloudinary();
                           await createProduct(
                               imageUrls, user!.id, user.displayName);
-
+                          
                           ref.invalidate(productProvider);
                           await Future.delayed(Duration(milliseconds: 100));
                           ref.refresh(

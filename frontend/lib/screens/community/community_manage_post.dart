@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 // import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/components/toast.dart';
@@ -31,12 +32,8 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
   bool isLoading = false;
   File? image;
   final ImagePicker picker = ImagePicker();
-  // final String cloudName = dotenv.env['CLOUDNAME']!;
-  // final String apiKey = dotenv.env['APIKEY']!;
-  // final String apiSecret = dotenv.env['APISECRET']!;
-  final String cloudName = "dfmsqyhem";
-  final String apiKey = "739492419627789";
-  final String apiSecret = "iM5t7SaR6zhSM9xST3cHFmyK6ks";
+  final String cloudName = dotenv.env['JAY_CLOUDINARY_CLOUD_NAME'] ?? '';
+  final String apiKey = dotenv.env['JAY_CLOUDINARY_API_KEY'] ?? '';
   String imageUrl = "";
 
   bool isChangeInEditMode = false;
