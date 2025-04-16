@@ -149,25 +149,33 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  FilledButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => EditItems(
-                                                  productId: product.productId,
-                                                  productOwnerId:
-                                                      loadedUser!.id)));
-                                    },
-                                    style: FilledButton.styleFrom(
-                                      backgroundColor:
-                                          Colors.white.withOpacity(0.8),
-                                      foregroundColor: Colors.black,
-                                      elevation: 0,
-                                    ),
-                                    child: Text(
-                                        AppLocalizations.of(context)!.edit),
-                                  ),
+                                  widget.userId == loadedUser!.id &&
+                                          widget.userId ==
+                                              product.productOwnerId
+                                      ? FilledButton(
+                                          onPressed: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        EditItems(
+                                                            productId: product
+                                                                .productId,
+                                                            productOwnerId:
+                                                                loadedUser!
+                                                                    .id)));
+                                          },
+                                          style: FilledButton.styleFrom(
+                                            backgroundColor:
+                                                Colors.white.withOpacity(0.8),
+                                            foregroundColor: Colors.black,
+                                            elevation: 0,
+                                          ),
+                                          child: Text(
+                                              AppLocalizations.of(context)!
+                                                  .edit),
+                                        )
+                                      : Container(),
                                 ],
                               ),
                             ),
