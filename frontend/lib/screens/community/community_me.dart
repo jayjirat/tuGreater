@@ -150,7 +150,10 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
                             child: product.productImageUrls.isNotEmpty
                                 ? Image.network(product.productImageUrls[0],
                                     fit: BoxFit.cover)
-                                : Icon(Icons.image_not_supported),
+                                : Icon(
+                                    Icons.image_not_supported,
+                                    color: Theme.of(context).cardColor,
+                                  ),
                           ),
                           Expanded(
                             child: Padding(

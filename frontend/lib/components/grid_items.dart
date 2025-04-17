@@ -93,11 +93,14 @@ class GridItems extends ConsumerWidget {
                                           )
                                         : Container(
                                             decoration: BoxDecoration(
-                                                color: Colors.grey.shade100),
+                                                color: Theme.of(context)
+                                                    .canvasColor
+                                                    .withValues(alpha: 0.2)),
                                             child: Icon(
-                                              Icons.image_not_supported,
-                                              size: 42,
-                                            ),
+                                                Icons.image_not_supported,
+                                                size: 42,
+                                                color: Theme.of(context)
+                                                    .cardColor),
                                           ),
                                   ),
                                 ),
