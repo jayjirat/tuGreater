@@ -17,8 +17,9 @@ Future<void> updateProfileImage(String studentId, String imageUrl) async {
       },
       body: body,
     )
-        .timeout(const Duration(seconds: 10), onTimeout: () {
-      throw TimeoutException("Connection Timeout");
+        .timeout(const Duration(seconds: 5), onTimeout: () {
+      throw TimeoutException(
+          "Failed to upload profile image, please try again");
     });
 
     if (response.statusCode == 200) {

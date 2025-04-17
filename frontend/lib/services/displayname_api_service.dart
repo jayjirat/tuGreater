@@ -15,7 +15,7 @@ class DisplaynameApiService {
       final response = await http.get(url).timeout(
         const Duration(seconds: 10),
         onTimeout: () {
-          throw TimeoutException("Connection Timeout");
+          throw TimeoutException("Fail to fetch displayname, please try again");
         },
       );
 
@@ -50,15 +50,13 @@ class DisplaynameApiService {
           'displayName': newDisplayName,
         }),
       )
-          .timeout(const Duration(seconds: 10), onTimeout: () {
-        throw TimeoutException("Connection Timeout");
+          .timeout(const Duration(seconds: 5), onTimeout: () {
+        throw Exception("Fail to update displayname, please try again");
       });
 
       return response.statusCode == 200 || response.statusCode == 201;
-    } on TimeoutException catch (e) {
-      throw TimeoutException(e.message);
     } catch (e) {
-      throw Exception('Error updating display name: $e');
+      throw Exception('$e');
     }
   }
 }
