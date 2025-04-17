@@ -168,6 +168,39 @@ class _EditItemsState extends ConsumerState<EditItems> {
     return uploadedUrls.where((url) => url.isNotEmpty).toList();
   }
 
+  bool _validateImages() {
+    if (_selectedImages.isEmpty) {
+      showToast(
+        message: AppLocalizations.of(context)!.no_image,
+        toastType: ToastType.info,
+      );
+      return false;
+    }
+    return true;
+  }
+
+  bool _validateName() {
+    if (nameController.text.isEmpty) {
+      showToast(
+        message: AppLocalizations.of(context)!.no_name,
+        toastType: ToastType.info,
+      );
+      return false;
+    }
+    return true;
+  }
+
+  bool _validatePrice() {
+    if (priceController.text.isEmpty) {
+      showToast(
+        message: AppLocalizations.of(context)!.no_price,
+        toastType: ToastType.info,
+      );
+      return false;
+    }
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     final productId = widget.productId;
@@ -696,6 +729,11 @@ class _EditItemsState extends ConsumerState<EditItems> {
                 // Post Button
                 FilledButton(
                   onPressed: () async {
+                    if (!_validateImages() ||
+                        !_validateName() ||
+                        !_validatePrice()) {
+                      return;
+                    }
                     if (isCheckedOthers && otherTagController.text.isNotEmpty) {
                       addTag();
                     }

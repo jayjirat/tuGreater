@@ -170,5 +170,8 @@
     "darkmode": "Darkmode",
     "tap_to_add": "Tap to add",
     "take_a_photo": "Take a photo",
-    "choose_from_gallery": "Choose from gallery"
+    "choose_from_gallery": "Choose from gallery",
+    "no_image":"Please select at least one image",
+    "no_name":"Please enter product name",
+    "no_price":"Please enter product price"
 }
