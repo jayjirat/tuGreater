@@ -225,7 +225,7 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                                     IconButton(
                                         onPressed: () => showReportPopup(
                                               context: context,
-                                              userId: user.id,
+                                              studentId: user.studentId,
                                               postId: post.id,
                                             ),
                                         icon: Icon(Icons.report_outlined))
@@ -552,7 +552,7 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
 
   void showReportPopup({
     required BuildContext context,
-    required String userId,
+    required String studentId,
     required String postId,
   }) {
     bool isChecked1 = false;
@@ -678,7 +678,7 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                     await ref.read(reportProvider.notifier).createReport(
                         reportReasons: reportReasons,
                         additionalInfo: additionalController.text,
-                        reportedBy: userId,
+                        reportedBy: studentId,
                         postId: postId,
                         postCategory: PostCategory.community);
                     if (context.mounted) {
