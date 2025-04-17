@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/components/filter_modal.dart';
 import 'package:frontend/components/grid_items.dart';
-import 'package:frontend/components/toolbar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:frontend/screens/shop/add_items.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Shop extends ConsumerStatefulWidget {

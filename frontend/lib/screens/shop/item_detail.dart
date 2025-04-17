@@ -5,8 +5,10 @@ import 'package:frontend/components/report_modal.dart';
 import 'package:frontend/components/toolbar.dart';
 import 'package:frontend/providers/product_provider.dart';
 import 'package:frontend/providers/user_provider.dart';
+import 'package:frontend/screens/error_try.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:tuple/tuple.dart';
 
 class ItemDetail extends ConsumerWidget {
   final String productId;
@@ -14,8 +16,8 @@ class ItemDetail extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final productAsyncValue =
-        ref.watch(productProviderById(productId)); // Watch the product directly
+    final productAsyncValue = ref.watch(productProviderById(
+        Tuple2(productId, context))); // Watch the product directly
     final user = ref.read(userProvider);
     return Scaffold(
       appBar:
@@ -178,7 +180,11 @@ class ItemDetail extends ConsumerWidget {
           );
         },
         loading: () => Center(child: CircularProgressIndicator()),
-        error: (error, stack) => Center(child: Text('Error: $error')),
+        error: (error, stack) => ErrorTry(
+            errorMessage: error.toString(),
+            ref: ref,
+            provider:
+                ref.watch(productProviderById(Tuple2(productId, context)))),
       ),
     );
   }

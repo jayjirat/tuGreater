@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:frontend/components/toast.dart';
 import 'package:frontend/screens/profile/profileimage_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/providers/user_provider.dart';
@@ -56,17 +57,21 @@ class _UploadProfilePageState extends ConsumerState<UploadProfilePage> {
       user!.profileImageUrl = response.secureUrl;
       ref.read(userProvider.notifier).loadUser(studentId);
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Profile image uploaded successfully')),
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(content: Text('Profile image uploaded successfully')),
+      // );
+      showToast(
+        message: 'Profile image uploaded successfully',
+        toastType: ToastType.error,
       );
     } catch (e) {
       setState(() {
         isUploading = false;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to upload image: $e')),
-      );
-      print('Error uploading image: $e');
+      // TODO push to error screen
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(content: Text('Failed to upload image: $e')),
+      // );
     }
   }
 
@@ -87,17 +92,23 @@ class _UploadProfilePageState extends ConsumerState<UploadProfilePage> {
       final user = ref.read(userProvider);
       user!.profileImageUrl =
           "https://static.vecteezy.com/system/resources/previews/020/765/399/non_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg";
-      ref.read(userProvider.notifier).loadUser(studentId);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Profile image reset to default')),
+      ref.read(userProvider.notifier).loadUser(studentId);    
+        
+      showToast(
+        message: 'Profile image reset to default',
+        toastType: ToastType.info,
       );
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(content: Text('Profile image reset to default')),
+      // );
     } catch (e) {
       setState(() {
         isUploading = false;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to reset image: $e')),
-      );
+      // TODO push to error screen
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(content: Text('Failed to reset image: $e')),
+      // );
     }
   }
 

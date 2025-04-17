@@ -11,7 +11,7 @@ class DisplaynameApiService {
     final url = Uri.parse('$baseUrl/student/$studentId/displayName');
 
     try {
-      final response = await http.get(url);
+      final response = await http.get(url).timeout(Duration(seconds: 10));
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = json.decode(response.body);
@@ -40,7 +40,7 @@ class DisplaynameApiService {
         body: json.encode({
           'displayName': newDisplayName,
         }),
-      );
+      ).timeout(Duration(seconds: 10));
 
       return response.statusCode == 200 || response.statusCode == 201;
     } catch (e) {

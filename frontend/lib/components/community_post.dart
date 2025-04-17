@@ -15,8 +15,9 @@ Widget communityPost(
         context,
         MaterialPageRoute(builder: (context) => nextRoute),
       );
-
-      communityPostController.fetchPosts();
+      if (context.mounted) {
+        communityPostController.fetchPosts(context: context);
+      }
     },
     child: Card(
       elevation: 6,
@@ -28,21 +29,22 @@ Widget communityPost(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ListTile(
-            leading: post.postedByImageUrl == ""
-                ? CircleAvatar(
-                    radius: 24,
-                    backgroundColor: Theme.of(context).primaryColorDark,
-                    child: Icon(
-                      Icons.account_circle,
-                      size: 48,
-                      color: Theme.of(context).cardColor,
-                    ),
-                  )
-                : CircleAvatar(
-                    radius: 24,
-                    backgroundImage: NetworkImage(post.postedByImageUrl!),
-                    backgroundColor: Colors.transparent,
-                  ),
+            leading:
+                post.postedByImageUrl == "" || post.postedByImageUrl == null
+                    ? CircleAvatar(
+                        radius: 24,
+                        backgroundColor: Theme.of(context).primaryColorDark,
+                        child: Icon(
+                          Icons.account_circle,
+                          size: 48,
+                          color: Theme.of(context).cardColor,
+                        ),
+                      )
+                    : CircleAvatar(
+                        radius: 24,
+                        backgroundImage: NetworkImage(post.postedByImageUrl!),
+                        backgroundColor: Colors.transparent,
+                      ),
             title: Text(
               post.username,
               style: TextStyle(fontWeight: FontWeight.bold),

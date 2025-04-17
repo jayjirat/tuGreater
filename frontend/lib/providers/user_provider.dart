@@ -1,11 +1,15 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:frontend/components/toast.dart';
 import 'package:frontend/models/role.dart';
+import 'package:frontend/screens/error_page.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/models/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:frontend/services/user_api.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class UserNotifier extends StateNotifier<User?> {
   UserNotifier() : super(null);
@@ -20,9 +24,9 @@ class UserNotifier extends StateNotifier<User?> {
 
   final userDBUrl = "http://10.0.2.2:8080/users";
 
-  Future<void> login(
+  Future<bool> login(
       String username, String password, BuildContext context) async {
-    final url = 'https://restapi.tu.ac.th/api/v1/auth/Ad/verify';
+    final url = dotenv.env['TU_API_PATH'] ?? '';
 
     try {
       final tuResponse = await http.post(
@@ -30,22 +34,20 @@ class UserNotifier extends StateNotifier<User?> {
         body: json.encode({'UserName': username, 'PassWord': password}),
         headers: {
           'Content-Type': 'application/json',
-          'Application-Key':
-              'TU43dbf40881f67122e5d01de44b07e49b30df28a5025c449497f5caf4fd1b4c3e72a7568e1e011c6ec05690c64ae48982'
+          'Application-Key': dotenv.env['TU_APPLICATION_KEY'] ?? ''
         },
-      );
+      ).timeout(Duration(seconds: 15));
       // Login success
       print(tuResponse.body);
       if (tuResponse.statusCode == 200) {
-        print("Login success");
         final tuResponseData = json.decode(tuResponse.body);
         final usernameUrl =
             Uri.parse('$userDBUrl/studentId?studentId=$username');
 
         // Fetch user in db
-        final existingUser = await http.get(usernameUrl);
+        final existingUser =
+            await http.get(usernameUrl).timeout(Duration(seconds: 10));
         final usernameNew = tuResponseData['displayname_en'];
-        print(existingUser.statusCode);
         // User not found in db -> Create new user (First Login)
         if (existingUser.statusCode == 404) {
           final userBody = json.encode({
@@ -56,11 +58,12 @@ class UserNotifier extends StateNotifier<User?> {
             "role": "User"
           });
 
-          print("login3");
-          final createUserResponse = await http.post(Uri.parse(userDBUrl),
-              headers: {"content-type": "application/json"}, body: userBody);
-          if (createUserResponse.statusCode == 201) {
-            if (context.mounted) {
+          final createUserResponse = await http
+              .post(Uri.parse(userDBUrl),
+                  headers: {"content-type": "application/json"}, body: userBody)
+              .timeout(Duration(seconds: 10));
+          if (context.mounted) {
+            if (createUserResponse.statusCode == 201) {
               final data = json.decode(createUserResponse.body);
               state = User(
                 id: data["user"]['id'],
@@ -71,9 +74,14 @@ class UserNotifier extends StateNotifier<User?> {
                 role: parseStringtoRole(data["user"]['role']),
               );
               Navigator.pushReplacementNamed(context, '/set-display-name');
+              return true;
+            } else {
+              showToast(
+                  message:
+                      "${AppLocalizations.of(context)!.createUserFail} ${AppLocalizations.of(context)!.pleaseTryAgain}",
+                  toastType: ToastType.error);
+              return false;
             }
-          } else {
-            // TODO  Notify the error to user
           }
 
           // Found user in db -> Not first login
@@ -88,32 +96,46 @@ class UserNotifier extends StateNotifier<User?> {
             role: parseStringtoRole(data['role']),
           );
           await _saveUserToPrefs(state!);
-          // TODO  push -> community screen
           if (context.mounted) {
             Navigator.pushReplacementNamed(context, '/community');
+            return true;
           }
         } else {
-          // TODO  Notify the error to user
+          if (context.mounted) {
+            showToast(
+                message:
+                    "${AppLocalizations.of(context)!.loadUserFail} ${AppLocalizations.of(context)!.pleaseTryAgain}",
+                toastType: ToastType.error);
+          }
+
+          return false;
         }
 
         // Login unsuccessful
       } else {
         if (context.mounted) {
           {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(
-                SnackBar(content: Text('Invalid username or password')));
+            showToast(
+              message: AppLocalizations.of(context)!.loginInvalidMessage,
+              toastType: ToastType.error,
+            );
           }
         }
+        return false;
       }
     } catch (error) {
       if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Error: $error')));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ErrorPage(
+                  errorMessage:
+                      "${AppLocalizations.of(context)!.unableLogin} ${AppLocalizations.of(context)!.checkYourConnection}"),
+            ));
+        return false;
       }
     }
+    return false;
   }
 
   Future<void> logout() async {
@@ -123,10 +145,11 @@ class UserNotifier extends StateNotifier<User?> {
     state = null; // ล้าง user ออกจาก provider
   }
 
-  Future<User?> getUserById({required String userId}) async {
+  Future<User?> getUserById(
+      {required String userId, required BuildContext context}) async {
     final url = Uri.parse('$userDBUrl/$userId');
     try {
-      final response = await http.get(url);
+      final response = await http.get(url).timeout(Duration(seconds: 10));
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         return User(
@@ -140,12 +163,25 @@ class UserNotifier extends StateNotifier<User?> {
       } else if (response.statusCode == 404) {
         return null;
       } else {
-        throw Exception(
-            'Failed to load user. Status code: ${response.statusCode}');
+        if (context.mounted) {
+          showToast(
+              message:
+                  "${AppLocalizations.of(context)!.loadUserFail} ${AppLocalizations.of(context)!.pleaseTryAgain}",
+              toastType: ToastType.error);
+        }
       }
     } catch (e) {
-      throw Exception('Error: $e');
+      if (context.mounted) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ErrorPage(
+                  errorMessage:
+                      "${AppLocalizations.of(context)!.unableLoadUser} ${AppLocalizations.of(context)!.checkYourConnection}"),
+            ));
+      }
     }
+    return null;
   }
 
   Future<void> updateUser(
@@ -163,11 +199,13 @@ class UserNotifier extends StateNotifier<User?> {
       "role": parseRoletoString(user.role),
     };
     try {
-      final response = await http.put(
-        Uri.parse("$userDBUrl/${user.id}"),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(editUser),
-      );
+      final response = await http
+          .put(
+            Uri.parse("$userDBUrl/${user.id}"),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode(editUser),
+          )
+          .timeout(Duration(seconds: 10));
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         state = User(
@@ -184,12 +222,23 @@ class UserNotifier extends StateNotifier<User?> {
             Navigator.pushReplacementNamed(context, '/community');
           }
         }
+      } else {
+        if (context.mounted) {
+          showToast(
+              message:
+                  "${AppLocalizations.of(context)!.editUserFail} ${AppLocalizations.of(context)!.pleaseTryAgain}",
+              toastType: ToastType.error);
+        }
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Error: $e')));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ErrorPage(
+                  errorMessage:
+                      "${AppLocalizations.of(context)!.unableEditUser} ${AppLocalizations.of(context)!.checkYourConnection}"),
+            ));
       }
     }
   }
@@ -203,7 +252,8 @@ class UserNotifier extends StateNotifier<User?> {
   }
 
 // โหลดข้อมูล User จาก SharedPreferences
-  Future<bool> checkLoginSessionAndLoadUser() async {
+  Future<bool> checkLoginSessionAndLoadUser(
+      {required BuildContext context}) async {
     final prefs = await SharedPreferences.getInstance();
 
     final isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
@@ -231,7 +281,9 @@ class UserNotifier extends StateNotifier<User?> {
       final id = prefs.getString('id'); // ต้องเซฟเพิ่มตอน login
       if (id == null) return false;
 
-      final userResponse = await http.get(Uri.parse('$userDBUrl/$id'));
+      final userResponse = await http
+          .get(Uri.parse('$userDBUrl/$id'))
+          .timeout(Duration(seconds: 10));
       if (userResponse.statusCode == 200) {
         final data = json.decode(userResponse.body);
         state = User(
@@ -243,9 +295,21 @@ class UserNotifier extends StateNotifier<User?> {
           role: parseStringtoRole(data['role']),
         );
         return true;
+      } else {
+        if (context.mounted) {
+          showToast(
+              message:
+                  "${AppLocalizations.of(context)!.prefLoadUserFail} ${AppLocalizations.of(context)!.pleaseTryAgain}",
+              toastType: ToastType.error);
+        }
       }
     } catch (e) {
-      print('Error loading user: $e');
+      if (context.mounted) {
+        showToast(
+            message:
+                "${AppLocalizations.of(context)!.prefLoadUserFail} ${AppLocalizations.of(context)!.pleaseTryAgain}",
+            toastType: ToastType.error);
+      }
       return false;
     }
 
