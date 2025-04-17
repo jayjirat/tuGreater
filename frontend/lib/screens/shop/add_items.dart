@@ -2,15 +2,18 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:frontend/components/toast.dart';
 import 'package:frontend/components/toolbar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/services.dart';
 import 'package:frontend/providers/product_provider.dart';
 import 'package:frontend/providers/user_provider.dart';
+import 'package:frontend/screens/error_page.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:tuple/tuple.dart';
 
 class AddItems extends ConsumerStatefulWidget {
   const AddItems({super.key});
@@ -40,30 +43,35 @@ class _AddItemsState extends ConsumerState<AddItems> {
 
   Future<void> createProduct(
       List<String> imageUrls, String userId, String displayname) async {
-    var url = "http://10.0.2.2:8080/shop";
+    try {
+      var url = "http://10.0.2.2:8080/shop";
 
-    var response = await http.post(
-      Uri.parse(url),
-      headers: {"Content-Type": "application/json"},
-      body: json.encode({
-        'productImageUrls': imageUrls,
-        'productName': nameController.text,
-        'productPrice': double.parse(priceController.text),
-        'productCategory': selectedCategory,
-        'productTags': tags,
-        'productDatePost': DateTime.now().toIso8601String(),
-        'productDateUpdate': DateTime.now().toIso8601String(),
-        'productDescription': descriptionController.text,
-        'productOwner': displayname,
-        'productOwnerId': userId
-      }),
-    );
+      var response = await http
+          .post(
+            Uri.parse(url),
+            headers: {"Content-Type": "application/json"},
+            body: json.encode({
+              'productImageUrls': imageUrls,
+              'productName': nameController.text,
+              'productPrice': double.parse(priceController.text),
+              'productCategory': selectedCategory,
+              'productTags': tags,
+              'productDatePost': DateTime.now().toIso8601String(),
+              'productDateUpdate': DateTime.now().toIso8601String(),
+              'productDescription': descriptionController.text,
+              'productOwner': displayname,
+              'productOwnerId': userId
+            }),
+          )
+          .timeout(Duration(seconds: 10));
 
-    if (response.statusCode == 200) {
-      print('Product created successfully');
-    } else {
-      print('Failed to create product. Status Code: ${response.statusCode}');
-      print('Response body: ${response.body}');
+      if (response.statusCode != 200) {
+        throw Exception(
+            "${AppLocalizations.of(context)!.createProductFail} ${AppLocalizations.of(context)!.pleaseTryAgain}");
+      }
+    } catch (e) {
+      throw Exception(
+          "${AppLocalizations.of(context)!.unableCreateProduct} ${AppLocalizations.of(context)!.checkYourConnection}");
     }
   }
 
@@ -159,12 +167,22 @@ class _AddItemsState extends ConsumerState<AddItems> {
           final jsonMap = jsonDecode(responseData);
           return jsonMap['secure_url'];
         } else {
-          print("Failed to upload image: ${response.statusCode}");
-          print(await response.stream.bytesToString());
+          showToast(
+              message:
+                  "${AppLocalizations.of(context)!.uploadProductImagesFail} ${AppLocalizations.of(context)!.pleaseTryAgain}",
+              toastType: ToastType.error);
           return '';
         }
       } catch (e) {
-        print("Error uploading image: $e");
+        if (mounted) {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ErrorPage(
+                    errorMessage:
+                        "${AppLocalizations.of(context)!.unableUploadProductImages} ${AppLocalizations.of(context)!.checkYourConnection}"),
+              ));
+        }
         return '';
       }
     }).toList();
@@ -644,15 +662,34 @@ class _AddItemsState extends ConsumerState<AddItems> {
 
                           List<String> imageUrls =
                               await _uploadImagesToCloudinary();
-                          await createProduct(
-                              imageUrls, user!.id, user.displayName);
 
-                          ref.invalidate(productProvider);
-                          await Future.delayed(Duration(milliseconds: 100));
-                          ref.refresh(
-                              productProviderByProductOwnerId(user!.id));
-                          Navigator.pop(context);
-                          Navigator.pop(context, true);
+                          try {
+                            await createProduct(
+                                imageUrls, user!.id, user.displayName);
+
+                            ref.invalidate(productProvider);
+                            await Future.delayed(Duration(milliseconds: 100));
+                            ref.refresh(productProviderByProductOwnerId(
+                                Tuple2(user.id, context)));
+                            if (context.mounted) {
+                              showToast(
+                                message: AppLocalizations.of(context)!
+                                    .productCreatedSuccess,
+                                toastType: ToastType.success,
+                              );
+                              Navigator.pop(context);
+                              Navigator.pop(context, true);
+                            }
+                          } catch (e) {
+                            if (context.mounted) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        ErrorPage(errorMessage: e.toString()),
+                                  ));
+                            }
+                          }
                         },
                         style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all(

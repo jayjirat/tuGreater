@@ -1,0 +1,73 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+class ErrorTry extends StatelessWidget {
+  final String errorMessage;
+  final WidgetRef ref;
+  final dynamic provider;
+  const ErrorTry(
+      {super.key,
+      required this.errorMessage,
+      required this.ref,
+      required this.provider});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      body: SafeArea(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // 🔸 Mascot / Big Icon
+                Icon(
+                  Icons.sentiment_very_dissatisfied_outlined,
+                  size: 120,
+                  color: Theme.of(context).primaryColor,
+                ),
+
+                const SizedBox(height: 32),
+
+                // 🔹 Static Title
+                Text(
+                  AppLocalizations.of(context)!.errorOops,
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                  textAlign: TextAlign.center,
+                ),
+
+                const SizedBox(height: 16),
+
+                // 🔹 Dynamic error message
+                Text(
+                  errorMessage,
+                  style: Theme.of(context).textTheme.bodyLarge,
+                  textAlign: TextAlign.center,
+                ),
+
+                const SizedBox(height: 32),
+
+                // 🔹 Button to go back
+                ElevatedButton(
+                    onPressed: () => ref.refresh(provider),
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 24, vertical: 12),
+                    ),
+                    child: Text("Try Again"))
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

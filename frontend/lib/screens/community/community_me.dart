@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/components/community_post.dart';
+import 'package:frontend/components/toast.dart';
 import 'package:frontend/models/user.dart';
 import 'package:frontend/providers/community_provider.dart';
 import 'package:frontend/providers/product_provider.dart';
 import 'package:frontend/providers/user_provider.dart';
 import 'package:frontend/screens/community/community_view_post.dart';
+import 'package:frontend/screens/error_page.dart';
+import 'package:frontend/screens/error_try.dart';
 import 'package:frontend/screens/shop/edit_items.dart';
 import 'package:tuple/tuple.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -36,21 +39,37 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
 
   void _initState() async {
     Future.microtask(() async {
-      await ref.read(communityProvider.notifier).fetchMyPosts(widget.userId);
-      final currentUser = ref.read(userProvider);
-      if (widget.userId != currentUser!.id) {
-        final postUser = await ref
-            .read(userProvider.notifier)
-            .getUserById(userId: widget.userId);
-        if (postUser != null) {
-          setState(() {
-            loadedUser = postUser;
-          });
+      try {
+        if (mounted) {
+          await ref
+              .read(communityProvider.notifier)
+              .fetchMyPosts(userId: widget.userId, context: context);
+          final currentUser = ref.read(userProvider);
+          if (widget.userId != currentUser!.id) {
+            if (mounted) {
+              final postUser = await ref
+                  .read(userProvider.notifier)
+                  .getUserById(userId: widget.userId, context: context);
+              if (postUser != null) {
+                setState(() {
+                  loadedUser = postUser;
+                });
+              }
+            }
+          } else {
+            setState(() {
+              loadedUser = currentUser;
+            });
+          }
         }
-      } else {
-        setState(() {
-          loadedUser = currentUser;
-        });
+      } catch (e) {
+        if (mounted) {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ErrorPage(errorMessage: e.toString()),
+              ));
+        }
       }
     });
   }
@@ -59,7 +78,8 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (mounted) {
-      ref.refresh(productProviderByProductOwnerId(widget.userId));
+      ref.refresh(
+          productProviderByProductOwnerId(Tuple2(widget.userId, context)));
     }
   }
 
@@ -73,8 +93,8 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
     }
     final posts = ref.watch(communityProvider);
     final communityPostController = ref.read(communityProvider.notifier);
-    final productManageAsyncValue =
-        ref.watch(productProviderByProductOwnerId(loadedUser!.id));
+    final productManageAsyncValue = ref
+        .watch(productProviderByProductOwnerId(Tuple2(widget.userId, context)));
     final List<Widget> swapPage = [
       Expanded(
         child: ListView.builder(
@@ -95,168 +115,180 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
           },
         ),
       ),
-      Expanded(
-        child: productManageAsyncValue.when(
-          data: (products) => RefreshIndicator(
-            onRefresh: () async {
-              final user = ref.read(userProvider);
-              ref.refresh(productProviderByProductOwnerId(user!.id));
-            },
-            child: SingleChildScrollView(
-              physics: AlwaysScrollableScrollPhysics(),
-              child: Padding(
-                padding: EdgeInsets.only(top: 20, left: 20, right: 20),
-                child: Column(
-                  children: [
-                    ...products.map((product) {
-                      return Container(
-                        margin: EdgeInsets.symmetric(vertical: 5),
-                        height: 120,
-                        width: MediaQuery.of(context).size.width,
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).cardColor,
-                          borderRadius: BorderRadius.circular(10),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
-                              blurRadius: 6,
-                              spreadRadius: 1,
-                              offset: Offset(0, 2),
+      productManageAsyncValue.when(
+        data: (products) => RefreshIndicator(
+          onRefresh: () async {
+            final user = ref.read(userProvider);
+            ref.refresh(
+                productProviderByProductOwnerId(Tuple2(user!.id, context)));
+          },
+          child: SingleChildScrollView(
+            physics: AlwaysScrollableScrollPhysics(),
+            child: Padding(
+              padding: EdgeInsets.only(top: 20, left: 20, right: 20),
+              child: Column(
+                children: [
+                  ...products.map((product) {
+                    return Container(
+                      margin: EdgeInsets.symmetric(vertical: 5),
+                      height: 120,
+                      width: MediaQuery.of(context).size.width,
+                      decoration: BoxDecoration(
+                        color: Color.fromARGB(255, 240, 239, 239),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            height: 100,
+                            width: MediaQuery.of(context).size.width / 4,
+                            margin: EdgeInsets.only(left: 8),
+                            decoration: BoxDecoration(
+                              color: Color(0xFFD4ECF7),
+                              borderRadius: BorderRadius.circular(10),
                             ),
-                          ],
-                        ),
-                        child: Row(
-                          children: [
-                            Container(
-                              height: 100,
-                              width: MediaQuery.of(context).size.width / 4,
-                              margin: EdgeInsets.only(left: 8),
-                              decoration: BoxDecoration(
-                                color: Theme.of(context).cardColor,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: product.productImageUrls.isNotEmpty
-                                  ? Image.network(product.productImageUrls[0],
-                                      fit: BoxFit.cover)
-                                  : Icon(Icons.image_not_supported),
-                            ),
-                            Expanded(
-                              child: Padding(
-                                padding: EdgeInsets.only(
-                                    left: 20, top: 20, bottom: 15),
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      product.productName,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        color: Theme.of(context).canvasColor,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                            child: product.productImageUrls.isNotEmpty
+                                ? Image.network(product.productImageUrls[0],
+                                    fit: BoxFit.cover)
+                                : Icon(
+                                    Icons.image_not_supported,
+                                    color: Theme.of(context).cardColor,
+                                  ),
+                          ),
+                          Expanded(
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                  left: 20, top: 20, bottom: 15),
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    product.productName,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
                                     ),
-                                    widget.userId == loadedUser!.id &&
-                                            widget.userId ==
-                                                product.productOwnerId
-                                        ? FilledButton(
-                                            onPressed: () {
-                                              Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          EditItems(
-                                                              productId: product
-                                                                  .productId,
-                                                              productOwnerId:
-                                                                  loadedUser!
-                                                                      .id)));
-                                            },
-                                            style: FilledButton.styleFrom(
-                                              backgroundColor:
-                                                  const Color.fromARGB(
-                                                          255, 235, 231, 231)
-                                                      .withOpacity(0.8),
-                                              foregroundColor: Colors.black,
-                                              elevation: 0,
-                                            ),
-                                            child: Text(
-                                                AppLocalizations.of(context)!
-                                                    .edit),
-                                          )
-                                        : Container(),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            Container(
-                              padding: EdgeInsets.only(top: 8, right: 8),
-                              child: IconButton(
-                                onPressed: () async {
-                                  final confirm = await showDialog<bool>(
-                                    context: context,
-                                    builder: (context) => AlertDialog(
-                                      title: Text(AppLocalizations.of(context)!
-                                          .confirmDelete),
-                                      content: Text(
-                                          AppLocalizations.of(context)!
-                                              .confirmDeleteMessage),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () =>
-                                              Navigator.pop(context, false),
+                                  ),
+                                  widget.userId == loadedUser!.id &&
+                                          widget.userId ==
+                                              product.productOwnerId
+                                      ? FilledButton(
+                                          onPressed: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        EditItems(
+                                                            productId: product
+                                                                .productId,
+                                                            productOwnerId:
+                                                                loadedUser!
+                                                                    .id)));
+                                          },
+                                          style: FilledButton.styleFrom(
+                                            backgroundColor:
+                                                Colors.white.withOpacity(0.8),
+                                            foregroundColor: Colors.black,
+                                            elevation: 0,
+                                          ),
                                           child: Text(
                                               AppLocalizations.of(context)!
-                                                  .cancel),
-                                        ),
-                                        TextButton(
-                                          onPressed: () =>
-                                              Navigator.pop(context, true),
-                                          child: Text(
-                                            AppLocalizations.of(context)!
-                                                .delete,
-                                            style: TextStyle(color: Colors.red),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                  if (confirm == true) {
-                                    await ref.read(deleteProduct(Tuple2(
-                                        product.productOwnerId,
-                                        product.productId)));
-
-                                    await Future.delayed(
-                                        Duration(milliseconds: 100));
-                                    ref.refresh(productProviderByProductOwnerId(
-                                        loadedUser!.id));
-
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                            content: Text(
-                                                'Product deleted successfully')));
-                                  }
-                                },
-                                icon: Icon(Icons.delete),
-                                color: Colors.redAccent,
-                                tooltip: AppLocalizations.of(context)!.delete,
+                                                  .edit),
+                                        )
+                                      : Container(),
+                                ],
                               ),
-                            )
-                          ],
-                        ),
-                      );
-                    }).toList(),
-                    SizedBox(height: 30),
-                  ],
-                ),
+                            ),
+                          ),
+                          widget.userId == loadedUser!.id &&
+                                  widget.userId == product.productOwnerId
+                              ? Container(
+                                  padding: EdgeInsets.only(top: 8, right: 8),
+                                  child: IconButton(
+                                    onPressed: () async {
+                                      final confirm = await showDialog<bool>(
+                                        context: context,
+                                        builder: (context) => AlertDialog(
+                                          title: Text(
+                                              AppLocalizations.of(context)!
+                                                  .confirmDelete),
+                                          content: Text(
+                                              AppLocalizations.of(context)!
+                                                  .confirmDeleteMessage),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () =>
+                                                  Navigator.pop(context, false),
+                                              child: Text(
+                                                  AppLocalizations.of(context)!
+                                                      .cancel),
+                                            ),
+                                            TextButton(
+                                              onPressed: () =>
+                                                  Navigator.pop(context, true),
+                                              child: Text(
+                                                AppLocalizations.of(context)!
+                                                    .delete,
+                                                style: TextStyle(
+                                                    color: Colors.red),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                      if (confirm == true) {
+                                        try {
+                                          ref.read(deleteProduct(Tuple3(
+                                              product.productOwnerId,
+                                              product.productId,
+                                              context)));
+
+                                          await Future.delayed(
+                                              Duration(milliseconds: 100));
+                                          ref.refresh(
+                                              productProviderByProductOwnerId(
+                                                  Tuple2(loadedUser!.id,
+                                                      context)));
+
+                                          showToast(
+                                            message:
+                                                AppLocalizations.of(context)!
+                                                    .productDeletedSuccess,
+                                            toastType: ToastType.success,
+                                          );
+                                        } catch (e) {
+                                          ErrorTry(
+                                              errorMessage: e.toString(),
+                                              ref: ref,
+                                              provider:
+                                                  productProviderByProductOwnerId(
+                                                      Tuple2(loadedUser!.id,
+                                                          context)));
+                                        }
+                                      }
+                                    },
+                                    icon: Icon(Icons.delete),
+                                    color: Colors.redAccent,
+                                    tooltip:
+                                        AppLocalizations.of(context)!.delete,
+                                  ),
+                                )
+                              : Container()
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                ],
               ),
             ),
           ),
-          loading: () => Center(child: CircularProgressIndicator()),
-          error: (err, _) => Center(child: Text(err.toString())),
         ),
+        loading: () => Center(child: CircularProgressIndicator()),
+        error: (err, _) => Center(child: Text(err.toString())),
       ),
     ];
     return Scaffold(

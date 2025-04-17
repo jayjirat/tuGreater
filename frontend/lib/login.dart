@@ -22,10 +22,10 @@ class LoginState extends ConsumerState<Login> {
     super.initState();
 
     Future.microtask(() async {
-      final isValid =
-          await ref.read(userProvider.notifier).checkLoginSessionAndLoadUser();
-
       if (mounted) {
+        final isValid = await ref
+            .read(userProvider.notifier)
+            .checkLoginSessionAndLoadUser(context: context);
         if (isValid) {
           Navigator.pushReplacementNamed(context, '/community');
         }
@@ -75,13 +75,17 @@ class LoginState extends ConsumerState<Login> {
                 ),
                 SizedBox(height: 32.0),
                 ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     if (formKey.currentState?.validate() == true) {
-                      ref.read(userProvider.notifier).login(
-                            usernameController.text,
-                            passwordController.text,
-                            context,
-                          );
+                      final result =
+                          await ref.read(userProvider.notifier).login(
+                                usernameController.text,
+                                passwordController.text,
+                                context,
+                              );
+                      if (!result) {
+                        passwordController.clear();
+                      }
                     }
                   },
                   child: Text(AppLocalizations.of(context)!.signIn),

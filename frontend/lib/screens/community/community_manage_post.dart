@@ -2,11 +2,14 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 // import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:frontend/components/toast.dart';
 import 'package:frontend/models/com_post.dart';
 import 'package:frontend/providers/community_provider.dart';
 import 'package:frontend/providers/user_provider.dart';
+import 'package:frontend/screens/error_page.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -29,12 +32,8 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
   bool isLoading = false;
   File? image;
   final ImagePicker picker = ImagePicker();
-  // final String cloudName = dotenv.env['CLOUDNAME']!;
-  // final String apiKey = dotenv.env['APIKEY']!;
-  // final String apiSecret = dotenv.env['APISECRET']!;
-  final String cloudName = "dfmsqyhem";
-  final String apiKey = "739492419627789";
-  final String apiSecret = "iM5t7SaR6zhSM9xST3cHFmyK6ks";
+  final String cloudName = dotenv.env['JAY_CLOUDINARY_CLOUD_NAME'] ?? '';
+  final String apiKey = dotenv.env['JAY_CLOUDINARY_API_KEY'] ?? '';
   String imageUrl = "";
 
   bool isChangeInEditMode = false;
@@ -85,7 +84,7 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
       };
       request.fields.addAll(params);
 
-      var response = await request.send();
+      var response = await request.send().timeout(const Duration(seconds: 15));
 
       if (response.statusCode == 200) {
         final responseData = await response.stream.bytesToString();
@@ -96,9 +95,24 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
             imageUrl = result['secure_url'];
           });
         }
+      } else {
+        if (mounted) {
+          showToast(
+              message:
+                  "${AppLocalizations.of(context)!.uploadPostImageFail} ${AppLocalizations.of(context)!.pleaseTryAgain}",
+              toastType: ToastType.error);
+        }
       }
     } catch (e) {
-      throw Exception('Error uploading image: $e');
+      if (mounted) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ErrorPage(
+                  errorMessage:
+                      "${AppLocalizations.of(context)!.unableUploadPostImage} ${AppLocalizations.of(context)!.pleaseTryAgain}"),
+            ));
+      }
     }
   }
 
@@ -278,24 +292,52 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
                       if (image != null) {
                         await uploadImage();
                       }
-                      await communityPostController.createPost(
-                          userId: user!.id,
-                          username: user.displayName,
-                          title: titleCtrl.text,
-                          description: descriptionCtrl.text,
-                          category: selectedValueDropdown!,
-                          imageUrl: imageUrl,
-                          postedByImageUrl: user.profileImageUrl);
+                      try {
+                        if (context.mounted) {
+                          await communityPostController.createPost(
+                              userId: user!.id,
+                              username: user.displayName,
+                              title: titleCtrl.text,
+                              description: descriptionCtrl.text,
+                              category: selectedValueDropdown!,
+                              imageUrl: imageUrl,
+                              postedByImageUrl: user.profileImageUrl,
+                              context: context);
+                        }
+                      } catch (e) {
+                        if (context.mounted) {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    ErrorPage(errorMessage: e.toString()),
+                              ));
+                        }
+                      }
                     } else if (widget.mode == "Edit") {
                       if (isChangeInEditMode) {
                         await uploadImage();
                       }
-                      await communityPostController.editPost(
-                          oriPost: editPost,
-                          title: titleCtrl.text,
-                          description: descriptionCtrl.text,
-                          category: selectedValueDropdown!,
-                          imageUrl: imageUrl);
+                      try {
+                        if (context.mounted) {
+                          await communityPostController.editPost(
+                              oriPost: editPost,
+                              title: titleCtrl.text,
+                              description: descriptionCtrl.text,
+                              category: selectedValueDropdown!,
+                              imageUrl: imageUrl,
+                              context: context);
+                        }
+                      } catch (e) {
+                        if (context.mounted) {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    ErrorPage(errorMessage: e.toString()),
+                              ));
+                        }
+                      }
                     }
 
                     setState(() {
@@ -304,9 +346,20 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
                     titleCtrl.clear();
                     descriptionCtrl.clear();
                     if (context.mounted) {
+                      String notifyMsg =
+                          AppLocalizations.of(context)!.postCreatedSuccess;
                       widget.mode == "Add"
                           ? Navigator.pop(context)
-                          : Navigator.pushNamed(context, '/community');
+                          : {
+                              Navigator.pushNamed(context, '/community'),
+                              notifyMsg = AppLocalizations.of(context)!
+                                  .postEditedSuccess
+                            };
+
+                      showToast(
+                        message: notifyMsg,
+                        toastType: ToastType.success,
+                      );
                     }
                   }
                 },

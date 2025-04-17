@@ -2,10 +2,13 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:frontend/components/toast.dart';
 import 'package:frontend/components/toolbar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/services.dart';
 import 'package:frontend/providers/product_provider.dart';
+import 'package:frontend/screens/error_page.dart';
+import 'package:frontend/screens/error_try.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -137,12 +140,22 @@ class _EditItemsState extends ConsumerState<EditItems> {
           final jsonMap = jsonDecode(responseData);
           return jsonMap['secure_url'];
         } else {
-          print("Failed to upload image: ${response.statusCode}");
-          print(await response.stream.bytesToString());
+          showToast(
+              message:
+                  "${AppLocalizations.of(context)!.uploadProductImagesFail} ${AppLocalizations.of(context)!.pleaseTryAgain}",
+              toastType: ToastType.error);
           return '';
         }
       } catch (e) {
-        print("Error uploading image: $e");
+        if (mounted) {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ErrorPage(
+                    errorMessage:
+                        "${AppLocalizations.of(context)!.unableUploadProductImages} ${AppLocalizations.of(context)!.checkYourConnection}"),
+              ));
+        }
         return '';
       }
     }).toList();
@@ -159,7 +172,8 @@ class _EditItemsState extends ConsumerState<EditItems> {
   Widget build(BuildContext context) {
     final productId = widget.productId;
     final productOwnerId = widget.productOwnerId;
-    final productDetailsAsyncValue = ref.watch(productProviderById(productId));
+    final productDetailsAsyncValue =
+        ref.watch(productProviderById(Tuple2(productId, context)));
 
     return Scaffold(
       appBar: Toolbar(title: AppLocalizations.of(context)!.edit_product_title),
@@ -732,17 +746,26 @@ class _EditItemsState extends ConsumerState<EditItems> {
                       "productDateUpdate": DateTime.now().toIso8601String(),
                     };
 
-                    final updatedProduct = await ref.read(updateProduct(
-                      Tuple3(productOwnerId, productId, updatedFields),
-                    ).future);
+                    try {} catch (e) {}
+                    final updatedProduct = await ref.read(updateProduct(Tuple4(
+                            productOwnerId, productId, updatedFields, context))
+                        .future);
 
                     ref.invalidate(productProvider);
                     await Future.delayed(Duration(milliseconds: 100));
+                    ref.refresh(productProviderByProductOwnerId(
+                        Tuple2(productOwnerId, context)));
                     ref.refresh(
-                        productProviderByProductOwnerId(productOwnerId));
-                    ref.refresh(productProviderById(productId));
-                    Navigator.pop(context);
-                    Navigator.pop(context, true);
+                        productProviderById(Tuple2(productId, context)));
+                    if (context.mounted) {
+                      showToast(
+                        message:
+                            AppLocalizations.of(context)!.productEditedSuccess,
+                        toastType: ToastType.success,
+                      );
+                      Navigator.pop(context);
+                      Navigator.pop(context, true);
+                    }
                   },
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(
@@ -759,7 +782,11 @@ class _EditItemsState extends ConsumerState<EditItems> {
           );
         },
         loading: () => Center(child: CircularProgressIndicator()),
-        error: (error, stackTrace) => Center(child: Text('Error: $error')),
+        error: (error, stack) => ErrorTry(
+            errorMessage: error.toString(),
+            ref: ref,
+            provider: productProviderByProductOwnerId(
+                Tuple2(productOwnerId, context))),
       ),
     );
   }

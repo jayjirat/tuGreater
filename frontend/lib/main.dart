@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:frontend/pages/admin.dart';
 import 'package:frontend/screens/main.dart';
 import 'package:frontend/screens/shop/shop.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -62,6 +63,7 @@ class MyApp extends StatelessWidget {
           '/set-display-name': (context) => ConfirmationPage(),
           '/community': (context) => Main(),
           '/shop': (context) => Shop(),
+          '/admin':(context) => AdminPage(),
         });
   }
 }
