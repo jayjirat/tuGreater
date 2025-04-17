@@ -201,69 +201,80 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
                               ),
                             ),
                           ),
-                          Container(
-                            padding: EdgeInsets.only(top: 8, right: 8),
-                            child: IconButton(
-                              onPressed: () async {
-                                final confirm = await showDialog<bool>(
-                                  context: context,
-                                  builder: (context) => AlertDialog(
-                                    title: Text(AppLocalizations.of(context)!
-                                        .confirmDelete),
-                                    content: Text(AppLocalizations.of(context)!
-                                        .confirmDeleteMessage),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () =>
-                                            Navigator.pop(context, false),
-                                        child: Text(
-                                            AppLocalizations.of(context)!
-                                                .cancel),
-                                      ),
-                                      TextButton(
-                                        onPressed: () =>
-                                            Navigator.pop(context, true),
-                                        child: Text(
-                                          AppLocalizations.of(context)!.delete,
-                                          style: TextStyle(color: Colors.red),
+                          widget.userId == loadedUser!.id &&
+                                  widget.userId == product.productOwnerId
+                              ? Container(
+                                  padding: EdgeInsets.only(top: 8, right: 8),
+                                  child: IconButton(
+                                    onPressed: () async {
+                                      final confirm = await showDialog<bool>(
+                                        context: context,
+                                        builder: (context) => AlertDialog(
+                                          title: Text(
+                                              AppLocalizations.of(context)!
+                                                  .confirmDelete),
+                                          content: Text(
+                                              AppLocalizations.of(context)!
+                                                  .confirmDeleteMessage),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () =>
+                                                  Navigator.pop(context, false),
+                                              child: Text(
+                                                  AppLocalizations.of(context)!
+                                                      .cancel),
+                                            ),
+                                            TextButton(
+                                              onPressed: () =>
+                                                  Navigator.pop(context, true),
+                                              child: Text(
+                                                AppLocalizations.of(context)!
+                                                    .delete,
+                                                style: TextStyle(
+                                                    color: Colors.red),
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                      ),
-                                    ],
+                                      );
+                                      if (confirm == true) {
+                                        try {
+                                          ref.read(deleteProduct(Tuple3(
+                                              product.productOwnerId,
+                                              product.productId,
+                                              context)));
+
+                                          await Future.delayed(
+                                              Duration(milliseconds: 100));
+                                          ref.refresh(
+                                              productProviderByProductOwnerId(
+                                                  Tuple2(loadedUser!.id,
+                                                      context)));
+
+                                          showToast(
+                                            message:
+                                                AppLocalizations.of(context)!
+                                                    .productDeletedSuccess,
+                                            toastType: ToastType.success,
+                                          );
+                                        } catch (e) {
+                                          ErrorTry(
+                                              errorMessage: e.toString(),
+                                              ref: ref,
+                                              provider:
+                                                  productProviderByProductOwnerId(
+                                                      Tuple2(loadedUser!.id,
+                                                          context)));
+                                        }
+                                      }
+                                    },
+                                    icon: Icon(Icons.delete),
+                                    color: Colors.redAccent,
+                                    tooltip:
+                                        AppLocalizations.of(context)!.delete,
                                   ),
-                                );
-                                if (confirm == true) {
-                                  try {
-                                    ref.read(deleteProduct(Tuple3(
-                                        product.productOwnerId,
-                                        product.productId,
-                                        context)));
-
-                                    await Future.delayed(
-                                        Duration(milliseconds: 100));
-                                    ref.refresh(productProviderByProductOwnerId(
-                                        Tuple2(loadedUser!.id, context)));
-
-                                    showToast(
-                                      message: AppLocalizations.of(context)!
-                                          .productDeletedSuccess,
-                                      toastType: ToastType.success,
-                                    );
-                                  } catch (e) {
-                                    ErrorTry(
-                                        errorMessage: e.toString(),
-                                        ref: ref,
-                                        provider:
-                                            productProviderByProductOwnerId(
-                                                Tuple2(
-                                                    loadedUser!.id, context)));
-                                  }
-                                }
-                              },
-                              icon: Icon(Icons.delete),
-                              color: Colors.redAccent,
-                              tooltip: AppLocalizations.of(context)!.delete,
-                            ),
-                          )
+                                )
+                              : Container()
                         ],
                       ),
                     );
