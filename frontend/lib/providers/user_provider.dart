@@ -35,6 +35,7 @@ class UserNotifier extends StateNotifier<User?> {
         },
       );
       // Login success
+      print(tuResponse.body);
       if (tuResponse.statusCode == 200) {
         print("Login success");
         final tuResponseData = json.decode(tuResponse.body);
