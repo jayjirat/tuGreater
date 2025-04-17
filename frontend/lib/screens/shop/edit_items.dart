@@ -168,6 +168,17 @@ class _EditItemsState extends ConsumerState<EditItems> {
     return uploadedUrls.where((url) => url.isNotEmpty).toList();
   }
 
+  // bool _validateImages() {
+  //   if (_selectedImages.isEmpty) {
+  //     showToast(
+  //       message: AppLocalizations.of(context)!.no_image,
+  //       toastType: ToastType.info,
+  //     );
+  //     return false;
+  //   }
+  //   return true;
+  // }
+
   bool _validateName() {
     if (nameController.text.isEmpty) {
       showToast(
@@ -201,6 +212,17 @@ class _EditItemsState extends ConsumerState<EditItems> {
       appBar: Toolbar(title: AppLocalizations.of(context)!.edit_product_title),
       body: productDetailsAsyncValue.when(
         data: (product) {
+          bool validateImages() {
+            if (product.productImageUrls.isEmpty) {
+              showToast(
+                message: AppLocalizations.of(context)!.no_image,
+                toastType: ToastType.info,
+              );
+              return false;
+            }
+            return true;
+          }
+
           if (!_hasInitialized) {
             tagsOld = product.productTags;
 
@@ -718,6 +740,11 @@ class _EditItemsState extends ConsumerState<EditItems> {
                 // Post Button
                 FilledButton(
                   onPressed: () async {
+                    if (!validateImages() ||
+                        !_validateName() ||
+                        !_validatePrice()) {
+                      return;
+                    }
                     if (isCheckedOthers && otherTagController.text.isNotEmpty) {
                       addTag();
                     }
