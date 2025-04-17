@@ -99,9 +99,25 @@
     "commentDeletedSuccess":"Comment deleted successfully.",
     "noPosts":"No posts available yet",
     "noPostsContent":"Be the first one to share something!",
+
     "noProducts":"No products available yet",
     "noProductsContent":"No products found. Check back later!",
     "productDeletedSuccess":"Product deleted successfully.",
+    "productEditedSuccess":"Product edited successfully.",
+    "productCreatedSuccess":"Product created successfully.",
+    "loadProductsFail":"Failed to load products,",
+    "unableLoadProducts":"Unable to load products.",
+    "createProductFail":"Failed to create a product,",
+    "unableCreateProduct":"Unable to create a product.",
+    "editProductFail":"Failed to edit a product,",
+    "unableEditProduct":"Unable to edit a product.",
+    "deleteProductFail":"Failed to delete a product,",
+    "unableDeleteProduct":"Unable to delete a product.",
+    "filterProductsFail":"Failed to filter products,",
+    "unableFilterProducts":"Unable to filter products.",
+    "searchProductsFail":"Failed to search products with",
+    "unableSearchProducts":"Unable to search products.",
+
     "reportSubmittedSuccess":"Your report has been submitted successfully.",
     "errorOops":"Oops! Something went wrong",
     "goBack":"Go Back",
@@ -136,5 +152,7 @@
 
 
     "uploadPostImageFail" : "Failed to upload post's images,",
-    "unableUploadPostImage" : "Unable to upload post's images."
+    "unableUploadPostImage" : "Unable to upload post's images.",
+    "uploadProductImagesFail" : "Failed to upload product's images,",
+    "unableUploadProductImages" : "Unable to upload product's images."
 }

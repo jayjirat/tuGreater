@@ -8,6 +8,7 @@ import 'package:frontend/providers/product_provider.dart';
 import 'package:frontend/providers/user_provider.dart';
 import 'package:frontend/screens/community/community_view_post.dart';
 import 'package:frontend/screens/error_page.dart';
+import 'package:frontend/screens/error_try.dart';
 import 'package:frontend/screens/shop/edit_items.dart';
 import 'package:tuple/tuple.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -77,7 +78,8 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (mounted) {
-      ref.refresh(productProviderByProductOwnerId(widget.userId));
+      ref.refresh(
+          productProviderByProductOwnerId(Tuple2(widget.userId, context)));
     }
   }
 
@@ -91,8 +93,8 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
     }
     final posts = ref.watch(communityProvider);
     final communityPostController = ref.read(communityProvider.notifier);
-    final productManageAsyncValue =
-        ref.watch(productProviderByProductOwnerId(loadedUser!.id));
+    final productManageAsyncValue = ref
+        .watch(productProviderByProductOwnerId(Tuple2(widget.userId, context)));
     final List<Widget> swapPage = [
       Expanded(
         child: ListView.builder(
@@ -117,7 +119,8 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
         data: (products) => RefreshIndicator(
           onRefresh: () async {
             final user = ref.read(userProvider);
-            ref.refresh(productProviderByProductOwnerId(user!.id));
+            ref.refresh(
+                productProviderByProductOwnerId(Tuple2(user!.id, context)));
           },
           child: SingleChildScrollView(
             physics: AlwaysScrollableScrollPhysics(),
@@ -229,20 +232,31 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
                                   ),
                                 );
                                 if (confirm == true) {
-                                  await ref.read(deleteProduct(Tuple2(
-                                      product.productOwnerId,
-                                      product.productId)));
+                                  try {
+                                    ref.read(deleteProduct(Tuple3(
+                                        product.productOwnerId,
+                                        product.productId,
+                                        context)));
 
-                                  await Future.delayed(
-                                      Duration(milliseconds: 100));
-                                  ref.refresh(productProviderByProductOwnerId(
-                                      loadedUser!.id));
+                                    await Future.delayed(
+                                        Duration(milliseconds: 100));
+                                    ref.refresh(productProviderByProductOwnerId(
+                                        Tuple2(loadedUser!.id, context)));
 
-                                  showToast(
-                                    message: AppLocalizations.of(context)!
-                                        .productDeletedSuccess,
-                                    toastType: ToastType.success,
-                                  );
+                                    showToast(
+                                      message: AppLocalizations.of(context)!
+                                          .productDeletedSuccess,
+                                      toastType: ToastType.success,
+                                    );
+                                  } catch (e) {
+                                    ErrorTry(
+                                        errorMessage: e.toString(),
+                                        ref: ref,
+                                        provider:
+                                            productProviderByProductOwnerId(
+                                                Tuple2(
+                                                    loadedUser!.id, context)));
+                                  }
                                 }
                               },
                               icon: Icon(Icons.delete),

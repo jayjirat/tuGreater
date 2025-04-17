@@ -96,9 +96,25 @@
     "commentDeletedSuccess":"ความคิดเห็นถูกลบเรียบร้อยแล้ว",
     "noPosts": "ยังไม่มีโพสต์ในขณะนี้",
     "noPostsContent": "คุณสามารถเริ่มต้นการแชร์โพสต์ได้เลย",
+
     "noProducts": "ยังไม่มีสินค้าในขณะนี้",
     "noProductsContent": "ไม่พบสินค้า กรุณากลับมาใหม่ภายหลัง",  
     "productDeletedSuccess": "ลบสินค้าเรียบร้อยแล้ว",
+    "productEditedSuccess":"แก้ไขสินค้าเรียบร้อยแล้ว",
+    "productCreatedSuccess":"เพิ่มสินค้าเรียบร้อยแล้ว",
+    "loadProductsFail":"โหลดสินค้าไม่สำเร็จ",
+    "unableLoadProducts":"ไม่สามารถโหลดโพสต์ได้",
+    "createProductFail":"เพิ่มสินค้าไม่สำเร็จ",
+    "unableCreateProduct":"ไม่สามารถเพิ่มสินค้าได้",
+    "editProductFail":"แก้ไขสินค้าไม่สำเร็จ",
+    "unableEditProduct":"ไม่สามารถแก้ไขสินค้าได้",
+    "deleteProductFail":"ลบสินค้าไม่สำเร็จ",
+    "unableDeleteProduct":"ไม่สามารถลบสินค้าได้",
+    "filterProductsFail":"กรองสินค้าไม่สำเร็จ",
+    "unableFilterProducts":"ไม่สามารถโหลดกรองสินค้าได้",
+    "searchProductsFail":"ค้นสินค้าไม่สำเร็จด้วยคำค้นหา",
+    "unableSearchProducts":"ไม่สามารถโหลดค้นสินค้าได้",
+
     "reportSubmittedSuccess": "รายงานของคุณถูกส่งเรียบร้อยแล้ว",
     "errorOops": "ขออภัย! เกิดข้อผิดพลาดบางอย่างขึ้น",
     "goBack": "ย้อนกลับ",
@@ -106,8 +122,8 @@
     "checkYourConnection": "โปรดตรวจสอบการเชื่อมต่ออินเทอร์เน็ตและลองใหม่อีกครั้ง",
     "loadPostsFail": "โหลดโพสต์ไม่สำเร็จ",
     "unableLoadPosts": "ไม่สามารถโหลดโพสต์ได้",
-    "createPostFail": "โพสต์ไม่สำเร็จ",
-    "unableCreatePost": "ไม่สามารถโพสต์ได้",
+    "createPostFail": "เพิ่มโพสต์ไม่สำเร็จ",
+    "unableCreatePost": "ไม่สามารถเพิ่มโพสต์ได้",
     "editPostFail": "แก้ไขโพสต์ไม่สำเร็จ",
     "unableEditPost": "ไม่สามารถแก้ไขโพสต์ได้",
     "deletePostFail": "ลบโพสต์ไม่สำเร็จ",
@@ -129,6 +145,9 @@
     "unableLogin": "ไม่สามารถเข้าสู่ระบบได้",
     "unableEditUser": "ไม่สามารถแก้ไขข้อมูลผู้ใช้ได้",
     "prefLoadUserFail": "โหลดข้อมูลผู้ใช้จากการตั้งค่าไม่สำเร็จ",
+
     "uploadPostImageFail" : "อัปโหลดรูปภาพโพสต์ไม่สำเร็จ",
-    "unableUploadPostImage" : "ไม่สามารถอัปโหลดรูปภาพโพสต์ได้"
+    "unableUploadPostImage" : "ไม่สามารถอัปโหลดรูปภาพโพสต์ได้",
+    "uploadProductImagesFail" : "Failed to upload product's images,",
+    "unableUploadProductImages" : "Unable to upload product's images."
   }

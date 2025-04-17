@@ -1,12 +1,14 @@
 import 'dart:convert';
+import 'package:flutter/widgets.dart';
 import 'package:frontend/models/products.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProductService {
   static const String baseUrl = 'http://10.0.2.2:8080/shop';
 
   // Fetch all products
-  Future<List<Products>> fetchProducts() async {
+  Future<List<Products>> fetchProducts({required BuildContext context}) async {
     try {
       final response =
           await http.get(Uri.parse(baseUrl)).timeout(Duration(seconds: 15));
@@ -17,16 +19,18 @@ class ProductService {
         List<dynamic> jsonData = json.decode(decodedResponse);
         return jsonData.map((json) => Products.fromJson(json)).toList();
       } else {
-        throw Exception('Failed to load products, please try again.');
+        throw Exception(
+            "${AppLocalizations.of(context)!.createProductFail} ${AppLocalizations.of(context)!.pleaseTryAgain}");
       }
     } catch (e) {
       throw Exception(
-          'Unable to load products. Please check your connection and try again.');
+          "${AppLocalizations.of(context)!.unableCreateProduct} ${AppLocalizations.of(context)!.checkYourConnection}");
     }
   }
 
   // Fetch product by id
-  Future<Products> fetchProductDetail(String productId) async {
+  Future<Products> fetchProductDetail(
+      {required String productId, required BuildContext context}) async {
     try {
       final response = await http
           .get(Uri.parse("$baseUrl/$productId"))
@@ -38,15 +42,17 @@ class ProductService {
         final jsonData = json.decode(decodedResponse);
         return Products.fromJson(jsonData);
       } else {
-        throw Exception('Failed to load products, please try again.');
+        throw Exception(
+            "${AppLocalizations.of(context)!.createProductFail} ${AppLocalizations.of(context)!.pleaseTryAgain}");
       }
     } catch (e) {
       throw Exception(
-          'Unable to load products. Please check your connection and try again.');
+          "${AppLocalizations.of(context)!.unableCreateProduct} ${AppLocalizations.of(context)!.checkYourConnection}");
     }
   }
 
-  Future<List<Products>> searchProducts(String query) async {
+  Future<List<Products>> searchProducts(
+      {required String query, required BuildContext context}) async {
     try {
       final response = await http
           .get(Uri.parse("$baseUrl/search?productName=$query"))
@@ -58,15 +64,16 @@ class ProductService {
         return jsonList.map((json) => Products.fromJson(json)).toList();
       } else {
         throw Exception(
-            'Failed to search products with $query, please try again.');
+            "${AppLocalizations.of(context)!.createProductFail} ${AppLocalizations.of(context)!.pleaseTryAgain}");
       }
     } catch (e) {
       throw Exception(
-          'Unable to search products. Please check your connection and try again.');
+          "${AppLocalizations.of(context)!.unableCreateProduct} ${AppLocalizations.of(context)!.checkYourConnection}");
     }
   }
 
-  Future<List<Products>> selectCategory(String category) async {
+  Future<List<Products>> selectCategory(
+      {required String category, required BuildContext context}) async {
     try {
       final response = await http
           .get(Uri.parse("$baseUrl/product/$category"))
@@ -77,16 +84,19 @@ class ProductService {
         List<dynamic> jsonList = json.decode(decodedResponse);
         return jsonList.map((json) => Products.fromJson(json)).toList();
       } else {
-        throw Exception('Failed to filter products, please try again.');
+        throw Exception(
+            "${AppLocalizations.of(context)!.createProductFail} ${AppLocalizations.of(context)!.pleaseTryAgain}");
       }
     } catch (e) {
       throw Exception(
-          'Unable to filter products. Please check your connection and try again.');
+          "${AppLocalizations.of(context)!.unableCreateProduct} ${AppLocalizations.of(context)!.checkYourConnection}");
     }
   }
 
   Future<List<Products>> searchWithCategory(
-      String query, int categoryIndex) async {
+      {required String query,
+      required int categoryIndex,
+      required BuildContext context}) async {
     try {
       query = query.trim();
 
@@ -111,15 +121,17 @@ class ProductService {
         List<dynamic> jsonList = json.decode(decodedResponse);
         return jsonList.map((json) => Products.fromJson(json)).toList();
       } else {
-        throw Exception('Failed to filter products, please try again.');
+        throw Exception(
+            "${AppLocalizations.of(context)!.createProductFail} ${AppLocalizations.of(context)!.pleaseTryAgain}");
       }
     } catch (e) {
       throw Exception(
-          'Unable to filter products. Please check your connection and try again.');
+          "${AppLocalizations.of(context)!.unableCreateProduct} ${AppLocalizations.of(context)!.checkYourConnection}");
     }
   }
 
-  Future<List<Products>> fetchAllManageProducts(String productOwnerId) async {
+  Future<List<Products>> fetchAllManageProducts(
+      {required String productOwnerId, required BuildContext context}) async {
     try {
       final response = await http
           .get(Uri.parse("$baseUrl/manage/$productOwnerId"))
@@ -130,33 +142,38 @@ class ProductService {
         List<dynamic> jsonData = json.decode(decodedResponse);
         return jsonData.map((json) => Products.fromJson(json)).toList();
       } else {
-        throw Exception('Failed to load products, please try again.');
+        throw Exception(
+            "${AppLocalizations.of(context)!.createProductFail} ${AppLocalizations.of(context)!.pleaseTryAgain}");
       }
     } catch (e) {
       throw Exception(
-          'Unable to load products. Please check your connection and try again.');
+          "${AppLocalizations.of(context)!.unableCreateProduct} ${AppLocalizations.of(context)!.checkYourConnection}");
     }
   }
 
-  Future<void> deleteProduct(String productOwnerId, String productId) async {
+  Future<void> deleteProduct(
+      {required String productOwnerId,
+      required String productId,
+      required BuildContext context}) async {
     try {
       final response = await http
           .delete(Uri.parse("$baseUrl/$productOwnerId/$productId"))
           .timeout(Duration(seconds: 5));
       if (response.statusCode != 200) {
-        throw Exception('Failed to delete product, please try again.');
+        throw Exception(
+            "${AppLocalizations.of(context)!.createProductFail} ${AppLocalizations.of(context)!.pleaseTryAgain}");
       }
     } catch (e) {
       throw Exception(
-          'Unable to delete products. Please check your connection and try again.');
+          "${AppLocalizations.of(context)!.unableCreateProduct} ${AppLocalizations.of(context)!.checkYourConnection}");
     }
   }
 
   Future<Products> updateProduct(
-    String productOwnerId,
-    String productId,
-    Map<String, dynamic> updatedFields,
-  ) async {
+      {required String productOwnerId,
+      required String productId,
+      required Map<String, dynamic> updatedFields,
+      required BuildContext context}) async {
     try {
       const String baseUrl = 'http://10.0.2.2:8080/shop';
       final response = await http
@@ -173,11 +190,12 @@ class ProductService {
         final jsonData = jsonDecode(response.body);
         return Products.fromJson(jsonData);
       } else {
-        throw Exception("Failed to update product, please try again.");
+        throw Exception(
+            "${AppLocalizations.of(context)!.createProductFail} ${AppLocalizations.of(context)!.pleaseTryAgain}");
       }
     } catch (e) {
       throw Exception(
-          'Unable to update products. Please check your connection and try again.');
+          "${AppLocalizations.of(context)!.unableCreateProduct} ${AppLocalizations.of(context)!.checkYourConnection}");
     }
   }
 }

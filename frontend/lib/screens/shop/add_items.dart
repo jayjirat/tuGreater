@@ -13,6 +13,7 @@ import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:tuple/tuple.dart';
 
 class AddItems extends ConsumerStatefulWidget {
   const AddItems({super.key});
@@ -42,30 +43,35 @@ class _AddItemsState extends ConsumerState<AddItems> {
 
   Future<void> createProduct(
       List<String> imageUrls, String userId, String displayname) async {
-    var url = "http://10.0.2.2:8080/shop";
+    try {
+      var url = "http://10.0.2.2:8080/shop";
 
-    var response = await http.post(
-      Uri.parse(url),
-      headers: {"Content-Type": "application/json"},
-      body: json.encode({
-        'productImageUrls': imageUrls,
-        'productName': nameController.text,
-        'productPrice': double.parse(priceController.text),
-        'productCategory': selectedCategory,
-        'productTags': tags,
-        'productDatePost': DateTime.now().toIso8601String(),
-        'productDateUpdate': DateTime.now().toIso8601String(),
-        'productDescription': descriptionController.text,
-        'productOwner': displayname,
-        'productOwnerId': userId
-      }),
-    ).timeout(Duration(seconds: 10));
+      var response = await http
+          .post(
+            Uri.parse(url),
+            headers: {"Content-Type": "application/json"},
+            body: json.encode({
+              'productImageUrls': imageUrls,
+              'productName': nameController.text,
+              'productPrice': double.parse(priceController.text),
+              'productCategory': selectedCategory,
+              'productTags': tags,
+              'productDatePost': DateTime.now().toIso8601String(),
+              'productDateUpdate': DateTime.now().toIso8601String(),
+              'productDescription': descriptionController.text,
+              'productOwner': displayname,
+              'productOwnerId': userId
+            }),
+          )
+          .timeout(Duration(seconds: 10));
 
-    if (response.statusCode == 200) {
-      print('Product created successfully');
-    } else {
-      print('Failed to create product. Status Code: ${response.statusCode}');
-      print('Response body: ${response.body}');
+      if (response.statusCode != 200) {
+        throw Exception(
+            "${AppLocalizations.of(context)!.createProductFail} ${AppLocalizations.of(context)!.pleaseTryAgain}");
+      }
+    } catch (e) {
+      throw Exception(
+          "${AppLocalizations.of(context)!.unableCreateProduct} ${AppLocalizations.of(context)!.checkYourConnection}");
     }
   }
 
@@ -161,11 +167,10 @@ class _AddItemsState extends ConsumerState<AddItems> {
           final jsonMap = jsonDecode(responseData);
           return jsonMap['secure_url'];
         } else {
-          // TODO
           showToast(
-              message: "Failed to upload image", toastType: ToastType.error);
-          // print("Failed to upload image: ${response.statusCode}");
-          // print(await response.stream.bytesToString());
+              message:
+                  "${AppLocalizations.of(context)!.uploadProductImagesFail} ${AppLocalizations.of(context)!.pleaseTryAgain}",
+              toastType: ToastType.error);
           return '';
         }
       } catch (e) {
@@ -175,7 +180,7 @@ class _AddItemsState extends ConsumerState<AddItems> {
               MaterialPageRoute(
                 builder: (context) => ErrorPage(
                     errorMessage:
-                        "An unknown error occurred while uploading image, please try again"),
+                        "${AppLocalizations.of(context)!.unableUploadProductImages} ${AppLocalizations.of(context)!.checkYourConnection}"),
               ));
         }
         return '';
@@ -651,15 +656,34 @@ class _AddItemsState extends ConsumerState<AddItems> {
 
                           List<String> imageUrls =
                               await _uploadImagesToCloudinary();
-                          await createProduct(
-                              imageUrls, user!.id, user.displayName);
-                          
-                          ref.invalidate(productProvider);
-                          await Future.delayed(Duration(milliseconds: 100));
-                          ref.refresh(
-                              productProviderByProductOwnerId(user!.id));
-                          Navigator.pop(context);
-                          Navigator.pop(context, true);
+
+                          try {
+                            await createProduct(
+                                imageUrls, user!.id, user.displayName);
+
+                            ref.invalidate(productProvider);
+                            await Future.delayed(Duration(milliseconds: 100));
+                            ref.refresh(productProviderByProductOwnerId(
+                                Tuple2(user.id, context)));
+                            if (context.mounted) {
+                              showToast(
+                                message: AppLocalizations.of(context)!
+                                    .productCreatedSuccess,
+                                toastType: ToastType.success,
+                              );
+                              Navigator.pop(context);
+                              Navigator.pop(context, true);
+                            }
+                          } catch (e) {
+                            if (context.mounted) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        ErrorPage(errorMessage: e.toString()),
+                                  ));
+                            }
+                          }
                         },
                         style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all(

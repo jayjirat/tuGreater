@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/components/toast.dart';
 import 'package:frontend/models/products.dart';
-import 'package:frontend/screens/error_page.dart';
+import 'package:frontend/screens/error_try.dart';
 import 'package:frontend/screens/shop/item_detail.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/providers/product_provider.dart';
@@ -35,8 +34,7 @@ class GridItems extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final productsAsyncValue = _getProducts(ref);
-
+    final productsAsyncValue = _getProducts(ref: ref, context: context);
     return Expanded(
       child: productsAsyncValue.when(
         data: (products) {
@@ -159,34 +157,22 @@ class GridItems extends ConsumerWidget {
                 );
         },
         loading: () => Center(child: CircularProgressIndicator()),
-        error: (error, stack) {
-          final errorMessage = error.toString();
-
-          if (errorMessage.startsWith('Failed')) {
-            showToast(message: errorMessage, toastType: ToastType.error);
-          } else {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ErrorPage(errorMessage: errorMessage),
-                ),
-              );
-            });
-          }
-          return SizedBox.shrink();
-        },
+        error: (error, stack) => ErrorTry(
+            errorMessage: error.toString(),
+            ref: ref,
+            provider: productProvider),
       ),
     );
   }
 
-  AsyncValue<List<Products>> _getProducts(WidgetRef ref) {
+  AsyncValue<List<Products>> _getProducts(
+      {required WidgetRef ref, required BuildContext context}) {
     if (searchQuery.isEmpty && selectedCategory == -1) {
-      return ref.watch(productProvider);
+      return ref.watch(productProvider(context));
     }
 
     if (searchQuery.isNotEmpty && selectedCategory == -1) {
-      return ref.watch(productSearchProvider(searchQuery));
+      return ref.watch(productSearchProvider(Tuple2(searchQuery, context)));
     }
 
     if (searchQuery.isEmpty && selectedCategory != -1) {
@@ -198,11 +184,12 @@ class GridItems extends ConsumerWidget {
         'Others'
       ];
       String category = categories[selectedCategory];
-      return ref.watch(productSelectCategoryProvider(category));
+      return ref
+          .watch(productSelectCategoryProvider(Tuple2(category, context)));
     }
 
     return ref.watch(productSearchWithCategoryProvider(
-        Tuple2(searchQuery, selectedCategory)));
+        Tuple3(searchQuery, selectedCategory, context)));
   }
 
   List<Products> _applyFilters(List<Products> products) {

@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ErrorPage extends StatelessWidget {
+class ErrorTry extends StatelessWidget {
   final String errorMessage;
-
-  const ErrorPage({super.key, required this.errorMessage});
+  final WidgetRef ref;
+  final dynamic provider;
+  const ErrorTry(
+      {super.key,
+      required this.errorMessage,
+      required this.ref,
+      required this.provider});
 
   @override
   Widget build(BuildContext context) {
@@ -47,24 +53,16 @@ class ErrorPage extends StatelessWidget {
                 const SizedBox(height: 32),
 
                 // 🔹 Button to go back
-                ElevatedButton.icon(
-                  onPressed: () => Navigator.pushNamed(context, '/community'),
-                  icon: Icon(
-                    Icons.arrow_back,
-                    color: Theme.of(context).cardColor,
-                  ),
-                  label: Text(
-                    AppLocalizations.of(context)!.goBack,
-                    style: TextStyle(color: Theme.of(context).cardColor),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25),
+                ElevatedButton(
+                    onPressed: () => ref.refresh(provider),
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 24, vertical: 12),
                     ),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 24, vertical: 12),
-                  ),
-                )
+                    child: Text("Try Again"))
               ],
             ),
           ),
