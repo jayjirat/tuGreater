@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/components/toast.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/login.dart';
+import 'package:frontend/screens/community/community_me.dart';
 import 'package:frontend/screens/error_page.dart';
 import 'package:frontend/screens/profile/setting_page.dart';
 import 'package:frontend/screens/profile/uploadprofile_page.dart';
@@ -205,73 +206,83 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                         ],
                       ),
                       const SizedBox(height: 5),
-                      Center(
-                        child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(30),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withValues(alpha: 0.2),
-                                  blurRadius: 10,
-                                  spreadRadius: 1,
-                                  offset: Offset(
-                                      0, 4), // changes position of shadow
-                                ),
-                              ],
-                            ),
-                            padding: const EdgeInsets.all(10),
-                            width: 350,
-                            height: 300,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Image.network(
-                                  user?.profileImageUrl ??
-                                      'https://default-placeholder-url.com/image.png',
-                                  width: 100,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Container(
-                                      width: 100,
-                                      height: 100,
-                                      color: Colors.grey[300],
-                                      child: Icon(Icons.person,
-                                          size: 50, color: Colors.grey[600]),
-                                    );
-                                  },
-                                ),
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    GestureDetector(
-                                      onTap: _showChangeNameDialog,
-                                      child: Row(
-                                        children: [
-                                          Text(
-                                            displayName,
-                                            style: const TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 20),
-                                          ),
-                                          const SizedBox(width: 5),
-                                          const Icon(
-                                            Icons.edit,
-                                            size: 16,
-                                            color: Colors.black,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Text(
-                                      widget.studentId,
-                                      style: const TextStyle(
-                                          color: Colors.black, fontSize: 20),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                      InkWell(
+                        borderRadius: BorderRadius.circular(30),
+                        onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  CommunityMe(userId: user!.id),
                             )),
+                        child: Center(
+                          child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(30),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.2),
+                                    blurRadius: 10,
+                                    spreadRadius: 1,
+                                    offset: Offset(
+                                        0, 4), // changes position of shadow
+                                  ),
+                                ],
+                              ),
+                              padding: const EdgeInsets.all(10),
+                              width: 350,
+                              height: 300,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Image.network(
+                                    user?.profileImageUrl ??
+                                        'https://default-placeholder-url.com/image.png',
+                                    width: 100,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Container(
+                                        width: 100,
+                                        height: 100,
+                                        color: Colors.grey[300],
+                                        child: Icon(Icons.person,
+                                            size: 50, color: Colors.grey[600]),
+                                      );
+                                    },
+                                  ),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      GestureDetector(
+                                        onTap: _showChangeNameDialog,
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              displayName,
+                                              style: const TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 20),
+                                            ),
+                                            const SizedBox(width: 5),
+                                            const Icon(
+                                              Icons.edit,
+                                              size: 16,
+                                              color: Colors.black,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Text(
+                                        widget.studentId,
+                                        style: const TextStyle(
+                                            color: Colors.black, fontSize: 20),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              )),
+                        ),
                       ),
                       Center(
                           child: ElevatedButton(
