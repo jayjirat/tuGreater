@@ -1,5 +1,6 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:frontend/exception/timeout_exception.dart';
 
 Future<void> updateProfileImage(String studentId, String imageUrl) async {
   final url = Uri.parse('http://10.0.2.2:8080/users/profile-image/$studentId');
@@ -8,24 +9,27 @@ Future<void> updateProfileImage(String studentId, String imageUrl) async {
   final body = jsonEncode({'studentId': studentId, 'imageUrl': imageUrl});
 
   try {
-    final response = await http.put(
+    final response = await http
+        .put(
       url,
       headers: {
         'Content-Type': 'application/json',
       },
       body: body,
-    ).timeout(Duration(seconds: 10));
+    )
+        .timeout(const Duration(seconds: 10), onTimeout: () {
+      throw TimeoutException("Connection Timeout");
+    });
 
     if (response.statusCode == 200) {
-      print('Profile image updated successfully');
       // Handle success scenario
     } else {
-      print('Failed to update profile image: ${response.statusCode}');
-      print('Response body: ${response.body}');
+      throw Exception("reponse not ok");
       // Handle error scenario
     }
+  } on TimeoutException catch (e) {
+    throw TimeoutException(e.message);
   } catch (e) {
-    print('Error updating profile image: $e');
-    // Handle exception
+    throw Exception("problems with api");
   }
 }

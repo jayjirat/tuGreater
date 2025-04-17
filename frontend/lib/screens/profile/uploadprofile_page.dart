@@ -24,8 +24,7 @@ class _UploadProfilePageState extends ConsumerState<UploadProfilePage> {
   @override
   void initState() {
     super.initState();
-    profileImageUrl = ref.read(userProvider)?.profileImageUrl ??
-        "https://static.vecteezy.com/system/resources/previews/020/765/399/non_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg";
+    profileImageUrl = ref.read(userProvider)?.profileImageUrl ?? "";
     studentId = ref.read(userProvider)?.studentId ?? "NOT FOUND";
   }
 
@@ -83,15 +82,13 @@ class _UploadProfilePageState extends ConsumerState<UploadProfilePage> {
     try {
       // Reset to default image
       setState(() {
-        profileImageUrl =
-            "https://static.vecteezy.com/system/resources/previews/020/765/399/non_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg";
+        profileImageUrl = "";
         isUploading = false;
       });
-      await updateProfileImage(studentId,
-          "https://static.vecteezy.com/system/resources/previews/020/765/399/non_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg");
+      await updateProfileImage(studentId, "");
       final user = ref.read(userProvider);
       user!.profileImageUrl =
-          "https://static.vecteezy.com/system/resources/previews/020/765/399/non_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg";
+          "";
       ref.read(userProvider.notifier).loadUser(studentId);    
         
       showToast(

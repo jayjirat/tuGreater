@@ -7,6 +7,8 @@ import 'package:frontend/screens/profile/uploadprofile_page.dart';
 import 'package:frontend/services/displayname_api_service.dart';
 import 'package:frontend/providers/user_provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:frontend/exception/timeout_exception.dart';
 
 class ProfilePage extends ConsumerStatefulWidget {
   final String studentId;
@@ -47,11 +49,26 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
         displayName = name;
         _isLoading = false;
       });
-    } catch (e) {
-      if (!mounted) return;
-
+    } on TimeoutException catch (e) {
+      print(
+          "TRARARELO TRARARAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGHHHHHHHHHHHHHHHHHHHHHH");
       setState(() {
-        _errorMessage = 'Failed to load display name';
+        _isLoading = false;
+      });
+      // implement timeout page
+    } catch (e) {
+      if (!mounted) {
+        return;
+      }
+      Fluttertoast.showToast(
+          msg: "This is Center Short Toast",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+      setState(() {
         _isLoading = false;
       });
     }
@@ -105,9 +122,19 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
         );
         // _showSnackBar('Failed to update display name', isError: true);
       }
+    } on TimeoutException catch (e) {
+      print(
+          "TRARARELO TRARARAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGHHHHHHHHHHHHHHHHHHHHHH");
     } catch (e) {
       if (!mounted) return;
-
+      Fluttertoast.showToast(
+          msg: "This is Center Short Toast",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
       // Revert the optimistic update
       setState(() {
         displayName = previousName;
@@ -175,13 +202,6 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                         _errorMessage,
                         style:
                             const TextStyle(color: Colors.white, fontSize: 18),
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          _loadStudentDisplayName;
-                          ref.invalidate(userProvider);
-                        },
-                        child: const Text('Try Again'),
                       ),
                     ],
                   ),

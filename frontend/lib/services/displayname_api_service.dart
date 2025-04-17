@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:frontend/exception/timeout_exception.dart';
 
 class DisplaynameApiService {
   final String baseUrl = 'http://10.0.2.2:8080/users';
@@ -11,7 +12,12 @@ class DisplaynameApiService {
     final url = Uri.parse('$baseUrl/student/$studentId/displayName');
 
     try {
-      final response = await http.get(url).timeout(Duration(seconds: 10));
+      final response = await http.get(url).timeout(
+        const Duration(seconds: 10),
+        onTimeout: () {
+          throw TimeoutException("Connection Timeout");
+        },
+      );
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = json.decode(response.body);
@@ -19,6 +25,8 @@ class DisplaynameApiService {
       } else {
         throw Exception('Failed to get display name: ${response.statusCode}');
       }
+    } on TimeoutException catch (e) {
+      throw TimeoutException(e.message);
     } catch (e) {
       throw Exception('Error getting display name: $e');
     }
@@ -32,7 +40,8 @@ class DisplaynameApiService {
     final url = Uri.parse('$baseUrl/student/$studentId/displayName');
 
     try {
-      final response = await http.post(
+      final response = await http
+          .post(
         url,
         headers: {
           'Content-Type': 'application/json',
@@ -40,9 +49,14 @@ class DisplaynameApiService {
         body: json.encode({
           'displayName': newDisplayName,
         }),
-      ).timeout(Duration(seconds: 10));
+      )
+          .timeout(const Duration(seconds: 10), onTimeout: () {
+        throw TimeoutException("Connection Timeout");
+      });
 
       return response.statusCode == 200 || response.statusCode == 201;
+    } on TimeoutException catch (e) {
+      throw TimeoutException(e.message);
     } catch (e) {
       throw Exception('Error updating display name: $e');
     }
