@@ -42,7 +42,6 @@ class UserNotifier extends StateNotifier<User?> {
         final tuResponseData = json.decode(tuResponse.body);
         final usernameUrl =
             Uri.parse('$userDBUrl/studentId?studentId=$username');
-
         // Fetch user in db
         final existingUser =
             await http.get(usernameUrl).timeout(Duration(seconds: 10));
