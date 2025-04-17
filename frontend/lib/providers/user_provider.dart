@@ -38,7 +38,6 @@ class UserNotifier extends StateNotifier<User?> {
         },
       ).timeout(Duration(seconds: 15));
       // Login success
-      print(tuResponse.body);
       if (tuResponse.statusCode == 200) {
         final tuResponseData = json.decode(tuResponse.body);
         final usernameUrl =
@@ -112,7 +111,7 @@ class UserNotifier extends StateNotifier<User?> {
         }
 
         // Login unsuccessful
-      } else {
+      } else if (tuResponse.statusCode == 400) {
         if (context.mounted) {
           {
             showToast(
@@ -122,6 +121,9 @@ class UserNotifier extends StateNotifier<User?> {
           }
         }
         return false;
+      } else {
+        throw Exception(
+            "${AppLocalizations.of(context)!.unableLogin} ${AppLocalizations.of(context)!.checkYourConnection}");
       }
     } catch (error) {
       if (context.mounted) {
@@ -129,8 +131,10 @@ class UserNotifier extends StateNotifier<User?> {
             context,
             MaterialPageRoute(
               builder: (context) => ErrorPage(
-                  errorMessage:
-                      "${AppLocalizations.of(context)!.unableLogin} ${AppLocalizations.of(context)!.checkYourConnection}"),
+                errorMessage:
+                    "${AppLocalizations.of(context)!.unableLogin} ${AppLocalizations.of(context)!.checkYourConnection}",
+                fromLogin: true,
+              ),
             ));
         return false;
       }
@@ -177,7 +181,8 @@ class UserNotifier extends StateNotifier<User?> {
             MaterialPageRoute(
               builder: (context) => ErrorPage(
                   errorMessage:
-                      "${AppLocalizations.of(context)!.unableLoadUser} ${AppLocalizations.of(context)!.checkYourConnection}"),
+                      "${AppLocalizations.of(context)!.unableLoadUser} ${AppLocalizations.of(context)!.checkYourConnection}",
+                  fromLogin: true),
             ));
       }
     }
@@ -237,7 +242,8 @@ class UserNotifier extends StateNotifier<User?> {
             MaterialPageRoute(
               builder: (context) => ErrorPage(
                   errorMessage:
-                      "${AppLocalizations.of(context)!.unableEditUser} ${AppLocalizations.of(context)!.checkYourConnection}"),
+                      "${AppLocalizations.of(context)!.unableEditUser} ${AppLocalizations.of(context)!.checkYourConnection}",
+                  fromLogin: true),
             ));
       }
     }

@@ -3,8 +3,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ErrorPage extends StatelessWidget {
   final String errorMessage;
-
-  const ErrorPage({super.key, required this.errorMessage});
+  final bool fromLogin;
+  const ErrorPage(
+      {super.key, required this.errorMessage, this.fromLogin = false});
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +49,13 @@ class ErrorPage extends StatelessWidget {
 
                 // 🔹 Button to go back
                 ElevatedButton.icon(
-                  onPressed: () => Navigator.pushNamed(context, '/community'),
+                  onPressed: () {
+                    if (fromLogin) {
+                      Navigator.pushNamed(context, '/');
+                    } else {
+                      Navigator.pushNamed(context, '/community');
+                    }
+                  },
                   icon: Icon(
                     Icons.arrow_back,
                     color: Theme.of(context).cardColor,
