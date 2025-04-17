@@ -1,12 +1,15 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:frontend/components/toast.dart';
+import 'package:frontend/screens/error_page.dart';
 import 'package:frontend/screens/profile/profileimage_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/providers/user_provider.dart';
 import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:frontend/services/profile_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:frontend/exception/timeout_exception.dart';
 
 class UploadProfilePage extends ConsumerStatefulWidget {
   const UploadProfilePage({super.key});
@@ -24,8 +27,7 @@ class _UploadProfilePageState extends ConsumerState<UploadProfilePage> {
   @override
   void initState() {
     super.initState();
-    profileImageUrl = ref.read(userProvider)?.profileImageUrl ??
-        "https://static.vecteezy.com/system/resources/previews/020/765/399/non_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg";
+    profileImageUrl = ref.read(userProvider)?.profileImageUrl ?? "";
     studentId = ref.read(userProvider)?.studentId ?? "NOT FOUND";
   }
 
@@ -51,27 +53,31 @@ class _UploadProfilePageState extends ConsumerState<UploadProfilePage> {
         profileImageUrl = response.secureUrl;
         isUploading = false;
       });
-
-      await updateProfileImage(studentId, response.secureUrl);
-      final user = ref.read(userProvider);
-      user!.profileImageUrl = response.secureUrl;
-      ref.read(userProvider.notifier).loadUser(studentId);
-
-      // ScaffoldMessenger.of(context).showSnackBar(
-      //   SnackBar(content: Text('Profile image uploaded successfully')),
-      // );
-      showToast(
-        message: 'Profile image uploaded successfully',
-        toastType: ToastType.error,
-      );
+      try {
+        await updateProfileImage(studentId, response.secureUrl);
+        final user = ref.read(userProvider);
+        user!.profileImageUrl = response.secureUrl;
+        ref.read(userProvider.notifier).loadUser(studentId);
+        showToast(
+          message: 'Profile image uploaded successfully',
+          toastType: ToastType.error,
+        );
+      } on TimeoutException catch (e) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ErrorPage(errorMessage: e.toString()),
+            ));
+      } catch (e) {
+        showToast(
+          message: 'Error occurs during upload, please try again',
+          toastType: ToastType.error,
+        );
+      }
     } catch (e) {
       setState(() {
         isUploading = false;
       });
-      // TODO push to error screen
-      // ScaffoldMessenger.of(context).showSnackBar(
-      //   SnackBar(content: Text('Failed to upload image: $e')),
-      // );
     }
   }
 
@@ -83,17 +89,14 @@ class _UploadProfilePageState extends ConsumerState<UploadProfilePage> {
     try {
       // Reset to default image
       setState(() {
-        profileImageUrl =
-            "https://static.vecteezy.com/system/resources/previews/020/765/399/non_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg";
+        profileImageUrl = "";
         isUploading = false;
       });
-      await updateProfileImage(studentId,
-          "https://static.vecteezy.com/system/resources/previews/020/765/399/non_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg");
+      await updateProfileImage(studentId, "");
       final user = ref.read(userProvider);
-      user!.profileImageUrl =
-          "https://static.vecteezy.com/system/resources/previews/020/765/399/non_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg";
-      ref.read(userProvider.notifier).loadUser(studentId);    
-        
+      user!.profileImageUrl = "";
+      ref.read(userProvider.notifier).loadUser(studentId);
+
       showToast(
         message: 'Profile image reset to default',
         toastType: ToastType.info,
@@ -105,10 +108,6 @@ class _UploadProfilePageState extends ConsumerState<UploadProfilePage> {
       setState(() {
         isUploading = false;
       });
-      // TODO push to error screen
-      // ScaffoldMessenger.of(context).showSnackBar(
-      //   SnackBar(content: Text('Failed to reset image: $e')),
-      // );
     }
   }
 

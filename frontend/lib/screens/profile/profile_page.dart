@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:frontend/components/toast.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/login.dart';
+import 'package:frontend/screens/error_page.dart';
 import 'package:frontend/screens/profile/setting_page.dart';
 import 'package:frontend/screens/profile/uploadprofile_page.dart';
 import 'package:frontend/services/displayname_api_service.dart';
 import 'package:frontend/providers/user_provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:frontend/exception/timeout_exception.dart';
 
 class ProfilePage extends ConsumerStatefulWidget {
   final String studentId;
@@ -47,25 +50,33 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
         displayName = name;
         _isLoading = false;
       });
-    } catch (e) {
-      if (!mounted) return;
-
+    } on TimeoutException catch (e) {
       setState(() {
-        _errorMessage = 'Failed to load display name';
+        _isLoading = false;
+      });
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ErrorPage(errorMessage: e.message),
+          ));
+      // implement timeout page
+    } catch (e) {
+      if (!mounted) {
+        return;
+      }
+      Fluttertoast.showToast(
+          msg: "This is Center Short Toast",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+      setState(() {
         _isLoading = false;
       });
     }
   }
-
-  // Separate method to show snackbar to avoid context issues
-  // void _showSnackBar(String message, {bool isError = false}) {
-  //   if (!mounted) return;
-
-  //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-  //     content: Text(message),
-  //     backgroundColor: isError ? Colors.red : null,
-  //   ));
-  // }
 
   Future<void> _updateDisplayName(String newName) async {
     if (newName.trim().isEmpty || newName == displayName) {
@@ -107,14 +118,12 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
       }
     } catch (e) {
       if (!mounted) return;
+      showToast(message: e.toString(), toastType: ToastType.error);
 
       // Revert the optimistic update
       setState(() {
         displayName = previousName;
       });
-
-      // TODO push error screen
-      // _showSnackBar('Error: ${e.toString()}', isError: true);
     }
   }
 
@@ -175,13 +184,6 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                         _errorMessage,
                         style:
                             const TextStyle(color: Colors.white, fontSize: 18),
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          _loadStudentDisplayName;
-                          ref.invalidate(userProvider);
-                        },
-                        child: const Text('Try Again'),
                       ),
                     ],
                   ),
