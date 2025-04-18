@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/components/toast.dart';
 import 'package:frontend/models/role.dart';
 import 'package:frontend/screens/error_page.dart';
+import 'package:frontend/services/displayname_api_service.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/models/user.dart';
@@ -324,6 +325,24 @@ class UserNotifier extends StateNotifier<User?> {
   Future<void> loadUser(String userId) async {
     final user = await UserApi.fetchUser(userId);
     state = user;
+  }
+
+  Future<bool> updateDisplayName({
+    required String userId,
+    required String newDisplayName,
+    required BuildContext context,
+  }) async {
+    final success = await DisplaynameApiService.updateStudentDisplayName(
+        userId, newDisplayName);
+    if (success) {
+      final updatedUser = await getUserById(userId: userId, context: context);
+      if (updatedUser != null) {
+        state = updatedUser;
+      }
+      return true;
+    }
+
+    return false;
   }
 }
 
