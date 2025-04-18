@@ -266,8 +266,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                       ),
                                       Text(
                                         user!.studentId,
-                                        style: const TextStyle(
-                                            color: Colors.black, fontSize: 20),
+                                        style: const TextStyle(fontSize: 20),
                                       ),
                                     ],
                                   ),
