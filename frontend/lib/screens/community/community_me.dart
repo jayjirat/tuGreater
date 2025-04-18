@@ -36,39 +36,45 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
   }
 
   User? loadedUser;
-
+  late bool isCurrentUserProfile;
   void _initState() async {
     Future.microtask(() async {
       try {
+        final currentUser = ref.read(userProvider);
+        if (currentUser == null) return;
+
         if (mounted) {
           await ref
               .read(communityProvider.notifier)
               .fetchMyPosts(userId: widget.userId, context: context);
-          final currentUser = ref.read(userProvider);
-          if (widget.userId != currentUser!.id) {
-            if (mounted) {
-              final postUser = await ref
-                  .read(userProvider.notifier)
-                  .getUserById(userId: widget.userId, context: context);
-              if (postUser != null) {
-                setState(() {
-                  loadedUser = postUser;
-                });
-              }
-            }
-          } else {
+        }
+
+        if (widget.userId != currentUser.id) {
+          final postUser = await ref
+              .read(userProvider.notifier)
+              .getUserById(userId: widget.userId, context: context);
+          if (mounted && postUser != null) {
+            setState(() {
+              loadedUser = postUser;
+              isCurrentUserProfile = false;
+            });
+          }
+        } else {
+          if (mounted) {
             setState(() {
               loadedUser = currentUser;
+              isCurrentUserProfile = true;
             });
           }
         }
       } catch (e) {
         if (mounted) {
           Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ErrorPage(errorMessage: e.toString()),
-              ));
+            context,
+            MaterialPageRoute(
+              builder: (context) => ErrorPage(errorMessage: e.toString()),
+            ),
+          );
         }
       }
     });
@@ -108,7 +114,8 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
                     context: context,
                     nextRoute: CommunityViewpost(id: post.id),
                     post: post,
-                    communityPostController: communityPostController),
+                    communityPostController: communityPostController,
+                    isfromProfile: true),
                 const SizedBox(height: 12),
               ],
             );
@@ -173,9 +180,7 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  widget.userId == loadedUser!.id &&
-                                          widget.userId ==
-                                              product.productOwnerId
+                                  isCurrentUserProfile
                                       ? FilledButton(
                                           onPressed: () {
                                             Navigator.push(
@@ -204,8 +209,7 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
                               ),
                             ),
                           ),
-                          widget.userId == loadedUser!.id &&
-                                  widget.userId == product.productOwnerId
+                          isCurrentUserProfile
                               ? Container(
                                   padding: EdgeInsets.only(top: 8, right: 8),
                                   child: IconButton(

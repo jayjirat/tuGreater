@@ -220,7 +220,7 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                                           Theme.of(context).textTheme.bodySmall,
                                     ),
                                   ),
-                                  if (post.userId ==
+                                  if (post.userId !=
                                       user.id) // owner can't report own post
                                     IconButton(
                                         onPressed: () => showReportPopup(
