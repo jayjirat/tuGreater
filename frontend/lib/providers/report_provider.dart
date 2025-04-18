@@ -59,8 +59,36 @@ class ReportNotifier extends StateNotifier<List<Report>> {
     }
   }
 
-  Future<void> deleteReport(String postId) async {
-    final url = Uri.parse('$baseURL/report/$postId');
+  Future<void> deleteReport(String reportId) async {
+    final url = Uri.parse('$baseURL/report/$reportId');
+    try {
+      final response = await http.delete(url);
+      if (response.statusCode == 200) {
+        state = state.where((report) => report.id != reportId).toList();
+      } else {
+        throw Exception('Failed to delete report');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
+
+  Future<void> deleteCommunityPost(String postId) async {
+    final url = Uri.parse('$baseURL/community/$postId');
+    try {
+      final response = await http.delete(url);
+      if (response.statusCode == 200) {
+        state = state.where((report) => report.id != postId).toList();
+      } else {
+        throw Exception('Failed to delete report');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
+
+  Future<void> deleteProductPost(String postId) async {
+    final url = Uri.parse('$baseURL/shop/$postId');
     try {
       final response = await http.delete(url);
       if (response.statusCode == 200) {

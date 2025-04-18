@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/providers/report_provider.dart';
+import 'package:frontend/models/report.dart';
 
 class ReportedPost extends ConsumerStatefulWidget {
   const ReportedPost({super.key});
@@ -51,8 +52,8 @@ class ReportState extends ConsumerState<ReportedPost> {
                         final confirm = await showDialog<bool>(
                           context: context,
                           builder: (context) => AlertDialog(
-                            title: Text("Delete Report"),
-                            content: Text("Are you sure you want to delete this report?"),
+                            title: Text("Delete Post"),
+                            content: Text("Are you sure you want to delete this post?"),
                             actions: [
                               TextButton(
                                 onPressed: () => Navigator.of(context).pop(false),
@@ -68,9 +69,14 @@ class ReportState extends ConsumerState<ReportedPost> {
 
                         if (confirm == true) {
                           try {
+                            if (report.postCategory == PostCategory.community) {
+                              await ref.read(reportProvider.notifier).deleteCommunityPost(report.postId);
+                            } else if(report.postCategory == PostCategory.shop) {
+                              await ref.read(reportProvider.notifier).deleteProductPost(report.postId);
+                            }
                             await ref.read(reportProvider.notifier).deleteReport(report.id);
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text("Report deleted")),
+                              SnackBar(content: Text("post deleted")),
                             );
                           } catch (e) {
                             ScaffoldMessenger.of(context).showSnackBar(

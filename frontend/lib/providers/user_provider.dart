@@ -9,6 +9,7 @@ import 'package:frontend/services/user_api.dart';
 
 class UserNotifier extends StateNotifier<User?> {
   UserNotifier() : super(null);
+  
 
   Role parseStringtoRole(String role) {
     return role == "admin" ? Role.admin : Role.user;
