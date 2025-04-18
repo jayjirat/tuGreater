@@ -60,7 +60,7 @@ class _UploadProfilePageState extends ConsumerState<UploadProfilePage> {
         ref.read(userProvider.notifier).loadUser(studentId);
         showToast(
           message: 'Profile image uploaded successfully',
-          toastType: ToastType.error,
+          toastType: ToastType.success,
         );
       } on TimeoutException catch (e) {
         Navigator.push(

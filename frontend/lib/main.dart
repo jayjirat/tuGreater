@@ -42,6 +42,7 @@ class MyApp extends StatelessWidget {
     final localeProvider = pd.Provider.of<LocaleProvider>(context);
 
     return MaterialApp(
+        debugShowCheckedModeBanner: false,
         supportedLocales: [
           Locale('en'),
           Locale('th'),

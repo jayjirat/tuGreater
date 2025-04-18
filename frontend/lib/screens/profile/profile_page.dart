@@ -9,7 +9,6 @@ import 'package:frontend/screens/profile/uploadprofile_page.dart';
 import 'package:frontend/services/displayname_api_service.dart';
 import 'package:frontend/providers/user_provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:frontend/exception/timeout_exception.dart';
 
 class ProfilePage extends ConsumerStatefulWidget {
@@ -187,9 +186,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                 )
               : Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  child: ListView(
                     children: [
                       Row(
                         children: [
@@ -201,7 +198,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 5),
+                      const SizedBox(height: 25),
                       InkWell(
                         borderRadius: BorderRadius.circular(30),
                         onTap: () => Navigator.push(
@@ -213,7 +210,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                         child: Center(
                           child: Container(
                               decoration: BoxDecoration(
-                                color: Colors.white,
+                                color: Theme.of(context).secondaryHeaderColor,
                                 borderRadius: BorderRadius.circular(30),
                                 boxShadow: [
                                   BoxShadow(
@@ -256,9 +253,8 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                           children: [
                                             Text(
                                               displayName,
-                                              style: const TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 20),
+                                              style:
+                                                  const TextStyle(fontSize: 20),
                                             ),
                                             const SizedBox(width: 5),
                                             const Icon(
@@ -271,8 +267,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                       ),
                                       Text(
                                         widget.studentId,
-                                        style: const TextStyle(
-                                            color: Colors.black, fontSize: 20),
+                                        style: const TextStyle(fontSize: 20),
                                       ),
                                     ],
                                   ),
@@ -280,6 +275,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                               )),
                         ),
                       ),
+                      const SizedBox(height: 30),
                       Center(
                           child: ElevatedButton(
                         onPressed: () {
@@ -300,6 +296,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                 .upload_profile_picture,
                             style: TextStyle(fontSize: 20)),
                       )),
+                      const SizedBox(height: 30),
                       Center(
                           child: ElevatedButton(
                         onPressed: () {
@@ -317,6 +314,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                         child: Text(AppLocalizations.of(context)!.settings,
                             style: TextStyle(fontSize: 20)),
                       )),
+                      const SizedBox(height: 30),
                       Center(
                           child: ElevatedButton(
                         onPressed: () {
@@ -335,8 +333,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                 horizontal: 20, vertical: 10),
                             elevation: 5),
                         child: Text(AppLocalizations.of(context)!.signout,
-                            style:
-                                TextStyle(color: Colors.black, fontSize: 20)),
+                            style: TextStyle(fontSize: 20)),
                       )),
                     ],
                   ),
