@@ -66,7 +66,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
         return;
       }
       showToast(
-        message: AppLocalizations.of(context)!.minor_error_getdisplayname,
+        message: AppLocalizations.of(context)!.error_getdisplayname,
         toastType: ToastType.error,
       );
       setState(() {
