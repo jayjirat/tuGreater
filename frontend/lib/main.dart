@@ -63,7 +63,7 @@ class MyApp extends StatelessWidget {
           '/set-display-name': (context) => ConfirmationPage(),
           '/community': (context) => Main(),
           '/shop': (context) => Shop(),
-          '/admin':(context) => AdminPage(),
+          '/admin': (context) => AdminPage(),
         });
   }
 }

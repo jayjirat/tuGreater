@@ -191,6 +191,39 @@ class _AddItemsState extends ConsumerState<AddItems> {
     return uploadedUrls.where((url) => url.isNotEmpty).toList();
   }
 
+  bool _validateImages() {
+    if (_selectedImages.isEmpty) {
+      showToast(
+        message: AppLocalizations.of(context)!.no_image,
+        toastType: ToastType.info,
+      );
+      return false;
+    }
+    return true;
+  }
+
+  bool _validateName() {
+    if (nameController.text.isEmpty) {
+      showToast(
+        message: AppLocalizations.of(context)!.no_name,
+        toastType: ToastType.info,
+      );
+      return false;
+    }
+    return true;
+  }
+
+  bool _validatePrice() {
+    if (priceController.text.isEmpty) {
+      showToast(
+        message: AppLocalizations.of(context)!.no_price,
+        toastType: ToastType.info,
+      );
+      return false;
+    }
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     final user = ref.watch(userProvider);
@@ -627,6 +660,12 @@ class _AddItemsState extends ConsumerState<AddItems> {
                     child: SizedBox(
                       child: FilledButton(
                         onPressed: () async {
+                          if (!_validateImages() ||
+                              !_validateName() ||
+                              !_validatePrice()) {
+                            return;
+                          }
+
                           if (isCheckedOthers &&
                               otherTagController.text.isNotEmpty) {
                             addTag();
