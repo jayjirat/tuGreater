@@ -129,7 +129,8 @@ class CommunityState extends ConsumerState<Community> {
                           context: context,
                           nextRoute: CommunityViewpost(id: post.id),
                           post: post,
-                          communityPostController: communityPostController),
+                          communityPostController: communityPostController,
+                          isfromProfile: false),
                       const SizedBox(height: 12),
                     ],
                   );
