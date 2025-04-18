@@ -12,8 +12,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:frontend/exception/timeout_exception.dart';
 
 class ProfilePage extends ConsumerStatefulWidget {
-  final String studentId;
-  const ProfilePage({super.key, required this.studentId});
+  final String userId;
+  const ProfilePage({super.key, required this.userId});
 
   @override
   ConsumerState<ProfilePage> createState() => _ProfilePageState();
@@ -24,13 +24,12 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
   String displayName = "Loading...";
   bool _isLoading = true;
   String _errorMessage = '';
-  late String studentId;
-
+  late dynamic user;
   @override
   void initState() {
     super.initState();
+    user = ref.read(userProvider);
     _loadStudentDisplayName();
-    studentId = widget.studentId;
   }
 
   Future<void> _loadStudentDisplayName() async {
@@ -42,7 +41,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
     });
 
     try {
-      final name = await _apiService.getStudentDisplayName(widget.studentId);
+      final name = await _apiService.getStudentDisplayName(user.id);
 
       if (!mounted) return;
 
@@ -88,7 +87,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
 
     try {
       final success =
-          await _apiService.updateStudentDisplayName(widget.studentId, newName);
+          await _apiService.updateStudentDisplayName(user.id, newName);
 
       if (!mounted) return;
 
@@ -155,7 +154,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                 Navigator.of(dialogContext).pop();
                 // Call update method after dialog is closed
                 _updateDisplayName(newName);
-                ref.read(userProvider.notifier).loadUser(studentId);
+                ref.read(userProvider.notifier).loadUser(user.id);
               },
               child: const Text('Save'),
             ),
@@ -266,8 +265,9 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                         ),
                                       ),
                                       Text(
-                                        widget.studentId,
-                                        style: const TextStyle(fontSize: 20),
+                                        user!.studentId,
+                                        style: const TextStyle(
+                                            color: Colors.black, fontSize: 20),
                                       ),
                                     ],
                                   ),

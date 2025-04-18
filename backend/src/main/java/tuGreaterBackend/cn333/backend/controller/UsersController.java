@@ -115,35 +115,35 @@ public class UsersController {
         }
     }
 
-    @PostMapping("/student/{studentId}/displayName")
+    @PostMapping("/student/{userId}/displayName")
     public ResponseEntity<?> updateDisplayNameByStudentId(
-            @PathVariable String studentId,
+            @PathVariable String userId,
             @RequestBody @Valid UpdateDisplayNameRequest request) {
         try {
-            Users updatedUser = usersService.updateDisplayNameByStudentId(studentId, request.getDisplayName());
+            Users updatedUser = usersService.updateDisplayNameById(userId, request.getDisplayName());
             return ResponseEntity.ok(updatedUser);
         } catch (RuntimeException e) {
             return ResponseEntity.status(404).body(e.getMessage());
         }
     }
 
-    @GetMapping("/student/{studentId}/displayName")
-    public ResponseEntity<?> getDisplayNameByStudentId(@PathVariable String studentId) {
+    @GetMapping("/student/{userId}/displayName")
+    public ResponseEntity<?> getDisplayNameByStudentId(@PathVariable String userId) {
         try {
-            String displayName = usersService.getDisplayNameByStudentId(studentId);
+            String displayName = usersService.getDisplayNameById(userId);
             return ResponseEntity.ok(new DisplayNameResponse(displayName));
         } catch (RuntimeException e) {
             return ResponseEntity.status(404).body(e.getMessage());
         }
     }
 
-    @PutMapping("/profile-image/{studentId}")
+    @PutMapping("/profile-image/{userId}")
     public ResponseEntity<?> updateProfileImage(
-            @PathVariable String studentId,
+            @PathVariable String userId,
             @RequestBody Map<String, String> payload) {
         try {
             String imageUrl = payload.get("imageUrl");
-            Users updatedUser = usersService.updateProfileImage(studentId, imageUrl);
+            Users updatedUser = usersService.updateProfileImage(userId, imageUrl);
 
             if (updatedUser != null) {
                 return ResponseEntity.ok(updatedUser);
