@@ -165,6 +165,8 @@
     "darkmode": "โหมดมืด",
     "tap_to_add": "กดเพื่อเพิ่ม",
     "take_a_photo": "ถ่ายรูปภาพ",
-    "choose_from_gallery": "เลือกรูปจากแกลลอรี่"
+    "choose_from_gallery": "เลือกรูปจากแกลลอรี่",
+    "error_getdisplayname": "ไม่สามารถโหลดชื่อแสดงได้ โปรดลองใหม่อีกครั้ง",
+    "error_updatedisplayname" : "ไม่สามารถอัปเดตชื่อแสดงได้ โปรดลองใหม่อีกครั้ง"
   }
  

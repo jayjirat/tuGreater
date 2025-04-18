@@ -170,5 +170,7 @@
     "darkmode": "Darkmode",
     "tap_to_add": "Tap to add",
     "take_a_photo": "Take a photo",
-    "choose_from_gallery": "Choose from gallery"
+    "choose_from_gallery": "Choose from gallery",
+    "error_getdisplayname": "Failed to get display name",
+    "error_updatedisplayname" : "Failed to update display name"
 }

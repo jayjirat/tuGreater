@@ -64,14 +64,10 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
       if (!mounted) {
         return;
       }
-      Fluttertoast.showToast(
-          msg: "This is Center Short Toast",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0);
+      showToast(
+        message: AppLocalizations.of(context)!.minor_error_getdisplayname,
+        toastType: ToastType.error,
+      );
       setState(() {
         _isLoading = false;
       });
@@ -111,7 +107,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
           displayName = previousName; // Revert to previous name
         });
         showToast(
-          message: 'Failed to update display name',
+          message: AppLocalizations.of(context)!.error_updatedisplayname,
           toastType: ToastType.error,
         );
         // _showSnackBar('Failed to update display name', isError: true);
