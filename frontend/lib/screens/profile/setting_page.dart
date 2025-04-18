@@ -22,7 +22,8 @@ class _SettingPageState extends rp.ConsumerState<SettingPage> {
     final themeProvider = Provider.of<ThemeProvider>(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.settings),
+        title: Text(AppLocalizations.of(context)!.settings,
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
       ),
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Padding(
