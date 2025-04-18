@@ -321,8 +321,8 @@ class UserNotifier extends StateNotifier<User?> {
     return false;
   }
 
-  Future<void> loadUser(String studentId) async {
-    final user = await UserApi.fetchUser(studentId);
+  Future<void> loadUser(String userId) async {
+    final user = await UserApi.fetchUser(userId);
     state = user;
   }
 }

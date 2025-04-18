@@ -22,13 +22,13 @@ class _UploadProfilePageState extends ConsumerState<UploadProfilePage> {
   final cloudinary =
       CloudinaryPublic("dosejlasn", 'profileUpload', cache: false);
   late String profileImageUrl;
-  late final String studentId;
+  late dynamic user;
   bool isUploading = false;
   @override
   void initState() {
     super.initState();
     profileImageUrl = ref.read(userProvider)?.profileImageUrl ?? "";
-    studentId = ref.read(userProvider)?.studentId ?? "NOT FOUND";
+    user = ref.read(userProvider);
   }
 
   Future<void> uploadImage(File? imageFile) async {
@@ -54,13 +54,12 @@ class _UploadProfilePageState extends ConsumerState<UploadProfilePage> {
         isUploading = false;
       });
       try {
-        await updateProfileImage(studentId, response.secureUrl);
-        final user = ref.read(userProvider);
+        await updateProfileImage(user.id, response.secureUrl);
         user!.profileImageUrl = response.secureUrl;
-        ref.read(userProvider.notifier).loadUser(studentId);
+        ref.read(userProvider.notifier).loadUser(user.id);
         showToast(
           message: 'Profile image uploaded successfully',
-          toastType: ToastType.error,
+          toastType: ToastType.success,
         );
       } on TimeoutException catch (e) {
         Navigator.push(
@@ -92,10 +91,9 @@ class _UploadProfilePageState extends ConsumerState<UploadProfilePage> {
         profileImageUrl = "";
         isUploading = false;
       });
-      await updateProfileImage(studentId, "");
-      final user = ref.read(userProvider);
-      user!.profileImageUrl = "";
-      ref.read(userProvider.notifier).loadUser(studentId);
+      await updateProfileImage(user.id, "");
+      user.profileImageUrl = "";
+      ref.read(userProvider.notifier).loadUser(user.id);
 
       showToast(
         message: 'Profile image reset to default',

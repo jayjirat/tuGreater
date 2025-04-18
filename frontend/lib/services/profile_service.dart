@@ -2,11 +2,11 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:frontend/exception/timeout_exception.dart';
 
-Future<void> updateProfileImage(String studentId, String imageUrl) async {
-  final url = Uri.parse('http://10.0.2.2:8080/users/profile-image/$studentId');
+Future<void> updateProfileImage(String userId, String imageUrl) async {
+  final url = Uri.parse('http://10.0.2.2:8080/users/profile-image/$userId');
 
   // Prepare the request body
-  final body = jsonEncode({'studentId': studentId, 'imageUrl': imageUrl});
+  final body = jsonEncode({'studentId': userId, 'imageUrl': imageUrl});
 
   try {
     final response = await http

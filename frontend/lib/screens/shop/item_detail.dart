@@ -124,7 +124,7 @@ class ItemDetail extends ConsumerWidget {
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      "@${user!.displayName}",
+                      "@${product.productOwner}",
                       style: TextStyle(fontSize: 15),
                     ),
                   ),
