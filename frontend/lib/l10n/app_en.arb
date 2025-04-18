@@ -173,5 +173,8 @@
     "choose_from_gallery": "Choose from gallery",
     "no_image":"Please select at least one image",
     "no_name":"Please enter product name",
-    "no_price":"Please enter product price"
+    "no_price":"Please enter product price",
+    "choose_from_gallery": "Choose from gallery",
+    "error_getdisplayname": "Failed to get display name",
+    "error_updatedisplayname" : "Failed to update display name"
 }
