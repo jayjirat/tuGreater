@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProductService {
-  static const String baseUrl = 'http://10.0.2.2:8080/shop';
+  static const String baseUrl = 'https://tugreaterbackend.onrender.com/shop';
 
   // Fetch all products
   Future<List<Products>> fetchProducts({required BuildContext context}) async {
@@ -175,7 +175,7 @@ class ProductService {
       required Map<String, dynamic> updatedFields,
       required BuildContext context}) async {
     try {
-      const String baseUrl = 'http://10.0.2.2:8080/shop';
+      const String baseUrl = 'https://tugreaterbackend.onrender.com/shop';
       final response = await http
           .put(
             Uri.parse("$baseUrl/$productOwnerId/$productId"),

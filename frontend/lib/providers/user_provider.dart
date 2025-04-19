@@ -22,7 +22,7 @@ class UserNotifier extends StateNotifier<User?> {
     return role == Role.admin ? "Admin" : "User";
   }
 
-  final userDBUrl = "http://10.0.2.2:8080/users";
+  final userDBUrl = "https://tugreaterbackend.onrender.com/users";
 
   Future<bool> login(
       String username, String password, BuildContext context) async {

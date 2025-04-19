@@ -4,7 +4,8 @@ import 'package:frontend/models/user.dart'; // your User model
 
 class UserApi {
   static Future<User> fetchUser(String userId) async {
-    final url = Uri.parse('http://localhost:8080/users/$userId');
+    final url =
+        Uri.parse('https://tugreaterbackend.onrender.com/users/$userId');
     final response = await http.get(url).timeout(Duration(seconds: 10));
 
     if (response.statusCode == 200) {

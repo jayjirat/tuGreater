@@ -10,7 +10,7 @@ class CommentNotifier extends StateNotifier<List<Comment>> {
 
   final String postId;
 
-  final String baseURL = "http://10.0.2.2:8080";
+  final String baseURL = "https://tugreaterbackend.onrender.com";
 
   Future<void> addComment(
       {required String postId,

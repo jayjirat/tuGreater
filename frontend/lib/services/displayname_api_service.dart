@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:frontend/exception/timeout_exception.dart';
 
 class DisplaynameApiService {
-  final String baseUrl = 'http://10.0.2.2:8080/users';
+  final String baseUrl = 'https://tugreaterbackend.onrender.com/users';
 
   /// Get the display name of a student by their ID
   ///

@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 
 class ReportNotifier extends StateNotifier<List<Report>> {
   ReportNotifier() : super([]);
-  String baseURL = "http://10.0.2.2:8080";
+  String baseURL = "https://tugreaterbackend.onrender.com";
   Future<void> createReport(
       {required List<String> reportReasons,
       required String additionalInfo,
@@ -52,7 +52,7 @@ class ReportNotifier extends StateNotifier<List<Report>> {
         final report = jsonData.map((item) => Report.fromJson(item)).toList();
         state = report;
       } else {
-      throw Exception('Failed to load reports');
+        throw Exception('Failed to load reports');
       }
     } catch (e) {
       throw Exception('Error: $e');

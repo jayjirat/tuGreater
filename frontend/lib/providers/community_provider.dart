@@ -11,7 +11,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class CommunityNotifier extends StateNotifier<List<CommuPost>> {
   CommunityNotifier() : super([]);
 
-  String baseURL = "http://10.0.2.2:8080";
+  String baseURL = "https://tugreaterbackend.onrender.com";
   CommuPost? post;
   List<Comment>? comments;
   bool isLoading = false;

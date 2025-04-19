@@ -3,7 +3,8 @@ import 'dart:convert';
 import 'package:frontend/exception/timeout_exception.dart';
 
 Future<void> updateProfileImage(String userId, String imageUrl) async {
-  final url = Uri.parse('http://10.0.2.2:8080/users/profile-image/$userId');
+  final url = Uri.parse(
+      'https://tugreaterbackend.onrender.com/users/profile-image/$userId');
 
   // Prepare the request body
   final body = jsonEncode({'studentId': userId, 'imageUrl': imageUrl});

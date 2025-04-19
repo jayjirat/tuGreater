@@ -44,7 +44,7 @@ class _AddItemsState extends ConsumerState<AddItems> {
   Future<void> createProduct(
       List<String> imageUrls, String userId, String displayname) async {
     try {
-      var url = "http://10.0.2.2:8080/shop";
+      var url = "https://tugreaterbackend.onrender.com/shop";
 
       var response = await http
           .post(
