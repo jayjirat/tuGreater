@@ -14,6 +14,7 @@ public interface CommunityRepository extends MongoRepository<CommunityPost,Strin
     public List<CommunityPost> findByTitleContainingIgnoreCase(String title);
     public List<CommunityPost> findByUserId(String userId);
     public List<CommunityPost> findByRepostedPostId(String repostedPostId);
+    public List<CommunityPost> findByRepostedUserId(String repostedUserId);
     public boolean existsByRepostedUserIdAndRepostedPostId(String userId, String repostedPostId);
     public void deleteByRepostedPostId(String repostedPostId);
 }

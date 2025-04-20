@@ -137,7 +137,7 @@ Widget communityPost(
                     ),
                     buildActionButton(
                       context: context,
-                      icon: Icons.cached_outlined,
+                      icon: Icons.repeat_outlined,
                       label: "${post.repostCount}",
                     ),
                   ],

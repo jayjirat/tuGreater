@@ -111,7 +111,9 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
       required bool isReposted,
       String? repostedUserId,
       String? repostedPostId,
-      required BuildContext context}) async {
+      required BuildContext context,
+      String? repostedUserImageUrl,
+      String? repostedUsername}) async {
     final url = '$baseURL/community';
     try {
       if (isReposted && (repostedUserId == null || repostedPostId == null)) {
@@ -136,6 +138,8 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
         'repostedPostId': repostedPostId,
         'isOriginalDeleted': false,
         'repostCreatedAt': isReposted ? DateTime.now().toIso8601String() : null,
+        'repostedUserImageUrl': repostedUserImageUrl,
+        'repostedUsername': repostedUsername
       };
 
       final header = {'Content-Type': 'application/json'};

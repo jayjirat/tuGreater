@@ -322,34 +322,61 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                             label: "${post.commentCount}",
                           ),
                           _buildActionButton(
-                            onTap: isReposted
-                                ? () async {
-                                    await communityPostController.deletePost(
-                                        id: post.id,
-                                        context: context,
-                                        isRepost: true);
-                                    setState(() {
-                                      post.repostCount--;
-                                    });
-                                  }
-                                : () async {
-                                    await communityPostController.createPost(
-                                        title: post.title,
-                                        description: post.description,
-                                        category: post.category,
-                                        userId: post.userId,
-                                        username: post.username,
-                                        imageUrl: post.imageUrl,
-                                        postedByImageUrl: user.profileImageUrl,
-                                        isReposted: true,
-                                        repostedUserId: user.id,
-                                        repostedPostId: post.id,
-                                        context: context);
-                                    setState(() {
-                                      post.repostCount++;
-                                    });
+                            onTap: (post.userId != user.id)
+                                ? (post.isReposted
+                                    ? () {
+                                        showToast(
+                                            message:
+                                                "You cannot repost a reposted post.",
+                                            toastType: ToastType.info);
+                                      }
+                                    : (isReposted
+                                        ? () async {
+                                            await communityPostController
+                                                .deletePost(
+                                                    id: post.id,
+                                                    context: context,
+                                                    isRepost: true);
+                                            setState(() {
+                                              isReposted = false;
+                                              post.repostCount--;
+                                            });
+                                          }
+                                        : () async {
+                                            await communityPostController
+                                                .createPost(
+                                                    title: post.title,
+                                                    description:
+                                                        post.description,
+                                                    category: post.category,
+                                                    userId: post.userId,
+                                                    username: post.username,
+                                                    imageUrl: post.imageUrl,
+                                                    postedByImageUrl:
+                                                        post.postedByImageUrl ??
+                                                            "",
+                                                    isReposted: true,
+                                                    repostedUserId: user.id,
+                                                    repostedPostId: post.id,
+                                                    repostedUserImageUrl:
+                                                        user.profileImageUrl,
+                                                    repostedUsername:
+                                                        user.displayName,
+                                                    context: context);
+                                            setState(() {
+                                              isReposted = true;
+                                              post.repostCount++;
+                                            });
+                                          }))
+                                : () {
+                                    showToast(
+                                        message:
+                                            "You cannot repost your own post.",
+                                        toastType: ToastType.info);
                                   },
-                            icon: Icons.cached_outlined,
+                            icon: isReposted
+                                ? Icons.repeat_on_outlined
+                                : Icons.repeat_outlined,
                             label: "${post.repostCount}",
                           ),
                         ],
