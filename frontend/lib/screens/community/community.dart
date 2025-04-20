@@ -63,115 +63,130 @@ class CommunityState extends ConsumerState<Community> {
     final communityPostController = ref.read(communityProvider.notifier);
     final isLoading = ref.watch(communityProvider.notifier).isLoading;
     final user = ref.read(userProvider);
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-      child: Column(
-        children: [
-          TextField(
-            controller: searchController,
-            textInputAction: TextInputAction.search,
-            decoration: InputDecoration(
-              hintText: AppLocalizations.of(context)!.searchPost,
-              prefixIcon: Icon(Icons.search, color: Colors.grey),
-            ),
-            onSubmitted: (value) async {
-              try {
-                await communityPostController.searchPosts(
-                    query: searchController.text, context: context);
-              } catch (e) {
-                if (context.mounted) {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            ErrorPage(errorMessage: e.toString()),
-                      ));
-                }
-              }
-            },
-          ),
-          const SizedBox(height: 16),
-          ToggleButtons(
-              isSelected: toggleStatus,
-              borderRadius: BorderRadius.circular(30),
-              onPressed: (index) async {
-                setState(() {
-                  toggleStatus[index] = true;
-                  toggleStatus[currIndexToggleStatus] = false;
-                  currIndexToggleStatus = index;
-                });
-
-                if (currIndexToggleStatus == 0) {
-                  await tryFetchPosts();
-                } else if (currIndexToggleStatus == 1) {
-                  await tryFilterPosts(category: "General");
-                } else if (currIndexToggleStatus == 2) {
-                  await tryFilterPosts(category: "ReviewCourse");
-                } else if (currIndexToggleStatus == 3) {
-                  await tryFilterPosts(category: "Lost%26Found");
+    return RefreshIndicator(
+      onRefresh: () async {
+        if (currIndexToggleStatus == 0) {
+          await tryFetchPosts();
+        } else if (currIndexToggleStatus == 1) {
+          await tryFilterPosts(category: "General");
+        } else if (currIndexToggleStatus == 2) {
+          await tryFilterPosts(category: "ReviewCourse");
+        } else if (currIndexToggleStatus == 3) {
+          await tryFilterPosts(category: "Lost%26Found");
+        }
+      },
+      backgroundColor: Theme.of(context).cardColor,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+        child: Column(
+          children: [
+            TextField(
+              controller: searchController,
+              textInputAction: TextInputAction.search,
+              decoration: InputDecoration(
+                hintText: AppLocalizations.of(context)!.searchPost,
+                prefixIcon: Icon(Icons.search, color: Colors.grey),
+              ),
+              onSubmitted: (value) async {
+                try {
+                  await communityPostController.searchPosts(
+                      query: searchController.text, context: context);
+                } catch (e) {
+                  if (context.mounted) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              ErrorPage(errorMessage: e.toString()),
+                        ));
+                  }
                 }
               },
-              children: [
-                toggleElement("All"),
-                toggleElement("General"),
-                toggleElement("Course Review"),
-                toggleElement("Lost & Found"),
-              ]),
-          const SizedBox(height: 16),
-          if (posts.isNotEmpty && !isLoading)
-            Expanded(
-              child: ListView.builder(
-                itemCount: posts.length,
-                itemBuilder: (context, index) {
-                  final post = posts[index];
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      communityPost(
-                          context: context,
-                          nextRoute: post.isReposted
-                              ? CommunityViewpost(id: post.repostedPostId!)
-                              : CommunityViewpost(id: post.id),
-                          post: post,
-                          communityPostController: communityPostController,
-                          isfromProfile: false,
-                          userId: user!.id),
-                      const SizedBox(height: 12),
-                    ],
-                  );
+            ),
+            const SizedBox(height: 16),
+            ToggleButtons(
+                isSelected: toggleStatus,
+                borderRadius: BorderRadius.circular(30),
+                onPressed: (index) async {
+                  setState(() {
+                    toggleStatus[index] = true;
+                    toggleStatus[currIndexToggleStatus] = false;
+                    currIndexToggleStatus = index;
+                  });
+
+                  if (currIndexToggleStatus == 0) {
+                    await tryFetchPosts();
+                  } else if (currIndexToggleStatus == 1) {
+                    await tryFilterPosts(category: "General");
+                  } else if (currIndexToggleStatus == 2) {
+                    await tryFilterPosts(category: "ReviewCourse");
+                  } else if (currIndexToggleStatus == 3) {
+                    await tryFilterPosts(category: "Lost%26Found");
+                  }
                 },
-              ),
-            )
-          else if (posts.isEmpty && !isLoading)
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    Icons.forum_outlined,
-                    size: 120,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                  const SizedBox(height: 32),
-                  Text(
-                    AppLocalizations.of(context)!.noPosts,
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    AppLocalizations.of(context)!.noPostsContent,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-            )
-          else
-            const Expanded(child: Center(child: CircularProgressIndicator()))
-        ],
+                  toggleElement("All"),
+                  toggleElement("General"),
+                  toggleElement("Course Review"),
+                  toggleElement("Lost & Found"),
+                ]),
+            const SizedBox(height: 16),
+            if (posts.isNotEmpty && !isLoading)
+              Expanded(
+                child: ListView.builder(
+                  itemCount: posts.length,
+                  itemBuilder: (context, index) {
+                    final post = posts[index];
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        communityPost(
+                            context: context,
+                            nextRoute: post.isReposted
+                                ? CommunityViewpost(id: post.repostedPostId!)
+                                : CommunityViewpost(id: post.id),
+                            post: post,
+                            communityPostController: communityPostController,
+                            isfromProfile: false,
+                            userId: user!.id),
+                        const SizedBox(height: 12),
+                      ],
+                    );
+                  },
+                ),
+              )
+            else if (posts.isEmpty && !isLoading)
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.forum_outlined,
+                      size: 120,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    const SizedBox(height: 32),
+                    Text(
+                      AppLocalizations.of(context)!.noPosts,
+                      style:
+                          Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      AppLocalizations.of(context)!.noPostsContent,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              )
+            else
+              const Expanded(child: Center(child: CircularProgressIndicator()))
+          ],
+        ),
       ),
     );
   }

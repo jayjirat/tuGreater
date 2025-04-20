@@ -37,7 +37,7 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
 
   User? loadedUser;
   late bool isCurrentUserProfile;
-  void _initState() async {
+  Future<void> _initState() async {
     Future.microtask(() async {
       try {
         final currentUser = ref.read(userProvider);
@@ -103,24 +103,30 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
         .watch(productProviderByProductOwnerId(Tuple2(widget.userId, context)));
     final List<Widget> swapPage = [
       Expanded(
-        child: ListView.builder(
-          itemCount: posts.length,
-          itemBuilder: (context, index) {
-            final post = posts[index];
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                communityPost(
-                    context: context,
-                    nextRoute: CommunityViewpost(id: post.id),
-                    post: post,
-                    communityPostController: communityPostController,
-                    isfromProfile: true,
-                    userId: loadedUser!.id),
-                const SizedBox(height: 12),
-              ],
-            );
+        child: RefreshIndicator(
+          onRefresh: () async {
+            await _initState();
           },
+          backgroundColor: Theme.of(context).cardColor,
+          child: ListView.builder(
+            itemCount: posts.length,
+            itemBuilder: (context, index) {
+              final post = posts[index];
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  communityPost(
+                      context: context,
+                      nextRoute: CommunityViewpost(id: post.id),
+                      post: post,
+                      communityPostController: communityPostController,
+                      isfromProfile: true,
+                      userId: loadedUser!.id),
+                  const SizedBox(height: 12),
+                ],
+              );
+            },
+          ),
         ),
       ),
       Expanded(
@@ -131,6 +137,7 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
               ref.refresh(
                   productProviderByProductOwnerId(Tuple2(user!.id, context)));
             },
+            backgroundColor: Theme.of(context).cardColor,
             child: SingleChildScrollView(
               physics: AlwaysScrollableScrollPhysics(),
               child: Padding(
