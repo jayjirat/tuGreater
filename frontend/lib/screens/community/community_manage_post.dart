@@ -302,7 +302,8 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
                               category: selectedValueDropdown!,
                               imageUrl: imageUrl,
                               postedByImageUrl: user.profileImageUrl,
-                              context: context);
+                              context: context,
+                              isReposted: false);
                         }
                       } catch (e) {
                         if (context.mounted) {

@@ -108,9 +108,15 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
       required String username,
       String? imageUrl,
       required String postedByImageUrl,
+      required bool isReposted,
+      String? repostedUserId,
+      String? repostedPostId,
       required BuildContext context}) async {
     final url = '$baseURL/community';
     try {
+      if (isReposted && (repostedUserId == null || repostedPostId == null)) {
+        throw Exception('Missing repost reference');
+      }
       isLoading = true;
       final Map<String, dynamic> newPost = {
         'title': title,
@@ -123,8 +129,13 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
         'createdAt': DateTime.now().toIso8601String(),
         'updatedAt': DateTime.now().toIso8601String(),
         'imageUrl': imageUrl,
+        'postedByImageUrl': postedByImageUrl,
         'repostCount': 0,
-        'postedByImageUrl': postedByImageUrl
+        'isReposted': isReposted,
+        'repostedUserId': repostedUserId,
+        'repostedPostId': repostedPostId,
+        'isOriginalDeleted': false,
+        'repostCreatedAt': isReposted ? DateTime.now().toIso8601String() : null,
       };
 
       final header = {'Content-Type': 'application/json'};
@@ -205,8 +216,10 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
   }
 
   Future<void> deletePost(
-      {required String id, required BuildContext context}) async {
-    final url = Uri.parse("$baseURL/community/$id");
+      {required String id,
+      required BuildContext context,
+      required bool isRepost}) async {
+    final url = Uri.parse("$baseURL/community/$id?isRepost=$isRepost");
     try {
       isLoading = true;
       final response = await http.delete(url).timeout(Duration(seconds: 5));
@@ -371,6 +384,36 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
       if (context.mounted) {
         throw Exception(
             "${AppLocalizations.of(context)!.unableCheckLikeStatusPost} ${AppLocalizations.of(context)!.checkYourConnection}");
+      }
+    } finally {
+      isLoading = false;
+    }
+    return false;
+  }
+
+  Future<bool> isReposted(
+      {required String userId,
+      required String postId,
+      required BuildContext context}) async {
+    final url = Uri.parse(
+        '$baseURL/community/repost/check?userId=$userId&postId=$postId');
+    try {
+      isLoading = true;
+      final response = await http.get(url).timeout(Duration(seconds: 10));
+      if (response.statusCode == 200) {
+        return response.body.contains('true');
+      } else {
+        if (context.mounted) {
+          showToast(
+              message: "Fail to check repost status, please try again",
+              toastType: ToastType.error);
+        } else {
+          return false;
+        }
+      }
+    } catch (e) {
+      if (context.mounted) {
+        throw Exception("Unable to check repost status, check your connection");
       }
     } finally {
       isLoading = false;

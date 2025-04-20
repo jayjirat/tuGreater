@@ -22,6 +22,7 @@ class CommunityViewpost extends ConsumerStatefulWidget {
 
 class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
   bool isLiked = false;
+  bool isReposted = false;
   @override
   void initState() {
     super.initState();
@@ -41,10 +42,14 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
       bool liked = await ref
           .read(communityProvider.notifier)
           .isLiked(userId: user!.id, postId: widget.id, context: context);
+      bool reposted = await ref
+          .read(communityProvider.notifier)
+          .isReposted(userId: user.id, postId: widget.id, context: context);
 
       if (mounted) {
         setState(() {
           isLiked = liked;
+          isReposted = reposted;
         });
       }
     } catch (e) {
@@ -155,7 +160,8 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                                           await communityPostController
                                               .deletePost(
                                                   id: post.id,
-                                                  context: context);
+                                                  context: context,
+                                                  isRepost: false);
                                           if (context.mounted) {
                                             Navigator.pop(context);
                                             showToast(
@@ -316,7 +322,33 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                             label: "${post.commentCount}",
                           ),
                           _buildActionButton(
-                            onTap: () {},
+                            onTap: isReposted
+                                ? () async {
+                                    await communityPostController.deletePost(
+                                        id: post.id,
+                                        context: context,
+                                        isRepost: true);
+                                    setState(() {
+                                      post.repostCount--;
+                                    });
+                                  }
+                                : () async {
+                                    await communityPostController.createPost(
+                                        title: post.title,
+                                        description: post.description,
+                                        category: post.category,
+                                        userId: post.userId,
+                                        username: post.username,
+                                        imageUrl: post.imageUrl,
+                                        postedByImageUrl: user.profileImageUrl,
+                                        isReposted: true,
+                                        repostedUserId: user.id,
+                                        repostedPostId: post.id,
+                                        context: context);
+                                    setState(() {
+                                      post.repostCount++;
+                                    });
+                                  },
                             icon: Icons.cached_outlined,
                             label: "${post.repostCount}",
                           ),

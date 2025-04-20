@@ -77,12 +77,21 @@ public class CommunityController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deletePost(@PathVariable String id){
+    public ResponseEntity<?> deletePost(@PathVariable String id,@RequestParam boolean isRepost){
         try {
-            communityService.deleteCommunityPost(id);
-            return ResponseEntity.ok(new HashMap<String, String>() {{
-                put("message", "Post deleted successfully");
-            }});
+            if(!isRepost){
+                communityService.deleteCommunityPost(id);
+                return ResponseEntity.ok(new HashMap<String, String>() {{
+                    put("message", "Post deleted successfully");
+                }});
+            }else{
+                communityService.deleteRepostCommunityPost(id);
+                return ResponseEntity.ok(new HashMap<String, String>() {{
+                    put("message", "Repost deleted successfully");
+                }});
+            }
+            
+            
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
@@ -123,6 +132,14 @@ public class CommunityController {
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }
-    
 
+    @GetMapping("/repost/check")
+    public ResponseEntity<?> checkRepost(@RequestParam String userId,@RequestParam String postId) {
+        try {
+            boolean hasReposted = communityService.hasUserReposted(userId, postId);
+            return ResponseEntity.ok(hasReposted);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
 }

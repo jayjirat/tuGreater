@@ -2,6 +2,7 @@ package tuGreaterBackend.cn333.backend.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -50,11 +51,30 @@ public class CommunityService {
     @Transactional
     public CommunityPost createCommunityPost(CommunityPost communityPost) {
         try {
-            return communityRepository.save(communityPost);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to create new post", e);
+
+        if (communityPost.getIsReposted()) {
+            String originalPostId = communityPost.getRepostedPostId();
+
+            Optional<CommunityPost> originalPostOpt = communityRepository.findById(originalPostId);
+
+            if (originalPostOpt.isPresent()) {
+                CommunityPost originalPost = originalPostOpt.get();
+                originalPost.setRepostCount(originalPost.getRepostCount() + 1);
+                communityRepository.save(originalPost);
+            } else {
+                throw new RuntimeException("Original post not found for repost.");
+            }
         }
+
+        return communityRepository.save(communityPost);
+
+    } catch (RuntimeException e) {
+        throw new RuntimeException("Failed to repost post", e);
+    }catch (Exception e) {
+        throw new RuntimeException("Unexpected error occurred while reposting post");
     }
+}
+
 
     public CommunityPost updateCommunityPost(String id, CommunityPost communityPost) throws Exception{
         try {
@@ -82,13 +102,18 @@ public class CommunityService {
     
     public void deleteCommunityPost(String id) {
         try {
+            List<CommunityPost> posts = communityRepository.findByRepostedPostId(id);
+            if (!posts.isEmpty()) {
+                for (CommunityPost post : posts) {
+                    post.setIsOriginalDeleted(true);
+                }
+                communityRepository.saveAll(posts);
+            }
             communityRepository.deleteById(id);
         } catch (Exception e) {
             throw new RuntimeException("Failed to delete post by id: " + id, e);
         }
     }
-
-    ;
 
     public List<CommunityPost> getCategoryPosts(String category) throws Exception {
         try {
@@ -126,6 +151,30 @@ public class CommunityService {
             return userPosts;
         } catch (Exception e) {
             throw new Exception("Unexpected error occurred while fetching user's posts by userId: " + userId, e);
+        }
+    }
+
+    public boolean hasUserReposted(String userId, String postId)throws Exception  {
+        try {
+            return communityRepository.existsByRepostedUserIdAndRepostedPostId(userId, postId);
+        } catch (Exception e) {
+            throw new Exception("Unexpected error occurred while checking repost by userId: " + userId, e);
+        }
+       
+    }
+
+    public void deleteRepostCommunityPost(String id) {
+        try {
+            communityRepository.deleteByRepostedPostId(id);
+            Optional<CommunityPost> originalPostOpt = communityRepository.findById(id);
+
+            if (originalPostOpt.isPresent()) {
+                CommunityPost originalPost = originalPostOpt.get();
+                originalPost.setRepostCount(originalPost.getRepostCount() - 1);
+                communityRepository.save(originalPost);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to delete post by id: " + id, e);
         }
     }
 }
