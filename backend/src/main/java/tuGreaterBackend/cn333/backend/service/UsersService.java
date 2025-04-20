@@ -14,9 +14,6 @@ import tuGreaterBackend.cn333.backend.entity.Comment;
 import tuGreaterBackend.cn333.backend.entity.CommunityPost;
 import tuGreaterBackend.cn333.backend.entity.Products;
 import tuGreaterBackend.cn333.backend.entity.Users;
-import tuGreaterBackend.cn333.backend.repository.CommentRepository;
-import tuGreaterBackend.cn333.backend.repository.CommunityRepository;
-import tuGreaterBackend.cn333.backend.repository.ProductsRepository;
 import tuGreaterBackend.cn333.backend.repository.UsersRepository;
 
 @Service
@@ -26,23 +23,12 @@ public class UsersService {
     private final UsersRepository usersRepository;
 
     @Autowired
-    private final CommunityRepository communityRepository;
-
-    @Autowired
-    private final CommentRepository commentRepository;
-
-    @Autowired
-    private final ProductsRepository productsRepository;
-
-    @Autowired
-    private MongoTemplate mongoTemplate;
+    private final MongoTemplate mongoTemplate;
 
 
-    public UsersService(UsersRepository usersRepository,CommunityRepository communityRepository,ProductsRepository productsRepository,CommentRepository commentRepository) {
+    public UsersService(UsersRepository usersRepository,MongoTemplate mongoTemplate) {
         this.usersRepository = usersRepository;
-        this.communityRepository = communityRepository;
-        this.productsRepository = productsRepository;
-        this.commentRepository = commentRepository;
+        this.mongoTemplate = mongoTemplate;
     }
 
     public List<Users> getUsers() throws Exception {
@@ -109,32 +95,6 @@ public class UsersService {
             throw new Exception("An error occurred while updating user ", e);
         }
 
-    }
-
-    public Users updateDisplayName(String id, String newDisplayName) {
-        Optional<Users> optionalUser = usersRepository.findById(id);
-        if (optionalUser.isPresent()) {
-            Users user = optionalUser.get();
-            user.setDisplayName(newDisplayName);
-            List<CommunityPost> posts = communityRepository.findByUserId(id);
-            if (!posts.isEmpty()) {
-                for (CommunityPost post : posts) {
-                    post.setUsername(newDisplayName);
-                }
-                communityRepository.saveAll(posts);
-            }
-
-            List<Products> products = productsRepository.findByProductOwnerId(id);
-            if (!products.isEmpty()) {
-                for (Products product : products) {
-                    product.setProductOwner(newDisplayName);
-                }
-                productsRepository.saveAll(products);
-            }  
-            return usersRepository.save(user);
-        } else {
-            throw new RuntimeException("User not found");
-        }
     }
 
     public Users updateDisplayNameById(String userId, String newDisplayName) {
