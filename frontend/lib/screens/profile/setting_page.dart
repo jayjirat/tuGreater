@@ -82,8 +82,8 @@ class _SettingPageState extends rp.ConsumerState<SettingPage> {
             ),
             Row(
               children: [
-                SvgPicture.network(
-                  'https://flagcdn.com/gb.svg',
+                SvgPicture.asset(
+                  'assets/svg/en.svg',
                   width: 25,
                   height: 25,
                   placeholderBuilder: (context) =>
@@ -116,8 +116,8 @@ class _SettingPageState extends rp.ConsumerState<SettingPage> {
                     ),
                   ),
                 ),
-                SvgPicture.network(
-                  'https://flagcdn.com/th.svg', // Thailand 🇹🇭
+                SvgPicture.asset(
+                  'assets/svg/th.svg', // Thailand 🇹🇭
                   width: 28,
                   height: 28,
                   placeholderBuilder: (context) =>
