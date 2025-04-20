@@ -157,29 +157,40 @@ class CommunityState extends ConsumerState<Community> {
               )
             else if (posts.isEmpty && !isLoading)
               Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                child: ListView(
                   children: [
-                    Icon(
-                      Icons.forum_outlined,
-                      size: 120,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                    const SizedBox(height: 32),
-                    Text(
-                      AppLocalizations.of(context)!.noPosts,
-                      style:
-                          Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      AppLocalizations.of(context)!.noPostsContent,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                      textAlign: TextAlign.center,
-                    ),
+                    SizedBox(
+                      height: (MediaQuery.of(context).size.height -
+                              kToolbarHeight) /
+                          2,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.forum_outlined,
+                            size: 120,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                          const SizedBox(height: 32),
+                          Text(
+                            AppLocalizations.of(context)!.noPosts,
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineSmall
+                                ?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            AppLocalizations.of(context)!.noPostsContent,
+                            style: Theme.of(context).textTheme.bodyMedium,
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    )
                   ],
                 ),
               )
