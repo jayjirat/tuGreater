@@ -102,14 +102,8 @@ public class CommunityService {
     
     public void deleteCommunityPost(String id) {
         try {
-            List<CommunityPost> posts = communityRepository.findByRepostedPostId(id);
-            if (!posts.isEmpty()) {
-                for (CommunityPost post : posts) {
-                    post.setIsOriginalDeleted(true);
-                }
-                communityRepository.saveAll(posts);
-            }
             communityRepository.deleteById(id);
+            communityRepository.deleteByRepostedPostId(id);
         } catch (Exception e) {
             throw new RuntimeException("Failed to delete post by id: " + id, e);
         }
@@ -147,7 +141,9 @@ public class CommunityService {
     public List<CommunityPost> getUserPosts(String userId) throws Exception {
         try {
             List<CommunityPost> userPosts = communityRepository.findByUserId(userId);
-           
+            List<CommunityPost> userRepost = communityRepository.findByRepostedUserId(userId);
+            userPosts.addAll(userRepost);
+
             return userPosts;
         } catch (Exception e) {
             throw new Exception("Unexpected error occurred while fetching user's posts by userId: " + userId, e);

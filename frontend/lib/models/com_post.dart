@@ -18,9 +18,6 @@ class CommuPost {
   final String? repostedUserId;
   final String? repostedUsername;
   final String? repostedPostId;
-  final bool? isOriginalDeleted;
-  final DateTime? repostCreatedAt;
-  final String? repostedUserImageUrl;
 
   CommuPost(
       {required this.id,
@@ -39,10 +36,7 @@ class CommuPost {
       this.isReposted = false,
       this.repostedUserId,
       this.repostedPostId,
-      this.isOriginalDeleted,
-      this.repostCreatedAt,
       this.postedByImageUrl,
-      this.repostedUserImageUrl,
       this.repostedUsername});
 
   // ฟังก์ชันแปลง JSON เป็น CommuPost
@@ -68,12 +62,7 @@ class CommuPost {
       isReposted: json['isReposted'] as bool,
       repostedUserId: json['repostedUserId'] as String?,
       repostedPostId: json['repostedPostId'] as String?,
-      isOriginalDeleted: json['isOriginalDeleted'] as bool?,
-      repostCreatedAt: json['repostCreatedAt'] != null
-          ? DateTime.parse(json['repostCreatedAt'] as String)
-          : null,
       postedByImageUrl: json['postedByImageUrl'] as String?,
-      repostedUserImageUrl: json['repostedUserImageUrl'] as String?,
       repostedUsername: json['repostedUsername'] as String?,
     );
   }

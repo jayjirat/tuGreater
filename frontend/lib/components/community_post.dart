@@ -8,7 +8,8 @@ Widget communityPost(
     required Widget nextRoute,
     required CommuPost post,
     required CommunityNotifier communityPostController,
-    required bool isfromProfile}) {
+    required bool isfromProfile,
+    required String userId}) {
   return InkWell(
     borderRadius: BorderRadius.circular(12),
     onTap: () async {
@@ -22,132 +23,187 @@ Widget communityPost(
         }
       }
     },
-    child: Card(
-      elevation: 6,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      color: Theme.of(context).cardColor,
+    child: postCard(
+        context: context,
+        post: post,
+        communityPostController: communityPostController,
+        isfromProfile: isfromProfile,
+        nextRoute: nextRoute,
+        userId: userId),
+  );
+}
+
+Widget postCard(
+    {required BuildContext context,
+    required CommuPost post,
+    required CommunityNotifier communityPostController,
+    required bool isfromProfile,
+    required Widget nextRoute,
+    required String userId,
+    double elevation = 6,
+    double borderWidth = 0}) {
+  return InkWell(
+      borderRadius: BorderRadius.circular(12),
+      onTap: () async {
+        await Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => nextRoute),
+        );
+        if (!isfromProfile) {
+          if (context.mounted) {
+            communityPostController.fetchPosts(context: context);
+          }
+        }
+      },
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ListTile(
-            leading:
-                post.postedByImageUrl == "" || post.postedByImageUrl == null
-                    ? CircleAvatar(
-                        radius: 24,
-                        backgroundColor: Theme.of(context).primaryColorDark,
-                        child: Icon(
-                          Icons.account_circle,
-                          size: 48,
-                          color: Theme.of(context).cardColor,
-                        ),
-                      )
-                    : CircleAvatar(
-                        radius: 24,
-                        backgroundImage: NetworkImage(post.postedByImageUrl!),
-                        backgroundColor: Colors.transparent,
-                      ),
-            title: Text(
-              post.username,
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            subtitle: Row(
+          if (post.isReposted)
+            Row(
               children: [
-                Text(
-                  post.createdAt.toString(),
-                  style: TextStyle(color: Colors.grey[600]),
-                ),
-                Text(
-                  post.isEdited
-                      ? " (${AppLocalizations.of(context)!.edit})"
-                      : "",
-                  style: TextStyle(color: Colors.grey[600]),
-                ),
+                Icon(Icons.repeat_outlined, color: Colors.grey[600]),
+                post.repostedUserId == userId
+                    ? Text(
+                        "${AppLocalizations.of(context)!.you}${AppLocalizations.of(context)!.reposted}")
+                    : Text(
+                        "${post.repostedUsername} ${AppLocalizations.of(context)!.reposted}"),
               ],
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
+          Card(
+            elevation: elevation,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+                side: borderWidth == 0
+                    ? BorderSide.none
+                    : BorderSide(width: borderWidth)),
+            color: Theme.of(context).cardColor,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        post.title,
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade300,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        getLocalizedCategory(post.category, context),
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black87,
+                ListTile(
+                  leading: post.postedByImageUrl == "" ||
+                          post.postedByImageUrl == null
+                      ? CircleAvatar(
+                          radius: 24,
+                          backgroundColor: Theme.of(context).primaryColorDark,
+                          child: Icon(
+                            Icons.account_circle,
+                            size: 48,
+                            color: Theme.of(context).cardColor,
+                          ),
+                        )
+                      : CircleAvatar(
+                          radius: 24,
+                          backgroundImage: NetworkImage(post.postedByImageUrl!),
+                          backgroundColor: Colors.transparent,
                         ),
+                  title: Text(
+                    post.username,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  subtitle: Row(
+                    children: [
+                      Text(
+                        post.createdAt.toString(),
+                        style: TextStyle(color: Colors.grey[600]),
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  post.description,
-                  style: TextStyle(
-                    color: Colors.grey[600],
+                      Text(
+                        post.isEdited
+                            ? " (${AppLocalizations.of(context)!.edit})"
+                            : "",
+                        style: TextStyle(color: Colors.grey[600]),
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 10),
-                post.imageUrl != ""
-                    ? ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
-                        child: Image.network(
-                          post.imageUrl!,
-                          fit: BoxFit.cover,
-                          // height: 200,
-                          width: double.infinity,
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              post.title,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 6),
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade300,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(
+                              getLocalizedCategory(post.category, context),
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black87,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      if (post.description != "") const SizedBox(height: 10),
+                      if (post.description != "")
+                        Text(
+                          post.description,
+                          style: TextStyle(
+                            color: Colors.grey[600],
+                          ),
                         ),
-                      )
-                    : Container(),
-                const SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    buildActionButton(
-                      context: context,
-                      icon: Icons.thumb_up_alt_outlined,
-                      label: "${post.likeCount}",
-                    ),
-                    buildActionButton(
-                      context: context,
-                      icon: Icons.comment_outlined,
-                      label: "${post.commentCount}",
-                    ),
-                    buildActionButton(
-                      context: context,
-                      icon: Icons.repeat_outlined,
-                      label: "${post.repostCount}",
-                    ),
-                  ],
-                ),
+                      const SizedBox(height: 10),
+                      post.imageUrl != ""
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: Image.network(
+                                post.imageUrl!,
+                                fit: BoxFit.cover,
+                                // height: 200,
+                                width: double.infinity,
+                              ),
+                            )
+                          : Container(),
+                      const SizedBox(height: 10),
+                      if (!post.isReposted)
+                        actionButtons(context: context, post: post)
+                    ],
+                  ),
+                )
               ],
             ),
-          )
+          ),
         ],
+      ));
+}
+
+Widget actionButtons({required BuildContext context, required CommuPost post}) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    children: [
+      buildActionButton(
+        context: context,
+        icon: Icons.thumb_up_alt_outlined,
+        label: "${post.likeCount}",
       ),
-    ),
+      buildActionButton(
+        context: context,
+        icon: Icons.comment_outlined,
+        label: "${post.commentCount}",
+      ),
+      buildActionButton(
+        context: context,
+        icon: Icons.repeat_outlined,
+        label: "${post.repostCount}",
+      ),
+    ],
   );
 }
 

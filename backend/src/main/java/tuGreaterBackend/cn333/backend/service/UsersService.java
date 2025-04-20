@@ -154,10 +154,6 @@ public class UsersService {
                     Query query2 = new Query(Criteria.where("userId").is(userId));
                     Update update2 = new Update().set("commentedByImageUrl", profileImageUrl);
                     mongoTemplate.updateMulti(query2, update2, Comment.class);
-
-                    Query query3 = new Query(Criteria.where("repostedUserId").is(userId));
-                    Update update3 = new Update().set("repostedUserImageUrl", profileImageUrl);
-                    mongoTemplate.updateMulti(query3, update3, CommunityPost.class);
                     
                     return updatedUser;
             }

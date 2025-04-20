@@ -237,11 +237,13 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                                         icon: Icon(Icons.report_outlined))
                                 ],
                               ),
-                              const SizedBox(height: 4),
-                              Text(
-                                post.description,
-                                style: TextStyle(fontSize: 16),
-                              ),
+                              if (post.description != "")
+                                const SizedBox(height: 4),
+                              if (post.description != "")
+                                Text(
+                                  post.description,
+                                  style: TextStyle(fontSize: 16),
+                                ),
                               const SizedBox(height: 12),
                               post.imageUrl != ""
                                   ? ClipRRect(
@@ -327,7 +329,8 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                                     ? () {
                                         showToast(
                                             message:
-                                                "You cannot repost a reposted post.",
+                                                AppLocalizations.of(context)!
+                                                    .cannotRepostedPost,
                                             toastType: ToastType.info);
                                       }
                                     : (isReposted
@@ -358,8 +361,6 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                                                     isReposted: true,
                                                     repostedUserId: user.id,
                                                     repostedPostId: post.id,
-                                                    repostedUserImageUrl:
-                                                        user.profileImageUrl,
                                                     repostedUsername:
                                                         user.displayName,
                                                     context: context);
@@ -370,8 +371,8 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                                           }))
                                 : () {
                                     showToast(
-                                        message:
-                                            "You cannot repost your own post.",
+                                        message: AppLocalizations.of(context)!
+                                            .cannotRepostOwnPost,
                                         toastType: ToastType.info);
                                   },
                             icon: isReposted
@@ -428,7 +429,8 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                                             : CircleAvatar(
                                                 radius: 20,
                                                 backgroundImage: NetworkImage(
-                                                    post.postedByImageUrl!),
+                                                    comments[index]
+                                                        .commentedByImageUrl!),
                                                 backgroundColor:
                                                     Colors.transparent,
                                               ),

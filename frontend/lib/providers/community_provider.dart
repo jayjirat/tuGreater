@@ -112,7 +112,6 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
       String? repostedUserId,
       String? repostedPostId,
       required BuildContext context,
-      String? repostedUserImageUrl,
       String? repostedUsername}) async {
     final url = '$baseURL/community';
     try {
@@ -136,9 +135,6 @@ class CommunityNotifier extends StateNotifier<List<CommuPost>> {
         'isReposted': isReposted,
         'repostedUserId': repostedUserId,
         'repostedPostId': repostedPostId,
-        'isOriginalDeleted': false,
-        'repostCreatedAt': isReposted ? DateTime.now().toIso8601String() : null,
-        'repostedUserImageUrl': repostedUserImageUrl,
         'repostedUsername': repostedUsername
       };
 

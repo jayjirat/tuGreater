@@ -174,7 +174,11 @@
     "no_image":"Please select at least one image",
     "no_name":"Please enter product name",
     "no_price":"Please enter product price",
-    "choose_from_gallery": "Choose from gallery",
     "error_getdisplayname": "Failed to get display name",
-    "error_updatedisplayname" : "Failed to update display name"
+    "error_updatedisplayname" : "Failed to update display name",
+
+    "cannotRepostOwnPost":"You cannot repost your own post.",
+    "cannotRepostedPost":"You cannot repost a reposted post.",
+    "you" : "You ",
+    "reposted" : "reposted"
 }

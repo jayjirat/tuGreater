@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/components/community_post.dart';
 import 'package:frontend/providers/community_provider.dart';
+import 'package:frontend/providers/user_provider.dart';
 import 'package:frontend/screens/community/community_view_post.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:frontend/screens/error_page.dart';
@@ -61,6 +62,7 @@ class CommunityState extends ConsumerState<Community> {
     final posts = ref.watch(communityProvider);
     final communityPostController = ref.read(communityProvider.notifier);
     final isLoading = ref.watch(communityProvider.notifier).isLoading;
+    final user = ref.read(userProvider);
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
       child: Column(
@@ -127,10 +129,13 @@ class CommunityState extends ConsumerState<Community> {
                     children: [
                       communityPost(
                           context: context,
-                          nextRoute: CommunityViewpost(id: post.id),
+                          nextRoute: post.isReposted
+                              ? CommunityViewpost(id: post.repostedPostId!)
+                              : CommunityViewpost(id: post.id),
                           post: post,
                           communityPostController: communityPostController,
-                          isfromProfile: false),
+                          isfromProfile: false,
+                          userId: user!.id),
                       const SizedBox(height: 12),
                     ],
                   );

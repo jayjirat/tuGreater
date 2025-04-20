@@ -115,7 +115,8 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
                     nextRoute: CommunityViewpost(id: post.id),
                     post: post,
                     communityPostController: communityPostController,
-                    isfromProfile: true),
+                    isfromProfile: true,
+                    userId: loadedUser!.id),
                 const SizedBox(height: 12),
               ],
             );
@@ -142,7 +143,15 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
                         height: 120,
                         width: MediaQuery.of(context).size.width,
                         decoration: BoxDecoration(
-                          color: Color.fromARGB(255, 240, 239, 239),
+                          color: Theme.of(context).cardColor,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black
+                                  .withValues(alpha: 0.2), // เงาบางๆ
+                              blurRadius: 5, // ความฟุ้งของเงา
+                              offset: Offset(0, 4), // แนวเงา (แนวตั้งลงล่าง)
+                            ),
+                          ],
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Row(
@@ -176,7 +185,6 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
                                       product.productName,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
-                                        color: Colors.black,
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -197,9 +205,10 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
                                             },
                                             style: FilledButton.styleFrom(
                                               backgroundColor:
-                                                  Colors.white.withOpacity(0.8),
-                                              foregroundColor: Colors.black,
-                                              elevation: 0,
+                                                  Theme.of(context).cardColor,
+                                              foregroundColor:
+                                                  Theme.of(context).canvasColor,
+                                              elevation: 1.2,
                                             ),
                                             child: Text(
                                                 AppLocalizations.of(context)!

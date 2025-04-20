@@ -27,9 +27,6 @@ public class CommunityPost {
     private boolean isReposted;
     private String repostedUserId;
     private String repostedPostId;
-    private boolean isOriginalDeleted;
-    private LocalDateTime repostCreatedAt;
-    private String repostedUserImageUrl;
     private String repostedUsername;
 
 
@@ -175,34 +172,6 @@ public class CommunityPost {
 
     public void setRepostedPostId(String repostedPostId) {
         this.repostedPostId = repostedPostId;
-    }
-
-    public boolean isIsOriginalDeleted() {
-        return this.isOriginalDeleted;
-    }
-
-    public boolean getIsOriginalDeleted() {
-        return this.isOriginalDeleted;
-    }
-
-    public void setIsOriginalDeleted(boolean isOriginalDeleted) {
-        this.isOriginalDeleted = isOriginalDeleted;
-    }
-
-    public LocalDateTime getRepostCreatedAt() {
-        return this.repostCreatedAt;
-    }
-
-    public void setRepostCreatedAt(LocalDateTime repostCreatedAt) {
-        this.repostCreatedAt = repostCreatedAt;
-    }
-
-    public String getRepostedUserImageUrl() {
-        return this.repostedUserImageUrl;
-    }
-
-    public void setRepostedUserImageUrl(String repostedUserImageUrl) {
-        this.repostedUserImageUrl = repostedUserImageUrl;
     }
 
     public String getRepostedUsername() {
