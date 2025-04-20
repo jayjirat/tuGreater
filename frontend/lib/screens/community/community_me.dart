@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/components/community_post.dart';
@@ -172,8 +173,21 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: product.productImageUrls.isNotEmpty
-                                  ? Image.network(product.productImageUrls[0],
-                                      fit: BoxFit.cover)
+                                  ? CachedNetworkImage(
+                                      imageUrl: product.productImageUrls[0],
+                                      fit: BoxFit.cover,
+                                      placeholder: (context, url) => Center(
+                                        child: SizedBox(
+                                          width: 24,
+                                          height: 24,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2.5,
+                                          ),
+                                        ),
+                                      ),
+                                      errorWidget: (context, url, error) =>
+                                          Icon(Icons.error),
+                                    )
                                   : Icon(
                                       Icons.image_not_supported,
                                       color: Theme.of(context).cardColor,

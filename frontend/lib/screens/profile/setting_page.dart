@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
@@ -44,20 +45,21 @@ class _SettingPageState extends rp.ConsumerState<SettingPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Image.network(
-                        user?.profileImageUrl ??
+                      CachedNetworkImage(
+                        imageUrl: user?.profileImageUrl ??
                             'https://default-placeholder-url.com/image.png',
                         width: 100,
                         fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Container(
-                            width: 100,
-                            height: 100,
-                            color: Colors.grey[300],
-                            child: Icon(Icons.person,
-                                size: 50, color: Colors.grey[600]),
-                          );
-                        },
+                        placeholder: (context, url) => Center(
+                          child: SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2.5,
+                            ),
+                          ),
+                        ),
+                        errorWidget: (context, url, error) => Icon(Icons.error),
                       ),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,

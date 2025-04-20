@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/components/toast.dart';
@@ -302,37 +303,22 @@ class _EditItemsState extends ConsumerState<EditItems> {
                                   final item = allImages[index];
                                   if (item["type"] == "url") {
                                     final String url = item["data"] as String;
-                                    return Image.network(
-                                      url,
+                                    return CachedNetworkImage(
+                                      imageUrl: url,
                                       width: 100,
                                       height: 100,
                                       fit: BoxFit.cover,
-                                      loadingBuilder:
-                                          (context, child, loadingProgress) {
-                                        if (loadingProgress == null) {
-                                          return child;
-                                        }
-                                        return Center(
+                                      placeholder: (context, url) => Center(
+                                        child: SizedBox(
+                                          width: 24,
+                                          height: 24,
                                           child: CircularProgressIndicator(
-                                            value: loadingProgress
-                                                        .expectedTotalBytes !=
-                                                    null
-                                                ? loadingProgress
-                                                        .cumulativeBytesLoaded /
-                                                    loadingProgress
-                                                        .expectedTotalBytes!
-                                                : null,
+                                            strokeWidth: 2.5,
                                           ),
-                                        );
-                                      },
-                                      errorBuilder:
-                                          (context, error, stackTrace) {
-                                        return Container(
-                                          color: Colors.grey[300],
-                                          child: Icon(Icons.broken_image,
-                                              color: Colors.grey[600]),
-                                        );
-                                      },
+                                        ),
+                                      ),
+                                      errorWidget: (context, url, error) =>
+                                          Icon(Icons.error),
                                     );
                                   } else {
                                     final File file = item["data"] as File;

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -255,11 +256,22 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                                 post.imageUrl != ""
                                     ? ClipRRect(
                                         borderRadius: BorderRadius.circular(20),
-                                        child: Image.network(
-                                          post.imageUrl!,
+                                        child: CachedNetworkImage(
+                                          imageUrl: post.imageUrl!,
                                           fit: BoxFit.cover,
                                           // height: 200,
                                           width: double.infinity,
+                                          placeholder: (context, url) => Center(
+                                            child: SizedBox(
+                                              width: 24,
+                                              height: 24,
+                                              child: CircularProgressIndicator(
+                                                strokeWidth: 2.5,
+                                              ),
+                                            ),
+                                          ),
+                                          errorWidget: (context, url, error) =>
+                                              Icon(Icons.error),
                                         ),
                                       )
                                     : Container(),

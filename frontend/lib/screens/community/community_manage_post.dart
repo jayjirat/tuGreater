@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 // import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -220,11 +221,22 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
                                   height: 200,
                                   fit: BoxFit.cover,
                                 )
-                              : Image.network(
-                                  editPost.imageUrl,
+                              : CachedNetworkImage(
+                                  imageUrl: editPost.imageUrl,
                                   width: 200,
                                   height: 200,
                                   fit: BoxFit.cover,
+                                  placeholder: (context, url) => Center(
+                                    child: SizedBox(
+                                      width: 24,
+                                      height: 24,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2.5,
+                                      ),
+                                    ),
+                                  ),
+                                  errorWidget: (context, url, error) =>
+                                      Icon(Icons.error),
                                 ),
                           const SizedBox(
                             height: 10,
