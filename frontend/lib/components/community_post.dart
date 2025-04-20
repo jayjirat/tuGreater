@@ -33,15 +33,14 @@ Widget communityPost(
   );
 }
 
-Widget postCard(
-    {required BuildContext context,
-    required CommuPost post,
-    required CommunityNotifier communityPostController,
-    required bool isfromProfile,
-    required Widget nextRoute,
-    required String userId,
-    double elevation = 6,
-    double borderWidth = 0}) {
+Widget postCard({
+  required BuildContext context,
+  required CommuPost post,
+  required CommunityNotifier communityPostController,
+  required bool isfromProfile,
+  required Widget nextRoute,
+  required String userId,
+}) {
   return InkWell(
       borderRadius: BorderRadius.circular(12),
       onTap: () async {
@@ -70,12 +69,10 @@ Widget postCard(
               ],
             ),
           Card(
-            elevation: elevation,
+            elevation: 6,
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-                side: borderWidth == 0
-                    ? BorderSide.none
-                    : BorderSide(width: borderWidth)),
+              borderRadius: BorderRadius.circular(12),
+            ),
             color: Theme.of(context).cardColor,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

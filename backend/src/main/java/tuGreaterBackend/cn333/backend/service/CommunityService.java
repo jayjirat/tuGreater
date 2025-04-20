@@ -111,7 +111,7 @@ public class CommunityService {
 
     public List<CommunityPost> getCategoryPosts(String category) throws Exception {
         try {
-            List<CommunityPost> fliterPosts = communityRepository.findByCategory(category);
+            List<CommunityPost> fliterPosts = communityRepository.findByCategoryOrderByCreatedAtDesc(category);
 
             if(fliterPosts.isEmpty()){
                 throw new RuntimeException("No posts found for category: " + category);
@@ -126,7 +126,7 @@ public class CommunityService {
 
     public List<CommunityPost> getPostsByQueryTitle(String query) throws Exception {
         try {
-            List<CommunityPost> queryPosts = communityRepository.findByTitleContainingIgnoreCase(query);
+            List<CommunityPost> queryPosts = communityRepository.findByTitleContainingIgnoreCaseOrderByCreatedAtDesc(query);
             if(queryPosts.isEmpty()){
                 throw new RuntimeException("No posts found for query: " + query);
             }
@@ -140,9 +140,12 @@ public class CommunityService {
 
     public List<CommunityPost> getUserPosts(String userId) throws Exception {
         try {
-            List<CommunityPost> userPosts = communityRepository.findByUserId(userId);
-            List<CommunityPost> userRepost = communityRepository.findByRepostedUserId(userId);
+            List<CommunityPost> userPosts = communityRepository.findByUserIdOrderByCreatedAtDesc(userId);
+            List<CommunityPost> userRepost = communityRepository.findByRepostedUserIdOrderByCreatedAtDesc(userId);
             userPosts.addAll(userRepost);
+            userPosts.sort((p1, p2) -> 
+                p2.getCreatedAt().compareTo(p1.getCreatedAt())
+            );
 
             return userPosts;
         } catch (Exception e) {
