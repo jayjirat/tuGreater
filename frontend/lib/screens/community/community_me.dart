@@ -344,16 +344,16 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
           children: [
             loadedUser!.profileImageUrl == ""
                 ? CircleAvatar(
-                    radius: 60,
+                    radius: MediaQuery.of(context).size.width > 360 ? 60 : 40,
                     backgroundColor: Theme.of(context).primaryColorDark,
                     child: Icon(
                       Icons.account_circle,
-                      size: 120,
+                      size: MediaQuery.of(context).size.width > 360 ? 120 : 80,
                       color: Theme.of(context).cardColor,
                     ),
                   )
                 : CircleAvatar(
-                    radius: 60,
+                    radius: MediaQuery.of(context).size.width > 360 ? 60 : 40,
                     backgroundImage:
                         CachedNetworkImageProvider(loadedUser!.profileImageUrl),
                     backgroundColor: Colors.transparent,
@@ -372,8 +372,8 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
                 fontWeight: FontWeight.w600,
               ),
             ),
-            const SizedBox(
-              height: 24,
+            SizedBox(
+              height: MediaQuery.of(context).size.width > 360 ? 24 : 10,
             ),
             Container(
               padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 8),
@@ -415,8 +415,8 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
                 ],
               ),
             ),
-            const SizedBox(
-              height: 20,
+            SizedBox(
+              height: MediaQuery.of(context).size.width > 360 ? 20 : 10,
             ),
             swapPage[_selectedIndex]
           ],
