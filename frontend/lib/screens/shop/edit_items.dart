@@ -380,9 +380,11 @@ class _EditItemsState extends ConsumerState<EditItems> {
                 Row(
                   children: [
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width * 0.05,
+                      ),
                       child: SizedBox(
-                        width: 180,
+                        width: MediaQuery.of(context).size.width * 0.45,
                         child: Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
@@ -395,11 +397,13 @@ class _EditItemsState extends ConsumerState<EditItems> {
                         ),
                       ),
                     ),
-                    SizedBox(width: 20),
+                    SizedBox(width: MediaQuery.of(context).size.width * 0.03),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width * 0.10,
+                      ),
                       child: SizedBox(
-                        width: 100,
+                        width: MediaQuery.of(context).size.width * 0.2,
                         child: Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
@@ -420,7 +424,7 @@ class _EditItemsState extends ConsumerState<EditItems> {
                       padding:
                           EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                       child: SizedBox(
-                        width: 200,
+                        width: (MediaQuery.of(context).size.width) * 0.5,
                         child: TextField(
                           controller: nameController,
                           decoration: InputDecoration(),
@@ -431,7 +435,7 @@ class _EditItemsState extends ConsumerState<EditItems> {
                       padding:
                           EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                       child: SizedBox(
-                        width: 100,
+                        width: (MediaQuery.of(context).size.width) * 0.2,
                         child: TextField(
                           controller: priceController,
                           keyboardType: TextInputType.number,
@@ -500,7 +504,7 @@ class _EditItemsState extends ConsumerState<EditItems> {
                   child: Row(
                     children: [
                       SizedBox(
-                        width: 110,
+                        width: (MediaQuery.of(context).size.width - 60) / 3,
                         child: Row(
                           children: [
                             Checkbox(
@@ -523,9 +527,8 @@ class _EditItemsState extends ConsumerState<EditItems> {
                           ],
                         ),
                       ),
-                      SizedBox(width: 10),
                       SizedBox(
-                        width: 110,
+                        width: (MediaQuery.of(context).size.width - 60) / 3,
                         child: Row(
                           children: [
                             Checkbox(
@@ -548,9 +551,8 @@ class _EditItemsState extends ConsumerState<EditItems> {
                           ],
                         ),
                       ),
-                      SizedBox(width: 10),
                       SizedBox(
-                        width: 130,
+                        width: (MediaQuery.of(context).size.width - 15) / 3,
                         child: Row(
                           children: [
                             Checkbox(
@@ -581,7 +583,7 @@ class _EditItemsState extends ConsumerState<EditItems> {
                   child: Row(
                     children: [
                       SizedBox(
-                        width: 110,
+                        width: (MediaQuery.of(context).size.width - 60) / 3,
                         child: Row(
                           children: [
                             Checkbox(
@@ -604,9 +606,8 @@ class _EditItemsState extends ConsumerState<EditItems> {
                           ],
                         ),
                       ),
-                      SizedBox(width: 10),
                       SizedBox(
-                        width: 110,
+                        width: (MediaQuery.of(context).size.width - 60) / 3,
                         child: Row(
                           children: [
                             Checkbox(
@@ -629,9 +630,8 @@ class _EditItemsState extends ConsumerState<EditItems> {
                           ],
                         ),
                       ),
-                      SizedBox(width: 10),
                       SizedBox(
-                        width: 130,
+                        width: (MediaQuery.of(context).size.width - 15) / 3,
                         child: Row(
                           children: [
                             Checkbox(
