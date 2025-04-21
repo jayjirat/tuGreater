@@ -89,20 +89,13 @@ class GridItems extends ConsumerWidget {
                                     height: 175,
                                     child: product.productImageUrls.isNotEmpty
                                         ? CachedNetworkImage(
+                                            useOldImageOnUrlChange: true,
+                                            fadeInDuration: Duration.zero,
                                             imageUrl:
                                                 product.productImageUrls[0],
                                             fit: BoxFit.cover,
                                             placeholder: (context, url) =>
-                                                Center(
-                                              child: SizedBox(
-                                                width: 24,
-                                                height: 24,
-                                                child:
-                                                    CircularProgressIndicator(
-                                                  strokeWidth: 2.5,
-                                                ),
-                                              ),
-                                            ),
+                                                SizedBox(),
                                             errorWidget:
                                                 (context, url, error) =>
                                                     Icon(Icons.error),

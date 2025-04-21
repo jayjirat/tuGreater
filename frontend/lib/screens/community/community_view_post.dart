@@ -257,19 +257,14 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                                     ? ClipRRect(
                                         borderRadius: BorderRadius.circular(20),
                                         child: CachedNetworkImage(
+                                          useOldImageOnUrlChange: true,
+                                          fadeInDuration: Duration.zero,
                                           imageUrl: post.imageUrl!,
                                           fit: BoxFit.cover,
                                           // height: 200,
                                           width: double.infinity,
-                                          placeholder: (context, url) => Center(
-                                            child: SizedBox(
-                                              width: 24,
-                                              height: 24,
-                                              child: CircularProgressIndicator(
-                                                strokeWidth: 2.5,
-                                              ),
-                                            ),
-                                          ),
+                                          placeholder: (context, url) =>
+                                              SizedBox(),
                                           errorWidget: (context, url, error) =>
                                               Icon(Icons.error),
                                         ),

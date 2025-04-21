@@ -304,19 +304,13 @@ class _EditItemsState extends ConsumerState<EditItems> {
                                   if (item["type"] == "url") {
                                     final String url = item["data"] as String;
                                     return CachedNetworkImage(
+                                      useOldImageOnUrlChange: true,
+                                      fadeInDuration: Duration.zero,
                                       imageUrl: url,
                                       width: 100,
                                       height: 100,
                                       fit: BoxFit.cover,
-                                      placeholder: (context, url) => Center(
-                                        child: SizedBox(
-                                          width: 24,
-                                          height: 24,
-                                          child: CircularProgressIndicator(
-                                            strokeWidth: 2.5,
-                                          ),
-                                        ),
-                                      ),
+                                      placeholder: (context, url) => SizedBox(),
                                       errorWidget: (context, url, error) =>
                                           Icon(Icons.error),
                                     );

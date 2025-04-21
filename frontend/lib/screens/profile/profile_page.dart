@@ -234,19 +234,13 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                     MainAxisAlignment.spaceEvenly,
                                 children: [
                                   CachedNetworkImage(
+                                    useOldImageOnUrlChange: true,
+                                    fadeInDuration: Duration.zero,
                                     imageUrl: user?.profileImageUrl ??
                                         'https://default-placeholder-url.com/image.png',
                                     width: 100,
                                     fit: BoxFit.cover,
-                                    placeholder: (context, url) => Center(
-                                      child: SizedBox(
-                                        width: 24,
-                                        height: 24,
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 2.5,
-                                        ),
-                                      ),
-                                    ),
+                                    placeholder: (context, url) => SizedBox(),
                                     errorWidget: (context, url, error) =>
                                         Icon(Icons.error),
                                   ),
