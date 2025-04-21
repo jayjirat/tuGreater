@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-Widget loginStack({required Widget child}) {
+final double toolBarHeight = 150;
+Widget loginStack({required Widget child, required BuildContext context}) {
   return Scaffold(
       appBar: AppBar(
         title: Column(
@@ -13,7 +14,7 @@ Widget loginStack({required Widget child}) {
             Text("TU Greater makes TU better", style: TextStyle(fontSize: 16)),
           ],
         ),
-        toolbarHeight: 150,
+        toolbarHeight: toolBarHeight,
         foregroundColor: Colors.white,
         centerTitle: true,
         backgroundColor: Color(0xFFE95C00),
@@ -26,16 +27,30 @@ Widget loginStack({required Widget child}) {
           ),
         ),
         SingleChildScrollView(
-            child: Container(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              minHeight: MediaQuery.of(context).size.height -
+                  AppBar().preferredSize.height -
+                  MediaQuery.of(context).padding.top -
+                  toolBarHeight,
+            ),
+            child: IntrinsicHeight(
+              child: Container(
                 padding: const EdgeInsets.only(top: 30),
                 decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(30),
-                        topRight: Radius.circular(30)),
-                    color: Colors.white),
+                  borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(30),
+                      topRight: Radius.circular(30)),
+                  color: Colors.white,
+                ),
                 child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 30, vertical: 10),
-                    child: child)))
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                  child: child,
+                ),
+              ),
+            ),
+          ),
+        ),
       ]));
 }

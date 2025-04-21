@@ -38,6 +38,7 @@ class LoginState extends ConsumerState<Login> {
   @override
   Widget build(BuildContext context) {
     return loginStack(
+      context: context,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -92,9 +93,6 @@ class LoginState extends ConsumerState<Login> {
                 ),
               ],
             ),
-          ),
-          const SizedBox(
-            height: 200,
           ),
           Text(
             "TU GREATER 0.0.1 (2025030201)",

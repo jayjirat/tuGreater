@@ -11,8 +11,9 @@ class ConfirmationPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.read(userProvider);
     return loginStack(
+      context: context,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const SizedBox(
