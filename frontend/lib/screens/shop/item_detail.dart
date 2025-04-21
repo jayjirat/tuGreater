@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:frontend/components/FullScreenImageViewer.dart';
 import 'package:frontend/components/item_image_slider.dart';
 import 'package:frontend/components/report_modal.dart';
 import 'package:frontend/components/toolbar.dart';
@@ -41,7 +42,22 @@ class ItemDetail extends ConsumerWidget {
                     children: [
                       Center(
                         child: product.productImageUrls.isNotEmpty
-                            ? ItemImageSlider(images: product.productImageUrls)
+                            ? GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          FullScreenImageViewer(
+                                        images: product.productImageUrls,
+                                        initialIndex: 0,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: ItemImageSlider(
+                                    images: product.productImageUrls),
+                              )
                             : Container(
                                 decoration:
                                     BoxDecoration(color: Colors.grey.shade100),

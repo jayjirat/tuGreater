@@ -102,7 +102,7 @@ class _FilterModalState extends State<FilterModal> {
               Row(
                 children: [
                   SizedBox(
-                    width: (MediaQuery.of(context).size.width) * 0.46,
+                    width: (MediaQuery.of(context).size.width) * 0.45,
                     child: Text(
                       AppLocalizations.of(context)!.filter_min_price,
                       style:

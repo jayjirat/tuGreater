@@ -318,7 +318,7 @@ class _AddItemsState extends ConsumerState<AddItems> {
                       horizontal: MediaQuery.of(context).size.width * 0.05,
                     ),
                     child: SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.45,
+                      width: MediaQuery.of(context).size.width * 0.42,
                       child: Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
