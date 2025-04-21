@@ -384,7 +384,7 @@ class _EditItemsState extends ConsumerState<EditItems> {
                         horizontal: MediaQuery.of(context).size.width * 0.05,
                       ),
                       child: SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.42,
+                        width: MediaQuery.of(context).size.width * 0.43,
                         child: Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
