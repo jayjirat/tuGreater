@@ -7,7 +7,8 @@ Widget communityPost(
     {required BuildContext context,
     required Widget nextRoute,
     required CommuPost post,
-    required CommunityNotifier communityPostController}) {
+    required CommunityNotifier communityPostController,
+    required bool isfromProfile}) {
   return InkWell(
     borderRadius: BorderRadius.circular(12),
     onTap: () async {
@@ -15,8 +16,10 @@ Widget communityPost(
         context,
         MaterialPageRoute(builder: (context) => nextRoute),
       );
-      if (context.mounted) {
-        communityPostController.fetchPosts(context: context);
+      if (!isfromProfile) {
+        if (context.mounted) {
+          communityPostController.fetchPosts(context: context);
+        }
       }
     },
     child: Card(

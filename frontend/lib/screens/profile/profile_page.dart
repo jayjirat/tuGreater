@@ -9,12 +9,11 @@ import 'package:frontend/screens/profile/uploadprofile_page.dart';
 import 'package:frontend/services/displayname_api_service.dart';
 import 'package:frontend/providers/user_provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:frontend/exception/timeout_exception.dart';
 
 class ProfilePage extends ConsumerStatefulWidget {
-  final String studentId;
-  const ProfilePage({super.key, required this.studentId});
+  final String userId;
+  const ProfilePage({super.key, required this.userId});
 
   @override
   ConsumerState<ProfilePage> createState() => _ProfilePageState();
@@ -25,13 +24,12 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
   String displayName = "Loading...";
   bool _isLoading = true;
   String _errorMessage = '';
-  late String studentId;
-
+  late dynamic user;
   @override
   void initState() {
     super.initState();
+    user = ref.read(userProvider);
     _loadStudentDisplayName();
-    studentId = widget.studentId;
   }
 
   Future<void> _loadStudentDisplayName() async {
@@ -43,7 +41,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
     });
 
     try {
-      final name = await _apiService.getStudentDisplayName(widget.studentId);
+      final name = await _apiService.getStudentDisplayName(user.id);
 
       if (!mounted) return;
 
@@ -65,14 +63,10 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
       if (!mounted) {
         return;
       }
-      Fluttertoast.showToast(
-          msg: "This is Center Short Toast",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0);
+      showToast(
+        message: AppLocalizations.of(context)!.error_getdisplayname,
+        toastType: ToastType.error,
+      );
       setState(() {
         _isLoading = false;
       });
@@ -92,8 +86,11 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
     });
 
     try {
-      final success =
-          await _apiService.updateStudentDisplayName(widget.studentId, newName);
+      final success = await ref.read(userProvider.notifier).updateDisplayName(
+            userId: user.id,
+            newDisplayName: newName,
+            context: context,
+          );
 
       if (!mounted) return;
 
@@ -112,7 +109,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
           displayName = previousName; // Revert to previous name
         });
         showToast(
-          message: 'Failed to update display name',
+          message: AppLocalizations.of(context)!.error_updatedisplayname,
           toastType: ToastType.error,
         );
         // _showSnackBar('Failed to update display name', isError: true);
@@ -141,6 +138,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
         return AlertDialog(
           title: const Text('Change Display Name'),
           content: TextField(
+            maxLength: 15,
             controller: nameController,
             decoration: const InputDecoration(
               labelText: 'New Display Name',
@@ -160,7 +158,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                 Navigator.of(dialogContext).pop();
                 // Call update method after dialog is closed
                 _updateDisplayName(newName);
-                ref.read(userProvider.notifier).loadUser(studentId);
+                ref.read(userProvider.notifier).loadUser(user.id);
               },
               child: const Text('Save'),
             ),
@@ -191,9 +189,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                 )
               : Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  child: ListView(
                     children: [
                       Row(
                         children: [
@@ -205,7 +201,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 5),
+                      const SizedBox(height: 25),
                       InkWell(
                         borderRadius: BorderRadius.circular(30),
                         onTap: () => Navigator.push(
@@ -217,7 +213,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                         child: Center(
                           child: Container(
                               decoration: BoxDecoration(
-                                color: Colors.white,
+                                color: Theme.of(context).secondaryHeaderColor,
                                 borderRadius: BorderRadius.circular(30),
                                 boxShadow: [
                                   BoxShadow(
@@ -260,9 +256,8 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                           children: [
                                             Text(
                                               displayName,
-                                              style: const TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 20),
+                                              style:
+                                                  const TextStyle(fontSize: 20),
                                             ),
                                             const SizedBox(width: 5),
                                             const Icon(
@@ -274,9 +269,8 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                         ),
                                       ),
                                       Text(
-                                        widget.studentId,
-                                        style: const TextStyle(
-                                            color: Colors.black, fontSize: 20),
+                                        user!.studentId,
+                                        style: const TextStyle(fontSize: 20),
                                       ),
                                     ],
                                   ),
@@ -284,6 +278,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                               )),
                         ),
                       ),
+                      const SizedBox(height: 30),
                       Center(
                           child: ElevatedButton(
                         onPressed: () {
@@ -304,6 +299,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                 .upload_profile_picture,
                             style: TextStyle(fontSize: 20)),
                       )),
+                      const SizedBox(height: 30),
                       Center(
                           child: ElevatedButton(
                         onPressed: () {
@@ -321,6 +317,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                         child: Text(AppLocalizations.of(context)!.settings,
                             style: TextStyle(fontSize: 20)),
                       )),
+                      const SizedBox(height: 30),
                       Center(
                           child: ElevatedButton(
                         onPressed: () {
@@ -339,8 +336,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                 horizontal: 20, vertical: 10),
                             elevation: 5),
                         child: Text(AppLocalizations.of(context)!.signout,
-                            style:
-                                TextStyle(color: Colors.black, fontSize: 20)),
+                            style: TextStyle(fontSize: 20)),
                       )),
                     ],
                   ),

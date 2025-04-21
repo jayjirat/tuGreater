@@ -1,11 +1,18 @@
 package tuGreaterBackend.cn333.backend.service;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import tuGreaterBackend.cn333.backend.entity.Comment;
+import tuGreaterBackend.cn333.backend.entity.CommunityPost;
+import tuGreaterBackend.cn333.backend.entity.Products;
 import tuGreaterBackend.cn333.backend.entity.Users;
+import tuGreaterBackend.cn333.backend.repository.CommentRepository;
+import tuGreaterBackend.cn333.backend.repository.CommunityRepository;
+import tuGreaterBackend.cn333.backend.repository.ProductsRepository;
 import tuGreaterBackend.cn333.backend.repository.UsersRepository;
 
 @Service
@@ -14,8 +21,20 @@ public class UsersService {
     @Autowired
     private final UsersRepository usersRepository;
 
-    public UsersService(UsersRepository usersRepository) {
+    @Autowired
+    private final CommunityRepository communityRepository;
+
+    @Autowired
+    private final CommentRepository commentRepository;
+
+    @Autowired
+    private final ProductsRepository productsRepository;
+
+    public UsersService(UsersRepository usersRepository,CommunityRepository communityRepository,ProductsRepository productsRepository,CommentRepository commentRepository) {
         this.usersRepository = usersRepository;
+        this.communityRepository = communityRepository;
+        this.productsRepository = productsRepository;
+        this.commentRepository = commentRepository;
     }
 
     public List<Users> getUsers() throws Exception {
@@ -89,47 +108,107 @@ public class UsersService {
         if (optionalUser.isPresent()) {
             Users user = optionalUser.get();
             user.setDisplayName(newDisplayName);
+            List<CommunityPost> posts = communityRepository.findByUserId(id);
+            if (!posts.isEmpty()) {
+                for (CommunityPost post : posts) {
+                    post.setUsername(newDisplayName);
+                }
+                communityRepository.saveAll(posts);
+            }
+
+            List<Products> products = productsRepository.findByProductOwnerId(id);
+            if (!products.isEmpty()) {
+                for (Products product : products) {
+                    product.setProductOwner(newDisplayName);
+                }
+                productsRepository.saveAll(products);
+            }  
             return usersRepository.save(user);
         } else {
             throw new RuntimeException("User not found");
         }
     }
 
-    public Users updateDisplayNameByStudentId(String studentId, String newDisplayName) {
-        Users user = usersRepository.findByStudentId(studentId);
-        if (user == null) {
-            throw new RuntimeException("User with student ID " + studentId + " not found");
-        }
+    public Users updateDisplayNameById(String userId, String newDisplayName) {
+        Optional<Users> optionalUser = usersRepository.findById(userId);
+        if (optionalUser.isPresent()) {
+            Users user = optionalUser.get();
+            user.setDisplayName(newDisplayName);
+            List<CommunityPost> posts = communityRepository.findByUserId(userId);
+            if (!posts.isEmpty()) {
+                for (CommunityPost post : posts) {
+                    post.setUsername(newDisplayName);
+                }
+                communityRepository.saveAll(posts);
+            }
 
-        user.setDisplayName(newDisplayName);
-        return usersRepository.save(user);
+            List<Comment> comments = commentRepository.findByUserId(userId);
+            if (!comments.isEmpty()) {
+                for (Comment comment : comments) {
+                    comment.setUsername(newDisplayName);
+                }
+                commentRepository.saveAll(comments);
+            }
+
+            List<Products> products = productsRepository.findByProductOwnerId(userId);
+            if (!products.isEmpty()) {
+                for (Products product : products) {
+                    product.setProductOwner(newDisplayName);
+                }
+                productsRepository.saveAll(products);
+            }  
+            return usersRepository.save(user);}
+        else {
+            throw new RuntimeException("User with student ID " + userId + " not found");
+        }      
     }
 
-    public String getDisplayNameByStudentId(String studentId) {
-        Users user = usersRepository.findByStudentId(studentId);
-        if (user == null) {
-            throw new RuntimeException("User with student ID " + studentId + " not found");
-        }
+    public String getDisplayNameById(String userId) {
+        Optional<Users> optionalUser = usersRepository.findById(userId);
+        if (optionalUser.isPresent()) {
+            Users user = optionalUser.get();
+            String displayName = user.getDisplayName();
+        return displayName;}
+        else {
+            throw new RuntimeException("User with student ID " + userId + " not found");
+        }  
 
-        String displayName = user.getDisplayName();
-        return displayName;
+        
     }
 
-    public Users updateProfileImage(String studentId, String profileImageUrl) throws Exception {
+    public Users updateProfileImage(String userId, String profileImageUrl) throws Exception {
         try {
-            Users existingUser = usersRepository.findByStudentId(studentId);
+            Optional<Users> optionalExistingUser = usersRepository.findById(userId);
+            if (optionalExistingUser.isPresent()) {
+                Users existingUser = optionalExistingUser.get();
+                if (existingUser != null) {
+                    existingUser.setProfileImageUrl(profileImageUrl);
+                    Users updatedUser = usersRepository.save(existingUser);
+                    List<CommunityPost> posts = communityRepository.findByUserId(userId);
+                    if (!posts.isEmpty()) {
+                        for (CommunityPost post : posts) {
+                            post.setPostedByImageUrl(profileImageUrl);
+                        }
+                        communityRepository.saveAll(posts);
+                    }
 
-            if (existingUser != null) {
-                existingUser.setProfileImageUrl(profileImageUrl);
-
-                Users updatedUser = usersRepository.save(existingUser);
-                return updatedUser;
+                    List<Comment> comments = commentRepository.findByUserId(userId);
+                    if (!comments.isEmpty()) {
+                        for (Comment comment : comments) {
+                            comment.setCommentedByImageUrl(profileImageUrl);
+                        }
+                        commentRepository.saveAll(comments);
+                    }
+                    return updatedUser;
+            }
             } else {
                 return null;
             }
         } catch (Exception e) {
             throw new Exception("An error occurred while updating profile image", e);
         }
+
+        return null;
     }
 
 }

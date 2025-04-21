@@ -24,7 +24,7 @@ class MainState extends ConsumerState<Main> {
       Community(),
       Shop(),
       ProfilePage(
-        studentId: user!.studentId,
+        userId: user!.id,
       )
     ];
 

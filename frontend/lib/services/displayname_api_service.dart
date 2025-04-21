@@ -8,8 +8,8 @@ class DisplaynameApiService {
   /// Get the display name of a student by their ID
   ///
   /// Returns a Future with the display name as a String
-  Future<String> getStudentDisplayName(String studentId) async {
-    final url = Uri.parse('$baseUrl/student/$studentId/displayName');
+  Future<String> getStudentDisplayName(String userId) async {
+    final url = Uri.parse('$baseUrl/student/$userId/displayName');
 
     try {
       final response = await http.get(url).timeout(
@@ -35,9 +35,11 @@ class DisplaynameApiService {
   /// Update the display name of a student by their ID
   ///
   /// Returns a Future<bool> indicating success (true) or failure (false)
-  Future<bool> updateStudentDisplayName(
-      String studentId, String newDisplayName) async {
-    final url = Uri.parse('$baseUrl/student/$studentId/displayName');
+  static Future<bool> updateStudentDisplayName(
+      String userId, String newDisplayName) async {
+        final String baseUrl = 'http://10.0.2.2:8080/users';
+
+    final url = Uri.parse('$baseUrl/student/$userId/displayName');
 
     try {
       final response = await http

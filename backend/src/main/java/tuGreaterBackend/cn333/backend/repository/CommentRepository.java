@@ -10,4 +10,5 @@ import tuGreaterBackend.cn333.backend.entity.Comment;
 @Repository
 public interface CommentRepository extends MongoRepository<Comment ,String> {
     public List<Comment> findByPostId(String postId);
+    public List<Comment> findByUserId(String userId);
 }
