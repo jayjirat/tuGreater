@@ -46,8 +46,8 @@ class LoginState extends ConsumerState<Login> {
             key: formKey,
             child: Column(
               children: [
-                const SizedBox(
-                  height: 30,
+                SizedBox(
+                  height: MediaQuery.of(context).size.width > 360 ? 30 : 4,
                 ),
                 Text(
                   AppLocalizations.of(context)!.loginScreenMessage,
@@ -58,8 +58,8 @@ class LoginState extends ConsumerState<Login> {
                     height: 1.5,
                   ),
                 ),
-                const SizedBox(
-                  height: 50,
+                SizedBox(
+                  height: MediaQuery.of(context).size.width > 360 ? 50 : 20,
                 ),
                 inputWithLabel(
                   context: context,
@@ -67,14 +67,16 @@ class LoginState extends ConsumerState<Login> {
                   hintText: AppLocalizations.of(context)!.studentId,
                   obscureText: false,
                 ),
-                SizedBox(height: 20),
+                SizedBox(
+                    height: MediaQuery.of(context).size.width > 360 ? 20 : 14),
                 inputWithLabel(
                   context: context,
                   controller: passwordController,
                   hintText: AppLocalizations.of(context)!.password,
                   obscureText: true,
                 ),
-                SizedBox(height: 32.0),
+                SizedBox(
+                    height: MediaQuery.of(context).size.width > 360 ? 32 : 14),
                 ElevatedButton(
                   onPressed: () async {
                     if (formKey.currentState?.validate() == true) {

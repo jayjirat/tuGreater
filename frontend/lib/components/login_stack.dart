@@ -1,17 +1,25 @@
 import 'package:flutter/material.dart';
 
-final double toolBarHeight = 150;
 Widget loginStack({required Widget child, required BuildContext context}) {
+  final double toolBarHeight =
+      MediaQuery.of(context).size.width > 360 ? 150 : 100;
+
   return Scaffold(
       appBar: AppBar(
         title: Column(
           children: [
             Text("TU GREATER",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 32)),
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize:
+                        MediaQuery.of(context).size.width > 360 ? 32 : 28)),
             const SizedBox(
               height: 5,
             ),
-            Text("TU Greater makes TU better", style: TextStyle(fontSize: 16)),
+            Text("TU Greater makes TU better",
+                style: TextStyle(
+                    fontSize:
+                        MediaQuery.of(context).size.width > 360 ? 16 : 14)),
           ],
         ),
         toolbarHeight: toolBarHeight,
