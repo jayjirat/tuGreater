@@ -91,27 +91,27 @@ class _EditItemsState extends ConsumerState<EditItems> {
     }
   }
 
-  void _showImageSourceOptions(BuildContext context) {
+  void showImageSourceOptions() {
     showModalBottomSheet(
       context: context,
-      builder: (BuildContext context) {
+      builder: (context) {
         return SafeArea(
           child: Wrap(
-            children: <Widget>[
+            children: [
+              ListTile(
+                leading: Icon(Icons.camera_alt),
+                title: Text(AppLocalizations.of(context)!.product_camera_popup),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  _pickImageFromCamera();
+                },
+              ),
               ListTile(
                 leading: Icon(Icons.photo_library),
                 title: Text(AppLocalizations.of(context)!.product_images_popup),
                 onTap: () {
-                  Navigator.pop(context);
+                  Navigator.of(context).pop();
                   _pickImagesFromGallery();
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.photo_camera),
-                title: Text(AppLocalizations.of(context)!.product_camera_popup),
-                onTap: () {
-                  Navigator.pop(context);
-                  _pickImageFromCamera();
                 },
               ),
             ],
@@ -168,17 +168,6 @@ class _EditItemsState extends ConsumerState<EditItems> {
     List<String> uploadedUrls = await Future.wait(uploadFutures);
     return uploadedUrls.where((url) => url.isNotEmpty).toList();
   }
-
-  // bool _validateImages() {
-  //   if (_selectedImages.isEmpty) {
-  //     showToast(
-  //       message: AppLocalizations.of(context)!.no_image,
-  //       toastType: ToastType.info,
-  //     );
-  //     return false;
-  //   }
-  //   return true;
-  // }
 
   bool _validateName() {
     if (nameController.text.isEmpty) {
@@ -247,7 +236,7 @@ class _EditItemsState extends ConsumerState<EditItems> {
                 Center(
                   child: GestureDetector(
                     onTap: () {
-                      _showImageSourceOptions(context);
+                      showImageSourceOptions();
                     },
                     child: Container(
                       margin: EdgeInsets.all(16),

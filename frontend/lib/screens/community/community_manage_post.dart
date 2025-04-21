@@ -54,8 +54,8 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
     }
   }
 
-  Future<void> pickImage() async {
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+  Future<void> pickImage(ImageSource source) async {
+    final pickedFile = await picker.pickImage(source: source);
     if (pickedFile != null) {
       setState(() {
         image = File(pickedFile.path);
@@ -115,6 +115,36 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
             ));
       }
     }
+  }
+
+  void showImageSourceDialog() {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return SafeArea(
+          child: Wrap(
+            children: [
+              ListTile(
+                leading: Icon(Icons.camera_alt),
+                title: Text(AppLocalizations.of(context)!.product_camera_popup),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  pickImage(ImageSource.camera);
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.photo_library),
+                title: Text(AppLocalizations.of(context)!.product_images_popup),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  pickImage(ImageSource.gallery);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -184,7 +214,7 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
               if (widget.mode == "Add")
                 image == null
                     ? ElevatedButton(
-                        onPressed: pickImage,
+                        onPressed: showImageSourceDialog,
                         child: Text(AppLocalizations.of(context)!.uploadImage),
                       )
                     : Column(
@@ -209,7 +239,7 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
               if (widget.mode == "Edit")
                 imageUrl == "" && image == null
                     ? ElevatedButton(
-                        onPressed: pickImage,
+                        onPressed: showImageSourceDialog,
                         child: Text(AppLocalizations.of(context)!.uploadImage),
                       )
                     : Column(

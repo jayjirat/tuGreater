@@ -44,27 +44,32 @@ class _ProfileImagePickerState extends State<ProfileImagePicker> {
           onTap: () {
             showModalBottomSheet(
               context: context,
-              builder: (context) => Wrap(
-                children: [
-                  ListTile(
-                    leading: Icon(Icons.photo_camera),
-                    title: Text(AppLocalizations.of(context)!.take_a_photo),
-                    onTap: () {
-                      Navigator.pop(context);
-                      _pickImage(ImageSource.camera);
-                    },
+              builder: (context) {
+                return SafeArea(
+                  child: Wrap(
+                    children: [
+                      ListTile(
+                        leading: Icon(Icons.camera_alt),
+                        title: Text(
+                            AppLocalizations.of(context)!.product_camera_popup),
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          _pickImage(ImageSource.camera);
+                        },
+                      ),
+                      ListTile(
+                        leading: Icon(Icons.photo_library),
+                        title: Text(
+                            AppLocalizations.of(context)!.product_images_popup),
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          _pickImage(ImageSource.gallery);
+                        },
+                      ),
+                    ],
                   ),
-                  ListTile(
-                    leading: Icon(Icons.photo_library),
-                    title:
-                        Text(AppLocalizations.of(context)!.choose_from_gallery),
-                    onTap: () {
-                      Navigator.pop(context);
-                      _pickImage(ImageSource.gallery);
-                    },
-                  ),
-                ],
-              ),
+                );
+              },
             );
           },
           child: widget.existingImageUrl.isEmpty
