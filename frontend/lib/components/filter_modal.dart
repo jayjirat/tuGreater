@@ -87,466 +87,482 @@ class _FilterModalState extends State<FilterModal> {
     return Container(
       height: 700,
       padding: EdgeInsets.all(24),
-      child: Align(
-        alignment: Alignment.center,
-        child: Column(
-          children: [
-            Text(
-              AppLocalizations.of(context)!.filter_title,
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Row(
-              children: [
-                SizedBox(
-                  width: 188,
-                  child: Text(
-                    AppLocalizations.of(context)!.filter_min_price,
+      child: SingleChildScrollView(
+        child: Align(
+          alignment: Alignment.center,
+          child: Column(
+            children: [
+              Text(
+                AppLocalizations.of(context)!.filter_title,
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Row(
+                children: [
+                  SizedBox(
+                    width: (MediaQuery.of(context).size.width) * 0.46,
+                    child: Text(
+                      AppLocalizations.of(context)!.filter_min_price,
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  SizedBox(
+                    width: (MediaQuery.of(context).size.width) * 0.3,
+                    child: Text(
+                      AppLocalizations.of(context)!.filter_max_price,
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                  )
+                ],
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Row(
+                children: [
+                  SizedBox(
+                    width: (MediaQuery.of(context).size.width) * 0.35,
+                    child: TextField(
+                      controller: minPriceController,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      decoration: InputDecoration(
+                        hintText: AppLocalizations.of(context)!.filter_low,
+                      ),
+                      onChanged: (value) {
+                        minPrice =
+                            value.isEmpty ? null : double.tryParse(value);
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    width: 38,
+                    child: Center(
+                        child: Text(
+                      "-",
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    )),
+                  ),
+                  SizedBox(
+                    width: (MediaQuery.of(context).size.width) * 0.35,
+                    child: TextField(
+                      controller: maxPriceController,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      decoration: InputDecoration(
+                        hintText: AppLocalizations.of(context)!.filter_high,
+                      ),
+                      onChanged: (value) {
+                        maxPrice =
+                            value.isEmpty ? null : double.tryParse(value);
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Row(
+                children: [
+                  Text(
+                    AppLocalizations.of(context)!.filter_tag,
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                ),
-                Text(
-                  AppLocalizations.of(context)!.filter_max_price,
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                )
-              ],
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Row(
-              children: [
-                SizedBox(
-                  width: 150,
-                  child: TextField(
-                    controller: minPriceController,
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    decoration: InputDecoration(
-                      hintText: AppLocalizations.of(context)!.filter_low,
+                ],
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(),
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: (MediaQuery.of(context).size.width - 60) / 3,
+                      child: Row(
+                        children: [
+                          Checkbox(
+                            value: isCheckedFirstHanded,
+                            onChanged: (value) {
+                              setState(() {
+                                isCheckedFirstHanded = value!;
+                                if (value == true) {
+                                  selectedTags.add("มือหนึ่ง");
+                                } else {
+                                  selectedTags.remove("มือหนึ่ง");
+                                }
+                              });
+                            },
+                          ),
+                          Flexible(
+                              child: Text(AppLocalizations.of(context)!
+                                  .tag_first_hand)),
+                        ],
+                      ),
                     ),
-                    onChanged: (value) {
-                      minPrice = value.isEmpty ? null : double.tryParse(value);
-                    },
-                  ),
-                ),
-                SizedBox(
-                  width: 38,
-                  child: Center(
-                      child: Text(
-                    "-",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  )),
-                ),
-                SizedBox(
-                  width: 150,
-                  child: TextField(
-                    controller: maxPriceController,
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    decoration: InputDecoration(
-                      hintText: AppLocalizations.of(context)!.filter_high,
+
+                    // Second checkbox
+                    SizedBox(
+                      width: (MediaQuery.of(context).size.width - 60) / 3,
+                      child: Row(
+                        children: [
+                          Checkbox(
+                            value: isCheckedSecondHanded,
+                            onChanged: (value) {
+                              setState(() {
+                                isCheckedSecondHanded = value!;
+                                if (value == true) {
+                                  selectedTags.add("มือสอง");
+                                } else {
+                                  selectedTags.remove("มือสอง");
+                                }
+                              });
+                            },
+                          ),
+                          Flexible(
+                              child: Text(AppLocalizations.of(context)!
+                                  .tag_second_hand)),
+                        ],
+                      ),
                     ),
-                    onChanged: (value) {
-                      maxPrice = value.isEmpty ? null : double.tryParse(value);
-                    },
-                  ),
+
+                    // Third checkbox
+                    SizedBox(
+                      width: (MediaQuery.of(context).size.width - 25) / 3,
+                      child: Row(
+                        children: [
+                          Checkbox(
+                            value: isCheckedGood,
+                            onChanged: (value) {
+                              setState(() {
+                                isCheckedGood = value!;
+                                if (value == true) {
+                                  selectedTags.add("สภาพดี");
+                                } else {
+                                  selectedTags.remove("สภาพดี");
+                                }
+                              });
+                            },
+                          ),
+                          Flexible(
+                              child: Text(AppLocalizations.of(context)!
+                                  .tag_good_quality)),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Row(
-              children: [
-                Text(
-                  AppLocalizations.of(context)!.filter_tag,
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(),
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: (MediaQuery.of(context).size.width - 60) / 3,
+                      child: Row(
+                        children: [
+                          Checkbox(
+                            value: isCheckedDelicious,
+                            onChanged: (value) {
+                              setState(() {
+                                isCheckedDelicious = value!;
+                                if (value == true) {
+                                  selectedTags.add("อร่อย");
+                                } else {
+                                  selectedTags.remove("อร่อย");
+                                }
+                              });
+                            },
+                          ),
+                          Flexible(
+                              child: Text(
+                                  AppLocalizations.of(context)!.tag_delicious)),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      width: (MediaQuery.of(context).size.width - 60) / 3,
+                      child: Row(
+                        children: [
+                          Checkbox(
+                            value: isCheckedClean,
+                            onChanged: (value) {
+                              setState(() {
+                                isCheckedClean = value!;
+                                if (value == true) {
+                                  selectedTags.add("สะอาด");
+                                } else {
+                                  selectedTags.remove("สะอาด");
+                                }
+                              });
+                            },
+                          ),
+                          Flexible(
+                              child: Text(
+                                  AppLocalizations.of(context)!.tag_clean)),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(),
-              child: Row(
+              ),
+              Row(
                 children: [
-                  SizedBox(
-                    width: 110,
-                    child: Row(
-                      children: [
-                        Checkbox(
-                          value: isCheckedFirstHanded,
-                          onChanged: (value) {
-                            setState(() {
-                              isCheckedFirstHanded = value!;
-                              if (value == true) {
-                                selectedTags.add("มือหนึ่ง");
-                              } else {
-                                selectedTags.remove("มือหนึ่ง");
-                              }
-                            });
-                          },
-                        ),
-                        Flexible(
-                            child: Text(
-                                AppLocalizations.of(context)!.tag_first_hand)),
-                      ],
-                    ),
+                  Text(
+                    AppLocalizations.of(context)!.filter_sort,
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-
-                  // Second checkbox
-                  SizedBox(
-                    width: 110,
-                    child: Row(
-                      children: [
-                        Checkbox(
-                          value: isCheckedSecondHanded,
-                          onChanged: (value) {
-                            setState(() {
-                              isCheckedSecondHanded = value!;
-                              if (value == true) {
-                                selectedTags.add("มือสอง");
-                              } else {
-                                selectedTags.remove("มือสอง");
-                              }
-                            });
-                          },
+                ],
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: FilledButton(
+                      onPressed: () {
+                        setState(() {
+                          if (isCheckedHighToLowPrice) {
+                            isCheckedHighToLowPrice = false;
+                          } else {
+                            isCheckedHighToLowPrice = true;
+                            isCheckedLowToHighPrice = false;
+                            isCheckedNewFirst = false;
+                            isCheckedOldFirst = false;
+                          }
+                        });
+                      },
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(
+                          isCheckedHighToLowPrice
+                              ? Colors.orange
+                              : Colors.white,
                         ),
-                        Flexible(
-                            child: Text(
-                                AppLocalizations.of(context)!.tag_second_hand)),
-                      ],
-                    ),
-                  ),
-
-                  // Third checkbox
-                  SizedBox(
-                    width: 130,
-                    child: Row(
-                      children: [
-                        Checkbox(
-                          value: isCheckedGood,
-                          onChanged: (value) {
-                            setState(() {
-                              isCheckedGood = value!;
-                              if (value == true) {
-                                selectedTags.add("สภาพดี");
-                              } else {
-                                selectedTags.remove("สภาพดี");
-                              }
-                            });
-                          },
+                        shape: MaterialStateProperty.all(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            side: BorderSide(
+                                color: const Color.fromARGB(255, 255, 140, 0)),
+                          ),
                         ),
-                        Flexible(
-                            child: Text(AppLocalizations.of(context)!
-                                .tag_good_quality)),
-                      ],
+                      ),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          AppLocalizations.of(context)!
+                              .filter_price_high_to_low,
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      ),
                     ),
                   ),
                 ],
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(),
-              child: Row(
+              SizedBox(
+                height: 10,
+              ),
+              Row(
                 children: [
-                  SizedBox(
-                    width: 110,
-                    child: Row(
-                      children: [
-                        Checkbox(
-                          value: isCheckedDelicious,
-                          onChanged: (value) {
-                            setState(() {
-                              isCheckedDelicious = value!;
-                              if (value == true) {
-                                selectedTags.add("อร่อย");
-                              } else {
-                                selectedTags.remove("อร่อย");
-                              }
-                            });
-                          },
+                  Expanded(
+                    child: FilledButton(
+                      onPressed: () {
+                        setState(() {
+                          if (isCheckedLowToHighPrice) {
+                            isCheckedLowToHighPrice = false;
+                          } else {
+                            isCheckedLowToHighPrice = true;
+                            isCheckedHighToLowPrice = false;
+                            isCheckedNewFirst = false;
+                            isCheckedOldFirst = false;
+                          }
+                        });
+                      },
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(
+                          isCheckedLowToHighPrice
+                              ? Colors.orange
+                              : Colors.white,
                         ),
-                        Flexible(
-                            child: Text(
-                                AppLocalizations.of(context)!.tag_delicious)),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    width: 120,
-                    child: Row(
-                      children: [
-                        Checkbox(
-                          value: isCheckedClean,
-                          onChanged: (value) {
-                            setState(() {
-                              isCheckedClean = value!;
-                              if (value == true) {
-                                selectedTags.add("สะอาด");
-                              } else {
-                                selectedTags.remove("สะอาด");
-                              }
-                            });
-                          },
+                        shape: MaterialStateProperty.all(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            side: BorderSide(
+                                color: const Color.fromARGB(255, 255, 140, 0)),
+                          ),
                         ),
-                        Flexible(
-                            child:
-                                Text(AppLocalizations.of(context)!.tag_clean)),
-                      ],
+                      ),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          AppLocalizations.of(context)!
+                              .filter_price_low_to_high,
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      ),
                     ),
                   ),
                 ],
               ),
-            ),
-            Row(
-              children: [
-                Text(
-                  AppLocalizations.of(context)!.filter_sort,
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: FilledButton(
-                    onPressed: () {
-                      setState(() {
-                        if (isCheckedHighToLowPrice) {
-                          isCheckedHighToLowPrice = false;
-                        } else {
-                          isCheckedHighToLowPrice = true;
-                          isCheckedLowToHighPrice = false;
-                          isCheckedNewFirst = false;
-                          isCheckedOldFirst = false;
-                        }
-                      });
-                    },
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(
-                        isCheckedHighToLowPrice ? Colors.orange : Colors.white,
+              SizedBox(
+                height: 10,
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: FilledButton(
+                      onPressed: () {
+                        setState(() {
+                          if (isCheckedNewFirst) {
+                            isCheckedNewFirst = false;
+                          } else {
+                            isCheckedNewFirst = true;
+                            isCheckedHighToLowPrice = false;
+                            isCheckedLowToHighPrice = false;
+                            isCheckedOldFirst = false;
+                          }
+                        });
+                      },
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(
+                          isCheckedNewFirst ? Colors.orange : Colors.white,
+                        ),
+                        shape: MaterialStateProperty.all(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            side: BorderSide(
+                                color: const Color.fromARGB(255, 255, 140, 0)),
+                          ),
+                        ),
                       ),
-                      shape: MaterialStateProperty.all(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                          side: BorderSide(
-                              color: const Color.fromARGB(255, 255, 140, 0)),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          AppLocalizations.of(context)!.filter_date_new_first,
+                          style: TextStyle(color: Colors.black),
                         ),
                       ),
                     ),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        AppLocalizations.of(context)!.filter_price_high_to_low,
-                        style: TextStyle(color: Colors.black),
-                      ),
-                    ),
                   ),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: FilledButton(
-                    onPressed: () {
-                      setState(() {
-                        if (isCheckedLowToHighPrice) {
-                          isCheckedLowToHighPrice = false;
-                        } else {
-                          isCheckedLowToHighPrice = true;
-                          isCheckedHighToLowPrice = false;
-                          isCheckedNewFirst = false;
-                          isCheckedOldFirst = false;
-                        }
-                      });
-                    },
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(
-                        isCheckedLowToHighPrice ? Colors.orange : Colors.white,
+                ],
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: FilledButton(
+                      onPressed: () {
+                        setState(() {
+                          if (isCheckedOldFirst) {
+                            isCheckedOldFirst = false;
+                          } else {
+                            isCheckedOldFirst = true;
+                            isCheckedHighToLowPrice = false;
+                            isCheckedLowToHighPrice = false;
+                            isCheckedNewFirst = false;
+                          }
+                        });
+                      },
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(
+                          isCheckedOldFirst ? Colors.orange : Colors.white,
+                        ),
+                        shape: MaterialStateProperty.all(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            side: BorderSide(
+                                color: const Color.fromARGB(255, 255, 140, 0)),
+                          ),
+                        ),
                       ),
-                      shape: MaterialStateProperty.all(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                          side: BorderSide(
-                              color: const Color.fromARGB(255, 255, 140, 0)),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          AppLocalizations.of(context)!.filter_date_old_first,
+                          style: TextStyle(color: Colors.black),
                         ),
                       ),
                     ),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        AppLocalizations.of(context)!.filter_price_low_to_high,
-                        style: TextStyle(color: Colors.black),
-                      ),
-                    ),
                   ),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: FilledButton(
-                    onPressed: () {
-                      setState(() {
-                        if (isCheckedNewFirst) {
-                          isCheckedNewFirst = false;
-                        } else {
-                          isCheckedNewFirst = true;
-                          isCheckedHighToLowPrice = false;
-                          isCheckedLowToHighPrice = false;
-                          isCheckedOldFirst = false;
-                        }
-                      });
-                    },
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(
-                        isCheckedNewFirst ? Colors.orange : Colors.white,
-                      ),
-                      shape: MaterialStateProperty.all(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                          side: BorderSide(
-                              color: const Color.fromARGB(255, 255, 140, 0)),
-                        ),
-                      ),
-                    ),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        AppLocalizations.of(context)!.filter_date_new_first,
-                        style: TextStyle(color: Colors.black),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: FilledButton(
-                    onPressed: () {
-                      setState(() {
-                        if (isCheckedOldFirst) {
-                          isCheckedOldFirst = false;
-                        } else {
-                          isCheckedOldFirst = true;
+                ],
+              ),
+              SizedBox(
+                height: 25,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    height: 50,
+                    width: 100,
+                    child: FilledButton(
+                      onPressed: () {
+                        setState(() {
+                          minPrice = null;
+                          maxPrice = null;
+                          minPriceController.clear();
+                          maxPriceController.clear();
+                          isCheckedFirstHanded = false;
+                          isCheckedSecondHanded = false;
+                          isCheckedGood = false;
+                          isCheckedDelicious = false;
+                          isCheckedClean = false;
                           isCheckedHighToLowPrice = false;
                           isCheckedLowToHighPrice = false;
                           isCheckedNewFirst = false;
-                        }
-                      });
-                    },
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(
-                        isCheckedOldFirst ? Colors.orange : Colors.white,
+                          isCheckedOldFirst = false;
+                          selectedTags.clear();
+                        });
+                      },
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(
+                            Theme.of(context)
+                                .primaryColor
+                                .withValues(alpha: 0.5)),
                       ),
-                      shape: MaterialStateProperty.all(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                          side: BorderSide(
-                              color: const Color.fromARGB(255, 255, 140, 0)),
-                        ),
-                      ),
-                    ),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
                       child: Text(
-                        AppLocalizations.of(context)!.filter_date_old_first,
-                        style: TextStyle(color: Colors.black),
+                        AppLocalizations.of(context)!.filter_reset,
+                        style: TextStyle(color: Colors.black, fontSize: 18),
                       ),
                     ),
                   ),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 25,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(
-                  height: 50,
-                  width: 100,
-                  child: FilledButton(
-                    onPressed: () {
-                      setState(() {
-                        minPrice = null;
-                        maxPrice = null;
-                        minPriceController.clear();
-                        maxPriceController.clear();
-                        isCheckedFirstHanded = false;
-                        isCheckedSecondHanded = false;
-                        isCheckedGood = false;
-                        isCheckedDelicious = false;
-                        isCheckedClean = false;
-                        isCheckedHighToLowPrice = false;
-                        isCheckedLowToHighPrice = false;
-                        isCheckedNewFirst = false;
-                        isCheckedOldFirst = false;
-                        selectedTags.clear();
-                      });
-                    },
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(
-                          Theme.of(context)
-                              .primaryColor
-                              .withValues(alpha: 0.5)),
-                    ),
-                    child: Text(
-                      AppLocalizations.of(context)!.filter_reset,
-                      style: TextStyle(color: Colors.black, fontSize: 18),
+                  SizedBox(
+                    width: 15,
+                  ),
+                  SizedBox(
+                    height: 50,
+                    width: 100,
+                    child: FilledButton(
+                      onPressed: () {
+                        Navigator.pop(context, {
+                          'minPrice': minPrice,
+                          'maxPrice': maxPrice,
+                          'isCheckedHighToLowPrice': isCheckedHighToLowPrice,
+                          'isCheckedLowToHighPrice': isCheckedLowToHighPrice,
+                          'isCheckedNewFirst': isCheckedNewFirst,
+                          'isCheckedOldFirst': isCheckedOldFirst,
+                          'selectedTags': selectedTags,
+                        });
+                      },
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(
+                            Theme.of(context).primaryColor),
+                      ),
+                      child: Text(
+                        AppLocalizations.of(context)!.filter_apply,
+                        style: TextStyle(color: Colors.black, fontSize: 18),
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(
-                  width: 15,
-                ),
-                SizedBox(
-                  height: 50,
-                  width: 100,
-                  child: FilledButton(
-                    onPressed: () {
-                      Navigator.pop(context, {
-                        'minPrice': minPrice,
-                        'maxPrice': maxPrice,
-                        'isCheckedHighToLowPrice': isCheckedHighToLowPrice,
-                        'isCheckedLowToHighPrice': isCheckedLowToHighPrice,
-                        'isCheckedNewFirst': isCheckedNewFirst,
-                        'isCheckedOldFirst': isCheckedOldFirst,
-                        'selectedTags': selectedTags,
-                      });
-                    },
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(
-                          Theme.of(context).primaryColor),
-                    ),
-                    child: Text(
-                      AppLocalizations.of(context)!.filter_apply,
-                      style: TextStyle(color: Colors.black, fontSize: 18),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
