@@ -35,133 +35,146 @@ class GridItems extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final productsAsyncValue = _getProducts(ref: ref, context: context);
+
     return Expanded(
       child: productsAsyncValue.when(
         data: (products) {
           List<Products> filteredProducts = _applyFilters(products);
-          return products.isNotEmpty
-              ? GridView.builder(
-                  itemCount: filteredProducts.length,
-                  physics: AlwaysScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    childAspectRatio: 0.715,
-                    crossAxisCount: 2,
-                  ),
-                  itemBuilder: (context, index) {
-                    final product = filteredProducts[index];
-                    return Container(
-                      margin: EdgeInsets.all(10),
-                      child: Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => ItemDetail(
-                                        productId: product.productId)));
-                          },
-                          borderRadius: BorderRadius.circular(15),
-                          child: Container(
-                            decoration: BoxDecoration(
+          return RefreshIndicator(
+            onRefresh: () async {
+              return ref.refresh(productProvider(context));
+            },
+            child: products.isNotEmpty
+                ? LayoutBuilder(builder: (context, constraints) {
+                    return GridView.builder(
+                      itemCount: filteredProducts.length,
+                      physics: AlwaysScrollableScrollPhysics(),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        childAspectRatio: (constraints.maxWidth / 2) / 290,
+                        crossAxisCount: 2,
+                      ),
+                      itemBuilder: (context, index) {
+                        final product = filteredProducts[index];
+                        return Container(
+                          margin: EdgeInsets.all(10),
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ItemDetail(
+                                            productId: product.productId)));
+                              },
                               borderRadius: BorderRadius.circular(15),
-                              color: Theme.of(context).cardColor,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black26,
-                                  blurRadius: 4,
-                                  spreadRadius: 2,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
+                                  color: Theme.of(context).cardColor,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black26,
+                                      blurRadius: 4,
+                                      spreadRadius: 2,
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(15),
-                                    topRight: Radius.circular(15),
-                                  ),
-                                  child: SizedBox(
-                                    width: double.infinity,
-                                    height: 175,
-                                    child: product.productImageUrls.isNotEmpty
-                                        ? Image.network(
-                                            product.productImageUrls[0],
-                                            fit: BoxFit.cover,
-                                          )
-                                        : Container(
-                                            decoration: BoxDecoration(
-                                                color: Theme.of(context)
-                                                    .canvasColor
-                                                    .withValues(alpha: 0.2)),
-                                            child: Icon(
-                                                Icons.image_not_supported,
-                                                size: 42,
-                                                color: Theme.of(context)
-                                                    .cardColor),
-                                          ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.all(15),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        product.productName,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                          fontSize: 17,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(15),
+                                        topRight: Radius.circular(15),
                                       ),
-                                      SizedBox(height: 10),
-                                      Text(
-                                        "฿ ${NumberFormat('#,###').format(product.productPrice)}",
-                                        style: TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      )
-                                    ],
-                                  ),
+                                      child: SizedBox(
+                                        width: double.infinity,
+                                        height: 175,
+                                        child: product
+                                                .productImageUrls.isNotEmpty
+                                            ? Image.network(
+                                                product.productImageUrls[0],
+                                                fit: BoxFit.cover,
+                                              )
+                                            : Container(
+                                                decoration: BoxDecoration(
+                                                    color: Theme.of(context)
+                                                        .canvasColor
+                                                        .withValues(
+                                                            alpha: 0.2)),
+                                                child: Icon(
+                                                    Icons.image_not_supported,
+                                                    size: 42,
+                                                    color: Theme.of(context)
+                                                        .cardColor),
+                                              ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.all(15),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            product.productName,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                              fontSize: 17,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          SizedBox(height: 10),
+                                          Text(
+                                            "฿ ${NumberFormat('#,###').format(product.productPrice)}",
+                                            style: TextStyle(
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ],
+                              ),
                             ),
                           ),
-                        ),
-                      ),
+                        );
+                      },
                     );
-                  },
-                )
-              : Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.shopping_bag_outlined,
-                      size: 120,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                    const SizedBox(height: 32),
-                    Text(
-                      AppLocalizations.of(context)!.noProducts,
-                      style:
-                          Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  })
+                : Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.shopping_bag_outlined,
+                          size: 120,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                        const SizedBox(height: 32),
+                        Text(
+                          AppLocalizations.of(context)!.noProducts,
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineSmall
+                              ?.copyWith(
                                 fontWeight: FontWeight.bold,
                               ),
-                      textAlign: TextAlign.center,
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          AppLocalizations.of(context)!.noProductsContent,
+                          style: Theme.of(context).textTheme.bodyMedium,
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 8),
-                    Text(
-                      AppLocalizations.of(context)!.noProductsContent,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                );
+                  ),
+          );
         },
         loading: () => Center(child: CircularProgressIndicator()),
         error: (error, stack) => ErrorTry(
