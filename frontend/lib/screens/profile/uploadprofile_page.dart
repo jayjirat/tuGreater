@@ -113,7 +113,8 @@ class _UploadProfilePageState extends ConsumerState<UploadProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.profile),
+        title: Text(AppLocalizations.of(context)!.profile,
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
       ),
       body: Consumer(
         builder: (context, ref, child) {

@@ -86,8 +86,11 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
     });
 
     try {
-      final success =
-          await _apiService.updateStudentDisplayName(user.id, newName);
+      final success = await ref.read(userProvider.notifier).updateDisplayName(
+            userId: user.id,
+            newDisplayName: newName,
+            context: context,
+          );
 
       if (!mounted) return;
 
@@ -135,6 +138,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
         return AlertDialog(
           title: const Text('Change Display Name'),
           content: TextField(
+            maxLength: 15,
             controller: nameController,
             decoration: const InputDecoration(
               labelText: 'New Display Name',

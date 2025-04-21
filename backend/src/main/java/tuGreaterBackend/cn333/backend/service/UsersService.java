@@ -6,9 +6,11 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import tuGreaterBackend.cn333.backend.entity.Comment;
 import tuGreaterBackend.cn333.backend.entity.CommunityPost;
 import tuGreaterBackend.cn333.backend.entity.Products;
 import tuGreaterBackend.cn333.backend.entity.Users;
+import tuGreaterBackend.cn333.backend.repository.CommentRepository;
 import tuGreaterBackend.cn333.backend.repository.CommunityRepository;
 import tuGreaterBackend.cn333.backend.repository.ProductsRepository;
 import tuGreaterBackend.cn333.backend.repository.UsersRepository;
@@ -23,12 +25,16 @@ public class UsersService {
     private final CommunityRepository communityRepository;
 
     @Autowired
+    private final CommentRepository commentRepository;
+
+    @Autowired
     private final ProductsRepository productsRepository;
 
-    public UsersService(UsersRepository usersRepository,CommunityRepository communityRepository,ProductsRepository productsRepository) {
+    public UsersService(UsersRepository usersRepository,CommunityRepository communityRepository,ProductsRepository productsRepository,CommentRepository commentRepository) {
         this.usersRepository = usersRepository;
         this.communityRepository = communityRepository;
         this.productsRepository = productsRepository;
+        this.commentRepository = commentRepository;
     }
 
     public List<Users> getUsers() throws Exception {
@@ -136,6 +142,14 @@ public class UsersService {
                 communityRepository.saveAll(posts);
             }
 
+            List<Comment> comments = commentRepository.findByUserId(userId);
+            if (!comments.isEmpty()) {
+                for (Comment comment : comments) {
+                    comment.setUsername(newDisplayName);
+                }
+                commentRepository.saveAll(comments);
+            }
+
             List<Products> products = productsRepository.findByProductOwnerId(userId);
             if (!products.isEmpty()) {
                 for (Products product : products) {
@@ -176,6 +190,14 @@ public class UsersService {
                             post.setPostedByImageUrl(profileImageUrl);
                         }
                         communityRepository.saveAll(posts);
+                    }
+
+                    List<Comment> comments = commentRepository.findByUserId(userId);
+                    if (!comments.isEmpty()) {
+                        for (Comment comment : comments) {
+                            comment.setCommentedByImageUrl(profileImageUrl);
+                        }
+                        commentRepository.saveAll(comments);
                     }
                     return updatedUser;
             }
