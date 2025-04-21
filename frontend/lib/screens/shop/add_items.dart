@@ -99,26 +99,27 @@ class _AddItemsState extends ConsumerState<AddItems> {
     }
   }
 
-  //image function
-  void _showImageSourceOptions(BuildContext context) {
+  void showImageSourceOptions() {
     showModalBottomSheet(
       context: context,
-      builder: (BuildContext context) {
+      builder: (context) {
         return SafeArea(
           child: Wrap(
-            children: <Widget>[
+            children: [
+              ListTile(
+                leading: Icon(Icons.camera_alt),
+                title: Text(AppLocalizations.of(context)!.product_camera_popup),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  _pickImageFromCamera();
+                },
+              ),
               ListTile(
                 leading: Icon(Icons.photo_library),
                 title: Text(AppLocalizations.of(context)!.product_images_popup),
                 onTap: () {
+                  Navigator.of(context).pop();
                   _pickImagesFromGallery();
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.photo_camera),
-                title: Text(AppLocalizations.of(context)!.product_camera_popup),
-                onTap: () {
-                  _pickImageFromCamera();
                 },
               ),
             ],
@@ -235,7 +236,7 @@ class _AddItemsState extends ConsumerState<AddItems> {
               Center(
                 child: GestureDetector(
                   onTap: () {
-                    _showImageSourceOptions(context);
+                    showImageSourceOptions();
                   },
                   child: Container(
                     margin: EdgeInsets.all(16),

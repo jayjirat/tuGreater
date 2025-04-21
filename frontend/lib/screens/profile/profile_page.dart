@@ -1,7 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/components/toast.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:frontend/login.dart';
 import 'package:frontend/screens/community/community_me.dart';
 import 'package:frontend/screens/error_page.dart';
 import 'package:frontend/screens/profile/setting_page.dart';
@@ -12,8 +12,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:frontend/exception/timeout_exception.dart';
 
 class ProfilePage extends ConsumerStatefulWidget {
-  final String userId;
-  const ProfilePage({super.key, required this.userId});
+  // final String userId;
+  const ProfilePage({super.key});
 
   @override
   ConsumerState<ProfilePage> createState() => _ProfilePageState();
@@ -153,12 +153,12 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
               child: const Text('Cancel'),
             ),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 final newName = nameController.text.trim();
                 Navigator.of(dialogContext).pop();
                 // Call update method after dialog is closed
                 _updateDisplayName(newName);
-                ref.read(userProvider.notifier).loadUser(user.id);
+                await ref.read(userProvider.notifier).loadUser(user.id);
               },
               child: const Text('Save'),
             ),
@@ -170,7 +170,6 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    final user = ref.watch(userProvider);
     return Scaffold(
       body: _isLoading
           ? const Center(child: CircularProgressIndicator(color: Colors.white))
@@ -208,7 +207,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                             context,
                             MaterialPageRoute(
                               builder: (context) =>
-                                  CommunityMe(userId: user!.id),
+                                  CommunityMe(userId: user.id),
                             )),
                         child: Center(
                           child: Container(
@@ -232,20 +231,16 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceEvenly,
                                 children: [
-                                  Image.network(
-                                    user?.profileImageUrl ??
+                                  CachedNetworkImage(
+                                    useOldImageOnUrlChange: true,
+                                    fadeInDuration: Duration.zero,
+                                    imageUrl: user?.profileImageUrl ??
                                         'https://default-placeholder-url.com/image.png',
                                     width: 100,
                                     fit: BoxFit.cover,
-                                    errorBuilder: (context, error, stackTrace) {
-                                      return Container(
-                                        width: 100,
-                                        height: 100,
-                                        color: Colors.grey[300],
-                                        child: Icon(Icons.person,
-                                            size: 50, color: Colors.grey[600]),
-                                      );
-                                    },
+                                    placeholder: (context, url) => SizedBox(),
+                                    errorWidget: (context, url, error) =>
+                                        Icon(Icons.error),
                                   ),
                                   Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -269,7 +264,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                         ),
                                       ),
                                       Text(
-                                        user!.studentId,
+                                        user.studentId,
                                         style: const TextStyle(fontSize: 20),
                                       ),
                                     ],
@@ -320,14 +315,20 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                       const SizedBox(height: 30),
                       Center(
                           child: ElevatedButton(
-                        onPressed: () {
-                          ref.read(userProvider.notifier).logout();
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(builder: (context) => Login()),
-                            (Route<dynamic> route) =>
-                                false, // removes all previous routes
-                          );
+                        onPressed: () async {
+                          try {
+                            await ref.read(userProvider.notifier).logout();
+                            Navigator.pushNamedAndRemoveUntil(
+                              context,
+                              '/',
+                              (Route<dynamic> route) =>
+                                  false, // removes all previous routes
+                            );
+                          } catch (e) {
+                            showToast(
+                                message: "Fail to logout",
+                                toastType: ToastType.error);
+                          }
                         },
                         style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.redAccent, // Button color

@@ -23,6 +23,13 @@ public class CommunityPost {
     private String imageUrl;
     private String postedByImageUrl;
 
+    private int repostCount;
+    private boolean isReposted;
+    private String repostedUserId;
+    private String repostedPostId;
+    private String repostedUsername;
+
+
     public String getId() {
         return this.id;
     }
@@ -129,6 +136,50 @@ public class CommunityPost {
 
     public void setPostedByImageUrl(String postedByImageUrl) {
         this.postedByImageUrl = postedByImageUrl;
+    }
+
+    public int getRepostCount() {
+        return this.repostCount;
+    }
+
+    public void setRepostCount(int repostCount) {
+        this.repostCount = repostCount;
+    }
+
+    public boolean isIsReposted() {
+        return this.isReposted;
+    }
+
+    public boolean getIsReposted() {
+        return this.isReposted;
+    }
+
+    public void setIsReposted(boolean isReposted) {
+        this.isReposted = isReposted;
+    }
+
+    public String getRepostedUserId() {
+        return this.repostedUserId;
+    }
+
+    public void setRepostedUserId(String repostedUserId) {
+        this.repostedUserId = repostedUserId;
+    }
+
+    public String getRepostedPostId() {
+        return this.repostedPostId;
+    }
+
+    public void setRepostedPostId(String repostedPostId) {
+        this.repostedPostId = repostedPostId;
+    }
+
+    public String getRepostedUsername() {
+        return this.repostedUsername;
+    }
+
+    public void setRepostedUsername(String repostedUsername) {
+        this.repostedUsername = repostedUsername;
     }
 
 }

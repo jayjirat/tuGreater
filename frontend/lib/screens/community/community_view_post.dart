@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -22,6 +23,7 @@ class CommunityViewpost extends ConsumerStatefulWidget {
 
 class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
   bool isLiked = false;
+  bool isReposted = false;
   @override
   void initState() {
     super.initState();
@@ -29,7 +31,7 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
     _initData();
   }
 
-  void _initData() async {
+  Future<void> _initData() async {
     try {
       await ref
           .read(communityProvider.notifier)
@@ -41,10 +43,14 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
       bool liked = await ref
           .read(communityProvider.notifier)
           .isLiked(userId: user!.id, postId: widget.id, context: context);
+      bool reposted = await ref
+          .read(communityProvider.notifier)
+          .isReposted(userId: user.id, postId: widget.id, context: context);
 
       if (mounted) {
         setState(() {
           isLiked = liked;
+          isReposted = reposted;
         });
       }
     } catch (e) {
@@ -83,390 +89,488 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
         ),
       ),
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: ListView(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: isLoading
-                ? Center(child: CircularProgressIndicator())
-                : Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      InkWell(
-                        onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  CommunityMe(userId: post.userId),
-                            )),
-                        child: ListTile(
-                            leading: post!.postedByImageUrl == ""
-                                ? CircleAvatar(
-                                    radius: 18,
-                                    backgroundColor:
-                                        Theme.of(context).primaryColorDark,
-                                    child: Icon(
-                                      Icons.account_circle,
-                                      size: 36,
-                                      color: Theme.of(context).cardColor,
+      body: RefreshIndicator(
+        onRefresh: () async {
+          await _initData();
+        },
+        backgroundColor: Theme.of(context).cardColor,
+        child: ListView(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: isLoading
+                  ? Center(child: CircularProgressIndicator())
+                  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        InkWell(
+                          onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    CommunityMe(userId: post.userId),
+                              )),
+                          child: ListTile(
+                              leading: post!.postedByImageUrl == ""
+                                  ? CircleAvatar(
+                                      radius:
+                                          MediaQuery.of(context).size.width >
+                                                  360
+                                              ? 18
+                                              : 15,
+                                      backgroundColor:
+                                          Theme.of(context).primaryColorDark,
+                                      child: Icon(
+                                        Icons.account_circle,
+                                        size:
+                                            MediaQuery.of(context).size.width >
+                                                    360
+                                                ? 36
+                                                : 30,
+                                        color: Theme.of(context).cardColor,
+                                      ),
+                                    )
+                                  : CircleAvatar(
+                                      radius:
+                                          MediaQuery.of(context).size.width >
+                                                  360
+                                              ? 28
+                                              : 24,
+                                      backgroundImage:
+                                          CachedNetworkImageProvider(
+                                              post.postedByImageUrl!),
+                                      backgroundColor: Colors.transparent,
                                     ),
-                                  )
-                                : CircleAvatar(
-                                    radius: 28,
-                                    backgroundImage:
-                                        NetworkImage(post.postedByImageUrl!),
-                                    backgroundColor: Colors.transparent,
+                              title: Text(
+                                post.username,
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              subtitle: Row(
+                                children: [
+                                  Text(
+                                    post.createdAt.toString(),
+                                    style: TextStyle(
+                                        color: Colors.grey[600],
+                                        fontSize:
+                                            MediaQuery.of(context).size.width >
+                                                    360
+                                                ? 13
+                                                : 11),
                                   ),
-                            title: Text(
-                              post.username,
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            subtitle: Row(
+                                  Text(
+                                    post.isEdited
+                                        ? " (${AppLocalizations.of(context)!.edit})"
+                                        : "",
+                                    style: TextStyle(
+                                        color: Colors.grey[600],
+                                        fontSize:
+                                            MediaQuery.of(context).size.width >
+                                                    360
+                                                ? 13
+                                                : 11),
+                                  ),
+                                ],
+                              ),
+                              trailing: post.userId == user!.id
+                                  ? PopupMenuButton(
+                                      onSelected: (value) async {
+                                        if (value == "edit") {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    CommunityManagePost(
+                                                  mode: "Edit",
+                                                  post: post,
+                                                ),
+                                              ));
+                                        } else if (value == "delete") {
+                                          try {
+                                            await communityPostController
+                                                .deletePost(
+                                                    id: post.id,
+                                                    context: context,
+                                                    isRepost: false);
+                                            if (context.mounted) {
+                                              Navigator.pop(context);
+                                              showToast(
+                                                message: AppLocalizations.of(
+                                                        context)!
+                                                    .postDeletedSuccess,
+                                                toastType: ToastType.success,
+                                              );
+                                            }
+                                          } catch (e) {
+                                            if (context.mounted) {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        ErrorPage(
+                                                            errorMessage:
+                                                                e.toString()),
+                                                  ));
+                                            }
+                                          }
+                                        }
+                                      },
+                                      itemBuilder: (context) => [
+                                        PopupMenuItem<String>(
+                                          value: 'edit',
+                                          child: Text(
+                                              AppLocalizations.of(context)!
+                                                  .edit),
+                                        ),
+                                        PopupMenuItem<String>(
+                                          value: 'delete',
+                                          child: Text(
+                                              AppLocalizations.of(context)!
+                                                  .delete),
+                                        ),
+                                      ],
+                                    )
+                                  : null),
+                        ),
+                        const SizedBox(
+                          height: 12,
+                        ),
+                        Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          color: Theme.of(context).cardColor,
+                          elevation: 6,
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  post.createdAt.toString(),
-                                  style: TextStyle(
-                                      color: Colors.grey[600], fontSize: 13),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        post.title,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall,
+                                      ),
+                                    ),
+                                    if (post.userId !=
+                                        user.id) // owner can't report own post
+                                      IconButton(
+                                          onPressed: () => showReportPopup(
+                                                context: context,
+                                                studentId: user.studentId,
+                                                postId: post.id,
+                                              ),
+                                          icon: Icon(Icons.report_outlined))
+                                  ],
                                 ),
-                                Text(
-                                  post.isEdited
-                                      ? " (${AppLocalizations.of(context)!.edit})"
-                                      : "",
-                                  style: TextStyle(
-                                      color: Colors.grey[600], fontSize: 13),
-                                ),
+                                if (post.description != "")
+                                  const SizedBox(height: 4),
+                                if (post.description != "")
+                                  Text(
+                                    post.description,
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                const SizedBox(height: 12),
+                                post.imageUrl != ""
+                                    ? ClipRRect(
+                                        borderRadius: BorderRadius.circular(20),
+                                        child: CachedNetworkImage(
+                                          useOldImageOnUrlChange: true,
+                                          fadeInDuration: Duration.zero,
+                                          imageUrl: post.imageUrl!,
+                                          fit: BoxFit.cover,
+                                          // height: 200,
+                                          width: double.infinity,
+                                          placeholder: (context, url) =>
+                                              SizedBox(),
+                                          errorWidget: (context, url, error) =>
+                                              Icon(Icons.error),
+                                        ),
+                                      )
+                                    : Container(),
                               ],
                             ),
-                            trailing: post.userId == user!.id
-                                ? PopupMenuButton(
-                                    onSelected: (value) async {
-                                      if (value == "edit") {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  CommunityManagePost(
-                                                mode: "Edit",
-                                                post: post,
-                                              ),
-                                            ));
-                                      } else if (value == "delete") {
-                                        try {
-                                          await communityPostController
-                                              .deletePost(
-                                                  id: post.id,
-                                                  context: context);
-                                          if (context.mounted) {
-                                            Navigator.pop(context);
-                                            showToast(
-                                              message:
-                                                  AppLocalizations.of(context)!
-                                                      .postDeletedSuccess,
-                                              toastType: ToastType.success,
-                                            );
-                                          }
-                                        } catch (e) {
-                                          if (context.mounted) {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      ErrorPage(
-                                                          errorMessage:
-                                                              e.toString()),
-                                                ));
-                                          }
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            _buildActionButton(
+                              onTap: isLiked
+                                  ? () async {
+                                      try {
+                                        await communityPostController
+                                            .unlikePost(
+                                                userId: user.id,
+                                                postId: post.id,
+                                                context: context);
+                                        setState(() {
+                                          isLiked = false;
+                                          post.likeCount--;
+                                        });
+                                      } catch (e) {
+                                        if (context.mounted) {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => ErrorPage(
+                                                    errorMessage: e.toString()),
+                                              ));
+                                        }
+                                      }
+                                    }
+                                  : () async {
+                                      try {
+                                        await communityPostController.likePost(
+                                            userId: user.id,
+                                            postId: post.id,
+                                            context: context);
+                                        setState(() {
+                                          isLiked = true;
+                                          post.likeCount++;
+                                        });
+                                      } catch (e) {
+                                        if (context.mounted) {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => ErrorPage(
+                                                    errorMessage: e.toString()),
+                                              ));
                                         }
                                       }
                                     },
-                                    itemBuilder: (context) => [
-                                      PopupMenuItem<String>(
-                                        value: 'edit',
-                                        child: Text(
-                                            AppLocalizations.of(context)!.edit),
-                                      ),
-                                      PopupMenuItem<String>(
-                                        value: 'delete',
-                                        child: Text(
-                                            AppLocalizations.of(context)!
-                                                .delete),
-                                      ),
-                                    ],
-                                  )
-                                : null),
-                      ),
-                      const SizedBox(
-                        height: 12,
-                      ),
-                      Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
+                              icon: isLiked
+                                  ? Icons.thumb_up
+                                  : Icons.thumb_up_alt_outlined,
+                              label: "${post.likeCount}",
+                            ),
+                            _buildActionButton(
+                              onTap: () {
+                                FocusScope.of(context)
+                                    .requestFocus(commentFocusNode);
+                              },
+                              icon: Icons.comment_outlined,
+                              label: "${post.commentCount}",
+                            ),
+                            _buildActionButton(
+                              onTap: (post.userId != user.id)
+                                  ? (post.isReposted
+                                      ? () {
+                                          showToast(
+                                              message:
+                                                  AppLocalizations.of(context)!
+                                                      .cannotRepostedPost,
+                                              toastType: ToastType.info);
+                                        }
+                                      : (isReposted
+                                          ? () async {
+                                              await communityPostController
+                                                  .deletePost(
+                                                      id: post.id,
+                                                      context: context,
+                                                      isRepost: true);
+                                              setState(() {
+                                                isReposted = false;
+                                                post.repostCount--;
+                                              });
+                                            }
+                                          : () async {
+                                              await communityPostController
+                                                  .createPost(
+                                                      title: post.title,
+                                                      description:
+                                                          post.description,
+                                                      category: post.category,
+                                                      userId: post.userId,
+                                                      username: post.username,
+                                                      imageUrl: post.imageUrl,
+                                                      postedByImageUrl:
+                                                          post.postedByImageUrl ??
+                                                              "",
+                                                      isReposted: true,
+                                                      repostedUserId: user.id,
+                                                      repostedPostId: post.id,
+                                                      repostedUsername:
+                                                          user.displayName,
+                                                      context: context);
+                                              setState(() {
+                                                isReposted = true;
+                                                post.repostCount++;
+                                              });
+                                            }))
+                                  : () {
+                                      showToast(
+                                          message: AppLocalizations.of(context)!
+                                              .cannotRepostOwnPost,
+                                          toastType: ToastType.info);
+                                    },
+                              icon: isReposted
+                                  ? Icons.repeat_on_outlined
+                                  : Icons.repeat_outlined,
+                              label: "${post.repostCount}",
+                            ),
+                          ],
                         ),
-                        color: Theme.of(context).cardColor,
-                        elevation: 6,
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        // post.commentCount == 0 &&
+                        comments.isEmpty
+                            // comments.length == post.commentCount
+                            ? Column(children: [
+                                Text(AppLocalizations.of(context)!.noComment),
+                                const SizedBox(
+                                  height: 60,
+                                )
+                              ])
+                            : Column(
                                 children: [
-                                  Expanded(
-                                    child: Text(
-                                      post.title,
-                                      style:
-                                          Theme.of(context).textTheme.bodySmall,
-                                    ),
+                                  ListView.builder(
+                                    shrinkWrap: true,
+                                    physics: NeverScrollableScrollPhysics(),
+                                    itemCount: post.commentCount,
+                                    itemBuilder: (context, index) {
+                                      return Card(
+                                        color: Theme.of(context).cardColor,
+                                        margin: EdgeInsets.only(bottom: 12),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(15),
+                                        ),
+                                        elevation: 4,
+                                        child: ListTile(
+                                          contentPadding: EdgeInsets.symmetric(
+                                              horizontal: 16, vertical: 4),
+                                          leading: comments[index]
+                                                      .commentedByImageUrl ==
+                                                  ""
+                                              ? CircleAvatar(
+                                                  radius: 20,
+                                                  backgroundColor:
+                                                      Theme.of(context)
+                                                          .primaryColorDark,
+                                                  child: Icon(
+                                                    Icons.account_circle,
+                                                    size: 38,
+                                                    color: Theme.of(context)
+                                                        .cardColor,
+                                                  ),
+                                                )
+                                              : CircleAvatar(
+                                                  radius: 20,
+                                                  backgroundImage:
+                                                      CachedNetworkImageProvider(
+                                                          comments[index]
+                                                              .commentedByImageUrl!),
+                                                  backgroundColor:
+                                                      Colors.transparent,
+                                                ),
+                                          title: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(comments[index].username),
+                                              Text(
+                                                comments[index]
+                                                    .createdAt
+                                                    .toString(),
+                                                style: TextStyle(fontSize: 12),
+                                              ),
+                                            ],
+                                          ),
+                                          subtitle: RichText(
+                                            text: TextSpan(
+                                                text: comments[index].content,
+                                                style: TextStyle(
+                                                    color: Theme.of(context)
+                                                        .canvasColor),
+                                                children: [
+                                                  if (comments[index].userId ==
+                                                      user.id)
+                                                    WidgetSpan(
+                                                      child:
+                                                          SizedBox(height: 8),
+                                                    ),
+                                                  if (comments[index].userId ==
+                                                      user.id)
+                                                    TextSpan(
+                                                      text:
+                                                          "\n${AppLocalizations.of(context)!.delete}",
+                                                      style: TextStyle(
+                                                        color: Theme.of(context)
+                                                            .primaryColor,
+                                                        decoration:
+                                                            TextDecoration
+                                                                .underline,
+                                                        decorationThickness: 2,
+                                                        height: 1.5,
+                                                      ),
+                                                      recognizer:
+                                                          TapGestureRecognizer()
+                                                            ..onTap = () async {
+                                                              try {
+                                                                await commentController
+                                                                    .deleteComment(
+                                                                        widget
+                                                                            .id,
+                                                                        comments[index]
+                                                                            .id);
+                                                                setState(() {
+                                                                  post.commentCount--;
+                                                                });
+                                                                if (context
+                                                                    .mounted) {
+                                                                  showToast(
+                                                                    message: AppLocalizations.of(
+                                                                            context)!
+                                                                        .commentDeletedSuccess,
+                                                                    toastType:
+                                                                        ToastType
+                                                                            .success,
+                                                                  );
+                                                                }
+                                                              } catch (e) {
+                                                                if (context
+                                                                    .mounted) {
+                                                                  Navigator.push(
+                                                                      context,
+                                                                      MaterialPageRoute(
+                                                                        builder:
+                                                                            (context) =>
+                                                                                ErrorPage(errorMessage: e.toString()),
+                                                                      ));
+                                                                }
+                                                              }
+                                                            },
+                                                    )
+                                                ]),
+                                          ),
+                                        ),
+                                      );
+                                    },
                                   ),
-                                  if (post.userId !=
-                                      user.id) // owner can't report own post
-                                    IconButton(
-                                        onPressed: () => showReportPopup(
-                                              context: context,
-                                              studentId: user.studentId,
-                                              postId: post.id,
-                                            ),
-                                        icon: Icon(Icons.report_outlined))
+                                  const SizedBox(
+                                    height: 30,
+                                  )
                                 ],
                               ),
-                              const SizedBox(height: 4),
-                              Text(
-                                post.description,
-                                style: TextStyle(fontSize: 16),
-                              ),
-                              const SizedBox(height: 12),
-                              post.imageUrl != ""
-                                  ? ClipRRect(
-                                      borderRadius: BorderRadius.circular(20),
-                                      child: Image.network(
-                                        post.imageUrl!,
-                                        fit: BoxFit.cover,
-                                        // height: 200,
-                                        width: double.infinity,
-                                      ),
-                                    )
-                                  : Container(),
-                            ],
-                          ),
+                        const SizedBox(
+                          height: 20,
                         ),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          _buildActionButton(
-                            onTap: isLiked
-                                ? () async {
-                                    try {
-                                      await communityPostController.unlikePost(
-                                          userId: user.id,
-                                          postId: post.id,
-                                          context: context);
-                                      setState(() {
-                                        isLiked = false;
-                                        post.likeCount--;
-                                      });
-                                    } catch (e) {
-                                      if (context.mounted) {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) => ErrorPage(
-                                                  errorMessage: e.toString()),
-                                            ));
-                                      }
-                                    }
-                                  }
-                                : () async {
-                                    try {
-                                      await communityPostController.likePost(
-                                          userId: user.id,
-                                          postId: post.id,
-                                          context: context);
-                                      setState(() {
-                                        isLiked = true;
-                                        post.likeCount++;
-                                      });
-                                    } catch (e) {
-                                      if (context.mounted) {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) => ErrorPage(
-                                                  errorMessage: e.toString()),
-                                            ));
-                                      }
-                                    }
-                                  },
-                            icon: isLiked
-                                ? Icons.thumb_up
-                                : Icons.thumb_up_alt_outlined,
-                            label: "${post.likeCount}",
-                          ),
-                          _buildActionButton(
-                            onTap: () {
-                              FocusScope.of(context)
-                                  .requestFocus(commentFocusNode);
-                            },
-                            icon: Icons.comment_outlined,
-                            label: "${post.commentCount}",
-                          ),
-                          _buildActionButton(
-                            onTap: () {},
-                            icon: Icons.cached_outlined,
-                            label: "${post.repostCount}",
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      // post.commentCount == 0 &&
-                      comments.isEmpty
-                          // comments.length == post.commentCount
-                          ? Column(children: [
-                              Text(AppLocalizations.of(context)!.noComment),
-                              const SizedBox(
-                                height: 60,
-                              )
-                            ])
-                          : Column(
-                              children: [
-                                ListView.builder(
-                                  shrinkWrap: true,
-                                  physics: NeverScrollableScrollPhysics(),
-                                  itemCount: post.commentCount,
-                                  itemBuilder: (context, index) {
-                                    return Card(
-                                      color: Theme.of(context).cardColor,
-                                      margin: EdgeInsets.only(bottom: 12),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(15),
-                                      ),
-                                      elevation: 4,
-                                      child: ListTile(
-                                        contentPadding: EdgeInsets.symmetric(
-                                            horizontal: 16, vertical: 4),
-                                        leading: comments[index]
-                                                    .commentedByImageUrl ==
-                                                ""
-                                            ? CircleAvatar(
-                                                radius: 20,
-                                                backgroundColor:
-                                                    Theme.of(context)
-                                                        .primaryColorDark,
-                                                child: Icon(
-                                                  Icons.account_circle,
-                                                  size: 38,
-                                                  color: Theme.of(context)
-                                                      .cardColor,
-                                                ),
-                                              )
-                                            : CircleAvatar(
-                                                radius: 20,
-                                                backgroundImage: NetworkImage(
-                                                    post.postedByImageUrl!),
-                                                backgroundColor:
-                                                    Colors.transparent,
-                                              ),
-                                        title: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(comments[index].username),
-                                            Text(
-                                              comments[index]
-                                                  .createdAt
-                                                  .toString(),
-                                              style: TextStyle(fontSize: 12),
-                                            ),
-                                          ],
-                                        ),
-                                        subtitle: RichText(
-                                          text: TextSpan(
-                                              text: comments[index].content,
-                                              style: TextStyle(
-                                                  color: Theme.of(context)
-                                                      .canvasColor),
-                                              children: [
-                                                if (comments[index].userId ==
-                                                    user.id)
-                                                  WidgetSpan(
-                                                    child: SizedBox(height: 8),
-                                                  ),
-                                                if (comments[index].userId ==
-                                                    user.id)
-                                                  TextSpan(
-                                                    text:
-                                                        "\n${AppLocalizations.of(context)!.delete}",
-                                                    style: TextStyle(
-                                                      color: Theme.of(context)
-                                                          .primaryColor,
-                                                      decoration: TextDecoration
-                                                          .underline,
-                                                      decorationThickness: 2,
-                                                      height: 1.5,
-                                                    ),
-                                                    recognizer:
-                                                        TapGestureRecognizer()
-                                                          ..onTap = () async {
-                                                            try {
-                                                              await commentController
-                                                                  .deleteComment(
-                                                                      widget.id,
-                                                                      comments[
-                                                                              index]
-                                                                          .id);
-                                                              setState(() {
-                                                                post.commentCount--;
-                                                              });
-                                                              if (context
-                                                                  .mounted) {
-                                                                showToast(
-                                                                  message: AppLocalizations.of(
-                                                                          context)!
-                                                                      .commentDeletedSuccess,
-                                                                  toastType:
-                                                                      ToastType
-                                                                          .success,
-                                                                );
-                                                              }
-                                                            } catch (e) {
-                                                              if (context
-                                                                  .mounted) {
-                                                                Navigator.push(
-                                                                    context,
-                                                                    MaterialPageRoute(
-                                                                      builder: (context) =>
-                                                                          ErrorPage(
-                                                                              errorMessage: e.toString()),
-                                                                    ));
-                                                              }
-                                                            }
-                                                          },
-                                                  )
-                                              ]),
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                                const SizedBox(
-                                  height: 30,
-                                )
-                              ],
-                            ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                    ],
-                  ),
-          )
-        ],
+                      ],
+                    ),
+            )
+          ],
+        ),
       ),
       bottomSheet: isLoading
           ? null

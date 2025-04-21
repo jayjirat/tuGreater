@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/components/community_post.dart';
@@ -37,7 +38,7 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
 
   User? loadedUser;
   late bool isCurrentUserProfile;
-  void _initState() async {
+  Future<void> _initState() async {
     Future.microtask(() async {
       try {
         final currentUser = ref.read(userProvider);
@@ -103,23 +104,31 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
         .watch(productProviderByProductOwnerId(Tuple2(widget.userId, context)));
     final List<Widget> swapPage = [
       Expanded(
-        child: ListView.builder(
-          itemCount: posts.length,
-          itemBuilder: (context, index) {
-            final post = posts[index];
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                communityPost(
+        child: RefreshIndicator(
+          onRefresh: () async {
+            await _initState();
+          },
+          backgroundColor: Theme.of(context).cardColor,
+          child: ListView.builder(
+            itemCount: posts.length,
+            itemBuilder: (context, index) {
+              final post = posts[index];
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  communityPost(
                     context: context,
                     nextRoute: CommunityViewpost(id: post.id),
                     post: post,
                     communityPostController: communityPostController,
-                    isfromProfile: true),
-                const SizedBox(height: 12),
-              ],
-            );
-          },
+                    isfromProfile: true,
+                    userId: loadedUser!.id,
+                  ), // Does not mean anything
+                  const SizedBox(height: 12),
+                ],
+              );
+            },
+          ),
         ),
       ),
       Expanded(
@@ -130,6 +139,7 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
               ref.refresh(
                   productProviderByProductOwnerId(Tuple2(user!.id, context)));
             },
+            backgroundColor: Theme.of(context).cardColor,
             child: SingleChildScrollView(
               physics: AlwaysScrollableScrollPhysics(),
               child: Padding(
@@ -142,7 +152,15 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
                         height: 120,
                         width: MediaQuery.of(context).size.width,
                         decoration: BoxDecoration(
-                          color: Color.fromARGB(255, 240, 239, 239),
+                          color: Theme.of(context).cardColor,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black
+                                  .withValues(alpha: 0.2), // เงาบางๆ
+                              blurRadius: 5, // ความฟุ้งของเงา
+                              offset: Offset(0, 4), // แนวเงา (แนวตั้งลงล่าง)
+                            ),
+                          ],
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Row(
@@ -156,8 +174,15 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: product.productImageUrls.isNotEmpty
-                                  ? Image.network(product.productImageUrls[0],
-                                      fit: BoxFit.cover)
+                                  ? CachedNetworkImage(
+                                      useOldImageOnUrlChange: true,
+                                      fadeInDuration: Duration.zero,
+                                      imageUrl: product.productImageUrls[0],
+                                      fit: BoxFit.cover,
+                                      placeholder: (context, url) => SizedBox(),
+                                      errorWidget: (context, url, error) =>
+                                          Icon(Icons.error),
+                                    )
                                   : Icon(
                                       Icons.image_not_supported,
                                       color: Theme.of(context).cardColor,
@@ -176,7 +201,6 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
                                       product.productName,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
-                                        color: Colors.black,
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -197,9 +221,10 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
                                             },
                                             style: FilledButton.styleFrom(
                                               backgroundColor:
-                                                  Colors.white.withOpacity(0.8),
-                                              foregroundColor: Colors.black,
-                                              elevation: 0,
+                                                  Theme.of(context).cardColor,
+                                              foregroundColor:
+                                                  Theme.of(context).canvasColor,
+                                              elevation: 1.2,
                                             ),
                                             child: Text(
                                                 AppLocalizations.of(context)!
@@ -319,17 +344,18 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
           children: [
             loadedUser!.profileImageUrl == ""
                 ? CircleAvatar(
-                    radius: 60,
+                    radius: MediaQuery.of(context).size.width > 360 ? 60 : 40,
                     backgroundColor: Theme.of(context).primaryColorDark,
                     child: Icon(
                       Icons.account_circle,
-                      size: 120,
+                      size: MediaQuery.of(context).size.width > 360 ? 120 : 80,
                       color: Theme.of(context).cardColor,
                     ),
                   )
                 : CircleAvatar(
-                    radius: 60,
-                    backgroundImage: NetworkImage(loadedUser!.profileImageUrl),
+                    radius: MediaQuery.of(context).size.width > 360 ? 60 : 40,
+                    backgroundImage:
+                        CachedNetworkImageProvider(loadedUser!.profileImageUrl),
                     backgroundColor: Colors.transparent,
                   ),
             const SizedBox(
@@ -346,8 +372,8 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
                 fontWeight: FontWeight.w600,
               ),
             ),
-            const SizedBox(
-              height: 24,
+            SizedBox(
+              height: MediaQuery.of(context).size.width > 360 ? 24 : 10,
             ),
             Container(
               padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 8),
@@ -389,8 +415,8 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
                 ],
               ),
             ),
-            const SizedBox(
-              height: 20,
+            SizedBox(
+              height: MediaQuery.of(context).size.width > 360 ? 20 : 10,
             ),
             swapPage[_selectedIndex]
           ],

@@ -14,11 +14,10 @@ class CommuPost {
   String? postedByImageUrl;
 
   int repostCount;
-  final bool? isReposted;
+  final bool isReposted;
   final String? repostedUserId;
+  final String? repostedUsername;
   final String? repostedPostId;
-  final bool? isOriginalDeleted;
-  final DateTime? repostCreatedAt;
 
   CommuPost(
       {required this.id,
@@ -37,9 +36,8 @@ class CommuPost {
       this.isReposted = false,
       this.repostedUserId,
       this.repostedPostId,
-      this.isOriginalDeleted,
-      this.repostCreatedAt,
-      this.postedByImageUrl});
+      this.postedByImageUrl,
+      this.repostedUsername});
 
   // ฟังก์ชันแปลง JSON เป็น CommuPost
   factory CommuPost.fromJson(Map<String, dynamic> json) {
@@ -61,14 +59,11 @@ class CommuPost {
       username: json['username'] as String,
       isEdited: json['isEdited'] as bool? ?? false,
       imageUrl: json['imageUrl'] as String?,
-      isReposted: json['isReposted'] as bool? ?? false,
+      isReposted: json['isReposted'] as bool,
       repostedUserId: json['repostedUserId'] as String?,
       repostedPostId: json['repostedPostId'] as String?,
-      isOriginalDeleted: json['isOriginalDeleted'] as bool?,
-      repostCreatedAt: json['repostCreatedAt'] != null
-          ? DateTime.parse(json['repostCreatedAt'] as String)
-          : null,
       postedByImageUrl: json['postedByImageUrl'] as String?,
+      repostedUsername: json['repostedUsername'] as String?,
     );
   }
 }

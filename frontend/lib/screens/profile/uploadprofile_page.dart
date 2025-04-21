@@ -116,63 +116,68 @@ class _UploadProfilePageState extends ConsumerState<UploadProfilePage> {
         title: Text(AppLocalizations.of(context)!.profile,
             style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
       ),
-      body: Consumer(
-        builder: (context, ref, child) {
-          final user = ref.watch(userProvider);
-          return Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Center(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).hoverColor,
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    padding: EdgeInsets.all(10),
-                    width: 350,
-                    height: 500,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        isUploading
-                            ? CircularProgressIndicator()
-                            : ProfileImagePicker(
-                                existingImageUrl: profileImageUrl,
-                                onImageSelected: (File image) {
-                                  uploadImage(image);
-                                },
-                              ),
-                        Text(
-                          user!.displayName,
-                          style: Theme.of(context).textTheme.displayLarge,
+      body: ListView(
+        children: [
+          Consumer(
+            builder: (context, ref, child) {
+              final user = ref.watch(userProvider);
+              return Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Center(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).hoverColor,
+                          borderRadius: BorderRadius.circular(30),
                         ),
-                        Text(
-                          user.studentId,
-                          style: Theme.of(context).textTheme.displayLarge,
+                        padding: EdgeInsets.all(10),
+                        width: 350,
+                        height: 500,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            isUploading
+                                ? CircularProgressIndicator()
+                                : ProfileImagePicker(
+                                    existingImageUrl: profileImageUrl,
+                                    onImageSelected: (File image) {
+                                      uploadImage(image);
+                                    },
+                                  ),
+                            Text(
+                              user!.displayName,
+                              style: Theme.of(context).textTheme.displayLarge,
+                            ),
+                            Text(
+                              user.studentId,
+                              style: Theme.of(context).textTheme.displayLarge,
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
-                  ),
+                    Center(
+                        child: ElevatedButton(
+                      onPressed: isUploading ? null : resetProfileImage,
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.redAccent, // Button color
+                          minimumSize: Size(350, 75),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 10),
+                          elevation: 5),
+                      child: Text(
+                          AppLocalizations.of(context)!.return_to_default,
+                          style: TextStyle(color: Colors.black, fontSize: 20)),
+                    )),
+                  ],
                 ),
-                Center(
-                    child: ElevatedButton(
-                  onPressed: isUploading ? null : resetProfileImage,
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.redAccent, // Button color
-                      minimumSize: Size(350, 75),
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                      elevation: 5),
-                  child: Text(AppLocalizations.of(context)!.return_to_default,
-                      style: TextStyle(color: Colors.black, fontSize: 20)),
-                )),
-              ],
-            ),
-          );
-        },
+              );
+            },
+          )
+        ],
       ),
     );
   }

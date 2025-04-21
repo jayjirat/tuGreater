@@ -6,7 +6,6 @@ class LocaleProvider with ChangeNotifier {
   Locale get locale => _locale;
 
   void toggleLanguage() {
-    print(_locale.languageCode);
     _locale = (_locale.languageCode == 'en' ? Locale('th') : Locale('en'));
     notifyListeners(); // Notify listeners to rebuild the UI
   }

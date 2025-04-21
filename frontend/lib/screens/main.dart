@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/components/custom_bottom_navigationbar.dart';
-import 'package:frontend/providers/user_provider.dart';
 import 'package:frontend/screens/community/community.dart';
 import 'package:frontend/screens/community/community_manage_post.dart';
 import 'package:frontend/screens/profile/profile_page.dart';
@@ -19,14 +18,11 @@ class MainState extends ConsumerState<Main> {
   int currentIndex = 0;
   @override
   Widget build(BuildContext context) {
-    final user = ref.read(userProvider);
     final screens = [
-      Community(),
-      Shop(),
-      ProfilePage(
-        userId: user!.id,
-      )
-    ];
+      Community(), 
+      Shop(), 
+      ProfilePage()
+      ];
 
     return Scaffold(
       body: SafeArea(child: screens[currentIndex]),

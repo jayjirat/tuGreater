@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
@@ -44,20 +45,15 @@ class _SettingPageState extends rp.ConsumerState<SettingPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Image.network(
-                        user?.profileImageUrl ??
+                      CachedNetworkImage(
+                        useOldImageOnUrlChange: true,
+                        fadeInDuration: Duration.zero,
+                        imageUrl: user?.profileImageUrl ??
                             'https://default-placeholder-url.com/image.png',
                         width: 100,
                         fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Container(
-                            width: 100,
-                            height: 100,
-                            color: Colors.grey[300],
-                            child: Icon(Icons.person,
-                                size: 50, color: Colors.grey[600]),
-                          );
-                        },
+                        placeholder: (context, url) => SizedBox(),
+                        errorWidget: (context, url, error) => Icon(Icons.error),
                       ),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -82,8 +78,8 @@ class _SettingPageState extends rp.ConsumerState<SettingPage> {
             ),
             Row(
               children: [
-                SvgPicture.network(
-                  'https://flagcdn.com/gb.svg',
+                SvgPicture.asset(
+                  'assets/svg/en.svg',
                   width: 25,
                   height: 25,
                   placeholderBuilder: (context) =>
@@ -116,8 +112,8 @@ class _SettingPageState extends rp.ConsumerState<SettingPage> {
                     ),
                   ),
                 ),
-                SvgPicture.network(
-                  'https://flagcdn.com/th.svg', // Thailand 🇹🇭
+                SvgPicture.asset(
+                  'assets/svg/th.svg', // Thailand 🇹🇭
                   width: 28,
                   height: 28,
                   placeholderBuilder: (context) =>

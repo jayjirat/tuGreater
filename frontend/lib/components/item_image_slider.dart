@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_slideshow/flutter_image_slideshow.dart';
 
@@ -22,8 +23,15 @@ class ItemImageSlider extends StatelessWidget {
           indicatorRadius: 4,
           isLoop: true,
           children: images.map((imageUrl) {
-            return Image.network(imageUrl,
-                fit: BoxFit.cover, width: double.infinity);
+            return CachedNetworkImage(
+              useOldImageOnUrlChange: true,
+              fadeInDuration: Duration.zero,
+              imageUrl: imageUrl,
+              fit: BoxFit.cover,
+              width: double.infinity,
+              placeholder: (context, url) => SizedBox(), // Placeholder
+              errorWidget: (context, url, error) => Icon(Icons.error),
+            );
           }).toList()),
     );
   }

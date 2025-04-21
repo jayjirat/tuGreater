@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 // import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -53,8 +54,8 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
     }
   }
 
-  Future<void> pickImage() async {
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+  Future<void> pickImage(ImageSource source) async {
+    final pickedFile = await picker.pickImage(source: source);
     if (pickedFile != null) {
       setState(() {
         image = File(pickedFile.path);
@@ -114,6 +115,36 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
             ));
       }
     }
+  }
+
+  void showImageSourceDialog() {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return SafeArea(
+          child: Wrap(
+            children: [
+              ListTile(
+                leading: Icon(Icons.camera_alt),
+                title: Text(AppLocalizations.of(context)!.product_camera_popup),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  pickImage(ImageSource.camera);
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.photo_library),
+                title: Text(AppLocalizations.of(context)!.product_images_popup),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  pickImage(ImageSource.gallery);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -183,7 +214,7 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
               if (widget.mode == "Add")
                 image == null
                     ? ElevatedButton(
-                        onPressed: pickImage,
+                        onPressed: showImageSourceDialog,
                         child: Text(AppLocalizations.of(context)!.uploadImage),
                       )
                     : Column(
@@ -208,7 +239,7 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
               if (widget.mode == "Edit")
                 imageUrl == "" && image == null
                     ? ElevatedButton(
-                        onPressed: pickImage,
+                        onPressed: showImageSourceDialog,
                         child: Text(AppLocalizations.of(context)!.uploadImage),
                       )
                     : Column(
@@ -220,11 +251,16 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
                                   height: 200,
                                   fit: BoxFit.cover,
                                 )
-                              : Image.network(
-                                  editPost.imageUrl,
+                              : CachedNetworkImage(
+                                  useOldImageOnUrlChange: true,
+                                  fadeInDuration: Duration.zero,
+                                  imageUrl: editPost.imageUrl,
                                   width: 200,
                                   height: 200,
                                   fit: BoxFit.cover,
+                                  placeholder: (context, url) => SizedBox(),
+                                  errorWidget: (context, url, error) =>
+                                      Icon(Icons.error),
                                 ),
                           const SizedBox(
                             height: 10,
@@ -302,7 +338,8 @@ class CommunityManagePostState extends ConsumerState<CommunityManagePost> {
                               category: selectedValueDropdown!,
                               imageUrl: imageUrl,
                               postedByImageUrl: user.profileImageUrl,
-                              context: context);
+                              context: context,
+                              isReposted: false);
                         }
                       } catch (e) {
                         if (context.mounted) {

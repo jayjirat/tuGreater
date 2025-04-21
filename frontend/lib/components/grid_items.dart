@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/models/products.dart';
 import 'package:frontend/screens/error_try.dart';
@@ -93,10 +94,18 @@ class GridItems extends ConsumerWidget {
                                         height: 175,
                                         child: product
                                                 .productImageUrls.isNotEmpty
-                                            ? Image.network(
+                                            ? CachedNetworkImage(
+                                            useOldImageOnUrlChange: true,
+                                            fadeInDuration: Duration.zero,
+                                            imageUrl:
                                                 product.productImageUrls[0],
-                                                fit: BoxFit.cover,
-                                              )
+                                            fit: BoxFit.cover,
+                                            placeholder: (context, url) =>
+                                                SizedBox(),
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    Icon(Icons.error),
+                                          )
                                             : Container(
                                                 decoration: BoxDecoration(
                                                     color: Theme.of(context)
