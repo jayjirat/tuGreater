@@ -113,19 +113,32 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                           child: ListTile(
                               leading: post!.postedByImageUrl == ""
                                   ? CircleAvatar(
-                                      radius: 18,
+                                      radius:
+                                          MediaQuery.of(context).size.width >
+                                                  360
+                                              ? 18
+                                              : 15,
                                       backgroundColor:
                                           Theme.of(context).primaryColorDark,
                                       child: Icon(
                                         Icons.account_circle,
-                                        size: 36,
+                                        size:
+                                            MediaQuery.of(context).size.width >
+                                                    360
+                                                ? 36
+                                                : 30,
                                         color: Theme.of(context).cardColor,
                                       ),
                                     )
                                   : CircleAvatar(
-                                      radius: 28,
+                                      radius:
+                                          MediaQuery.of(context).size.width >
+                                                  360
+                                              ? 28
+                                              : 24,
                                       backgroundImage:
-                                          NetworkImage(post.postedByImageUrl!),
+                                          CachedNetworkImageProvider(
+                                              post.postedByImageUrl!),
                                       backgroundColor: Colors.transparent,
                                     ),
                               title: Text(
@@ -137,14 +150,24 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                                   Text(
                                     post.createdAt.toString(),
                                     style: TextStyle(
-                                        color: Colors.grey[600], fontSize: 13),
+                                        color: Colors.grey[600],
+                                        fontSize:
+                                            MediaQuery.of(context).size.width >
+                                                    360
+                                                ? 13
+                                                : 11),
                                   ),
                                   Text(
                                     post.isEdited
                                         ? " (${AppLocalizations.of(context)!.edit})"
                                         : "",
                                     style: TextStyle(
-                                        color: Colors.grey[600], fontSize: 13),
+                                        color: Colors.grey[600],
+                                        fontSize:
+                                            MediaQuery.of(context).size.width >
+                                                    360
+                                                ? 13
+                                                : 11),
                                   ),
                                 ],
                               ),
@@ -444,9 +467,10 @@ class CommunityViewpostState extends ConsumerState<CommunityViewpost> {
                                                 )
                                               : CircleAvatar(
                                                   radius: 20,
-                                                  backgroundImage: NetworkImage(
-                                                      comments[index]
-                                                          .commentedByImageUrl!),
+                                                  backgroundImage:
+                                                      CachedNetworkImageProvider(
+                                                          comments[index]
+                                                              .commentedByImageUrl!),
                                                   backgroundColor:
                                                       Colors.transparent,
                                                 ),

@@ -11,27 +11,13 @@ Widget communityPost(
     required CommunityNotifier communityPostController,
     required bool isfromProfile,
     required String userId}) {
-  return InkWell(
-    borderRadius: BorderRadius.circular(12),
-    onTap: () async {
-      await Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => nextRoute),
-      );
-      if (!isfromProfile) {
-        if (context.mounted) {
-          communityPostController.fetchPosts(context: context);
-        }
-      }
-    },
-    child: postCard(
-        context: context,
-        post: post,
-        communityPostController: communityPostController,
-        isfromProfile: isfromProfile,
-        nextRoute: nextRoute,
-        userId: userId),
-  );
+  return postCard(
+      context: context,
+      post: post,
+      communityPostController: communityPostController,
+      isfromProfile: isfromProfile,
+      nextRoute: nextRoute,
+      userId: userId);
 }
 
 Widget postCard({
@@ -49,11 +35,11 @@ Widget postCard({
           context,
           MaterialPageRoute(builder: (context) => nextRoute),
         );
-        if (!isfromProfile) {
-          if (context.mounted) {
-            communityPostController.fetchPosts(context: context);
-          }
-        }
+        // if (!isfromProfile) {
+        //   if (context.mounted) {
+        //     communityPostController.fetchPosts(context: context);
+        //   }
+        // }
       },
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -82,17 +68,21 @@ Widget postCard({
                   leading: post.postedByImageUrl == "" ||
                           post.postedByImageUrl == null
                       ? CircleAvatar(
-                          radius: 24,
+                          radius:
+                              MediaQuery.of(context).size.width > 360 ? 24 : 20,
                           backgroundColor: Theme.of(context).primaryColorDark,
                           child: Icon(
                             Icons.account_circle,
-                            size: 48,
+                            size: MediaQuery.of(context).size.width > 360
+                                ? 48
+                                : 40,
                             color: Theme.of(context).cardColor,
                           ),
                         )
                       : CircleAvatar(
-                          radius: 24,
-                          backgroundImage: NetworkImage(post.postedByImageUrl!),
+                          radius:
+                              MediaQuery.of(context).size.width > 360 ? 24 : 20,
+                          backgroundImage: CachedNetworkImageProvider(post.postedByImageUrl!),
                           backgroundColor: Colors.transparent,
                         ),
                   title: Text(

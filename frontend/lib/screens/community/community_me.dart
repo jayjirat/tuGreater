@@ -117,12 +117,13 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   communityPost(
-                      context: context,
-                      nextRoute: CommunityViewpost(id: post.id),
-                      post: post,
-                      communityPostController: communityPostController,
-                      isfromProfile: true,
-                      userId: loadedUser!.id),
+                    context: context,
+                    nextRoute: CommunityViewpost(id: post.id),
+                    post: post,
+                    communityPostController: communityPostController,
+                    isfromProfile: true,
+                    userId: loadedUser!.id,
+                  ), // Does not mean anything
                   const SizedBox(height: 12),
                 ],
               );
@@ -353,7 +354,8 @@ class CommunityMeState extends ConsumerState<CommunityMe> {
                   )
                 : CircleAvatar(
                     radius: 60,
-                    backgroundImage: NetworkImage(loadedUser!.profileImageUrl),
+                    backgroundImage:
+                        CachedNetworkImageProvider(loadedUser!.profileImageUrl),
                     backgroundColor: Colors.transparent,
                   ),
             const SizedBox(

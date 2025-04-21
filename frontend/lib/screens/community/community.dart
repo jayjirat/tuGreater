@@ -141,14 +141,15 @@ class CommunityState extends ConsumerState<Community> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         communityPost(
-                            context: context,
-                            nextRoute: post.isReposted
-                                ? CommunityViewpost(id: post.repostedPostId!)
-                                : CommunityViewpost(id: post.id),
-                            post: post,
-                            communityPostController: communityPostController,
-                            isfromProfile: false,
-                            userId: user!.id),
+                          context: context,
+                          nextRoute: post.isReposted
+                              ? CommunityViewpost(id: post.repostedPostId!)
+                              : CommunityViewpost(id: post.id),
+                          post: post,
+                          communityPostController: communityPostController,
+                          isfromProfile: false,
+                          userId: user!.id,
+                        ),
                         const SizedBox(height: 12),
                       ],
                     );
@@ -217,17 +218,19 @@ class CommunityState extends ConsumerState<Community> {
   }
 
   Widget toggleElement(String text) {
+    final double sizedWidth = MediaQuery.of(context).size.width > 360 ? 6 : 4;
     return Row(
       children: [
-        const SizedBox(
-          width: 8,
+        SizedBox(
+          width: sizedWidth,
         ),
         Text(
           getLocalizedCategory(text),
-          style: TextStyle(fontSize: 16),
+          style: TextStyle(
+              fontSize: MediaQuery.of(context).size.width > 360 ? 16 : 14),
         ),
-        const SizedBox(
-          width: 8,
+        SizedBox(
+          width: sizedWidth,
         ),
       ],
     );
