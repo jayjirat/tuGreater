@@ -314,9 +314,11 @@ class _AddItemsState extends ConsumerState<AddItems> {
               Row(
                 children: [
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: MediaQuery.of(context).size.width * 0.05,
+                    ),
                     child: SizedBox(
-                      width: 180,
+                      width: MediaQuery.of(context).size.width * 0.45,
                       child: Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
@@ -329,11 +331,13 @@ class _AddItemsState extends ConsumerState<AddItems> {
                       ),
                     ),
                   ),
-                  SizedBox(width: 20),
+                  SizedBox(width: MediaQuery.of(context).size.width * 0.03),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: MediaQuery.of(context).size.width * 0.10,
+                    ),
                     child: SizedBox(
-                      width: 100,
+                      width: MediaQuery.of(context).size.width * 0.2,
                       child: Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
@@ -355,7 +359,7 @@ class _AddItemsState extends ConsumerState<AddItems> {
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: SizedBox(
-                        width: 200,
+                        width: (MediaQuery.of(context).size.width) * 0.5,
                         child: TextField(
                           controller: nameController,
                           decoration: InputDecoration(
@@ -371,7 +375,7 @@ class _AddItemsState extends ConsumerState<AddItems> {
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: SizedBox(
-                        width: 100,
+                        width: (MediaQuery.of(context).size.width) * 0.2,
                         child: TextField(
                           controller: priceController,
                           keyboardType:
@@ -444,7 +448,7 @@ class _AddItemsState extends ConsumerState<AddItems> {
                   children: [
                     // First checkbox
                     SizedBox(
-                      width: 110,
+                      width: (MediaQuery.of(context).size.width - 60) / 3,
                       child: Row(
                         children: [
                           Checkbox(
@@ -461,15 +465,16 @@ class _AddItemsState extends ConsumerState<AddItems> {
                             },
                           ),
                           Flexible(
-                              child: Text(AppLocalizations.of(context)!
-                                  .tag_first_hand)),
+                            child: Text(
+                                AppLocalizations.of(context)!.tag_first_hand),
+                          ),
                         ],
                       ),
                     ),
 
                     // Second checkbox
                     SizedBox(
-                      width: 110,
+                      width: (MediaQuery.of(context).size.width - 60) / 3,
                       child: Row(
                         children: [
                           Checkbox(
@@ -486,15 +491,16 @@ class _AddItemsState extends ConsumerState<AddItems> {
                             },
                           ),
                           Flexible(
-                              child: Text(AppLocalizations.of(context)!
-                                  .tag_second_hand)),
+                            child: Text(
+                                AppLocalizations.of(context)!.tag_second_hand),
+                          ),
                         ],
                       ),
                     ),
 
                     // Third checkbox
                     SizedBox(
-                      width: 130,
+                      width: (MediaQuery.of(context).size.width - 15) / 3,
                       child: Row(
                         children: [
                           Checkbox(
@@ -511,8 +517,9 @@ class _AddItemsState extends ConsumerState<AddItems> {
                             },
                           ),
                           Flexible(
-                              child: Text(AppLocalizations.of(context)!
-                                  .tag_good_quality)),
+                            child: Text(
+                                AppLocalizations.of(context)!.tag_good_quality),
+                          ),
                         ],
                       ),
                     ),
@@ -525,7 +532,7 @@ class _AddItemsState extends ConsumerState<AddItems> {
                   children: [
                     // Fourth checkbox
                     SizedBox(
-                      width: 110,
+                      width: (MediaQuery.of(context).size.width - 60) / 3,
                       child: Row(
                         children: [
                           Checkbox(
@@ -550,7 +557,7 @@ class _AddItemsState extends ConsumerState<AddItems> {
 
                     // Fifth checkbox
                     SizedBox(
-                      width: 110,
+                      width: (MediaQuery.of(context).size.width - 60) / 3,
                       child: Row(
                         children: [
                           Checkbox(
@@ -575,7 +582,7 @@ class _AddItemsState extends ConsumerState<AddItems> {
 
                     // Others checkbox with input
                     SizedBox(
-                      width: 140,
+                      width: (MediaQuery.of(context).size.width - 15) / 3,
                       child: Row(
                         children: [
                           Checkbox(
