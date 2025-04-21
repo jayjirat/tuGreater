@@ -40,103 +40,104 @@ class GridItems extends ConsumerWidget {
         data: (products) {
           List<Products> filteredProducts = _applyFilters(products);
           return products.isNotEmpty
-              ? GridView.builder(
-                  itemCount: filteredProducts.length,
-                  physics: AlwaysScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    childAspectRatio: 0.715,
-                    crossAxisCount: 2,
-                  ),
-                  itemBuilder: (context, index) {
-                    final product = filteredProducts[index];
-                    return Container(
-                      margin: EdgeInsets.all(10),
-                      child: Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => ItemDetail(
-                                        productId: product.productId)));
-                          },
-                          borderRadius: BorderRadius.circular(15),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                              color: Theme.of(context).cardColor,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black26,
-                                  blurRadius: 4,
-                                  spreadRadius: 2,
-                                ),
-                              ],
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(15),
-                                    topRight: Radius.circular(15),
+              ? LayoutBuilder(builder: (context, constraints) {
+                  return GridView.builder(
+                    itemCount: filteredProducts.length,
+                    physics: AlwaysScrollableScrollPhysics(),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      childAspectRatio: (constraints.maxWidth / 2) / 290,
+                      crossAxisCount: 2,
+                    ),
+                    itemBuilder: (context, index) {
+                      final product = filteredProducts[index];
+                      return Container(
+                        margin: EdgeInsets.all(10),
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ItemDetail(
+                                          productId: product.productId)));
+                            },
+                            borderRadius: BorderRadius.circular(15),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15),
+                                color: Theme.of(context).cardColor,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black26,
+                                    blurRadius: 4,
+                                    spreadRadius: 2,
                                   ),
-                                  child: SizedBox(
-                                    width: double.infinity,
-                                    height: 175,
-                                    child: product.productImageUrls.isNotEmpty
-                                        ? Image.network(
-                                            product.productImageUrls[0],
-                                            fit: BoxFit.cover,
-                                          )
-                                        : Container(
-                                            decoration: BoxDecoration(
-                                                color: Theme.of(context)
-                                                    .canvasColor
-                                                    .withValues(alpha: 0.2)),
-                                            child: Icon(
-                                                Icons.image_not_supported,
-                                                size: 42,
-                                                color: Theme.of(context)
-                                                    .cardColor),
+                                ],
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(15),
+                                      topRight: Radius.circular(15),
+                                    ),
+                                    child: SizedBox(
+                                      width: double.infinity,
+                                      height: 175,
+                                      child: product.productImageUrls.isNotEmpty
+                                          ? Image.network(
+                                              product.productImageUrls[0],
+                                              fit: BoxFit.cover,
+                                            )
+                                          : Container(
+                                              decoration: BoxDecoration(
+                                                  color: Theme.of(context)
+                                                      .canvasColor
+                                                      .withValues(alpha: 0.2)),
+                                              child: Icon(
+                                                  Icons.image_not_supported,
+                                                  size: 42,
+                                                  color: Theme.of(context)
+                                                      .cardColor),
+                                            ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.all(15),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          product.productName,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            fontSize: 17,
+                                            fontWeight: FontWeight.bold,
                                           ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.all(15),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        product.productName,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                          fontSize: 17,
-                                          fontWeight: FontWeight.bold,
                                         ),
-                                      ),
-                                      SizedBox(height: 10),
-                                      Text(
-                                        "฿ ${NumberFormat('#,###').format(product.productPrice)}",
-                                        style: TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      )
-                                    ],
+                                        SizedBox(height: 10),
+                                        Text(
+                                          "฿ ${NumberFormat('#,###').format(product.productPrice)}",
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        )
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    );
-                  },
-                )
+                      );
+                    },
+                  );
+                })
               : Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
