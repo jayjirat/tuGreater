@@ -20,9 +20,7 @@ Widget inputWithLabel({
         },
         obscureText: obscureText,
         keyboardType: textInputType ?? TextInputType.text,
-        style: TextStyle(
-          fontWeight: FontWeight.bold,
-        ),
+        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
         decoration: InputDecoration(
           hintText: hintText,
           border: OutlineInputBorder(

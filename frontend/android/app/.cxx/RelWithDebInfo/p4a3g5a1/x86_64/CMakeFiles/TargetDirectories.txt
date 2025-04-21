@@ -1,2 +1,0 @@
-C:/Users/Chaisiri/Desktop/CN/CN333/tuGreater/frontend/android/app/.cxx/RelWithDebInfo/p4a3g5a1/x86_64/CMakeFiles/edit_cache.dir
-C:/Users/Chaisiri/Desktop/CN/CN333/tuGreater/frontend/android/app/.cxx/RelWithDebInfo/p4a3g5a1/x86_64/CMakeFiles/rebuild_cache.dir
