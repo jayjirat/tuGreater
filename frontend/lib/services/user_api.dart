@@ -8,7 +8,8 @@ class UserApi {
     final response = await http.get(url).timeout(Duration(seconds: 10));
 
     if (response.statusCode == 200) {
-      final jsonData = json.decode(response.body);
+      String decodedResponse = utf8.decode(response.bodyBytes);
+      final jsonData = json.decode(decodedResponse);
       return User.fromJson(jsonData);
     } else {
       throw Exception('Failed to load user');

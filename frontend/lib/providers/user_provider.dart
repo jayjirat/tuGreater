@@ -40,7 +40,8 @@ class UserNotifier extends StateNotifier<User?> {
       ).timeout(Duration(seconds: 15));
       // Login success
       if (tuResponse.statusCode == 200) {
-        final tuResponseData = json.decode(tuResponse.body);
+        String decodedResponse = utf8.decode(tuResponse.bodyBytes);
+        final tuResponseData = json.decode(decodedResponse);
         final usernameUrl =
             Uri.parse('$userDBUrl/studentId?studentId=$username');
         // Fetch user in db
@@ -63,7 +64,9 @@ class UserNotifier extends StateNotifier<User?> {
               .timeout(Duration(seconds: 10));
           if (context.mounted) {
             if (createUserResponse.statusCode == 201) {
-              final data = json.decode(createUserResponse.body);
+              String decodedResponse =
+                  utf8.decode(createUserResponse.bodyBytes);
+              final data = json.decode(decodedResponse);
               state = User(
                 id: data["user"]['id'],
                 studentId: data["user"]['studentId'],
@@ -85,7 +88,8 @@ class UserNotifier extends StateNotifier<User?> {
 
           // Found user in db -> Not first login
         } else if (existingUser.statusCode == 200) {
-          final data = json.decode(existingUser.body);
+          String decodedResponse = utf8.decode(existingUser.bodyBytes);
+          final data = json.decode(decodedResponse);
           state = User(
             id: data['id'],
             studentId: data['studentId'],
@@ -155,7 +159,8 @@ class UserNotifier extends StateNotifier<User?> {
     try {
       final response = await http.get(url).timeout(Duration(seconds: 10));
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
+        String decodedResponse = utf8.decode(response.bodyBytes);
+        final data = json.decode(decodedResponse);
         return User(
           id: data['id'],
           studentId: data['studentId'],
@@ -292,7 +297,8 @@ class UserNotifier extends StateNotifier<User?> {
           .get(Uri.parse('$userDBUrl/$id'))
           .timeout(Duration(seconds: 10));
       if (userResponse.statusCode == 200) {
-        final data = json.decode(userResponse.body);
+        String decodedResponse = utf8.decode(userResponse.bodyBytes);
+        final data = json.decode(decodedResponse);
         state = User(
           id: data['id'],
           studentId: data['studentId'],
