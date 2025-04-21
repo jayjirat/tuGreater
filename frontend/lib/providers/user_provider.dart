@@ -254,7 +254,7 @@ class UserNotifier extends StateNotifier<User?> {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('id', user.id);
     await prefs.setBool('isLoggedIn', true);
-    await prefs.setInt('loginTimeStamp', DateTime.now().microsecondsSinceEpoch);
+    await prefs.setInt('loginTimeStamp', DateTime.now().millisecondsSinceEpoch);
   }
 
 // โหลดข้อมูล User จาก SharedPreferences
@@ -263,7 +263,7 @@ class UserNotifier extends StateNotifier<User?> {
     final prefs = await SharedPreferences.getInstance();
 
     final isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
-    final loginTimestamp = prefs.getInt('loginTimestamp');
+    final loginTimestamp = prefs.getInt('loginTimeStamp');
 
     // ถ้ายังไม่เคย login หรือไม่มี timestamp
     if (!isLoggedIn || loginTimestamp == null) {
@@ -273,8 +273,7 @@ class UserNotifier extends StateNotifier<User?> {
     final loginTime = DateTime.fromMillisecondsSinceEpoch(loginTimestamp);
     final now = DateTime.now();
 
-    // ตั้งระยะเวลา session เช่น 2 ชั่วโมง
-    const sessionDuration = Duration(hours: 72);
+    const sessionDuration = Duration(hours: 336);
 
     // หมดอายุแล้ว
     if (now.difference(loginTime) > sessionDuration) {
