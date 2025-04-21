@@ -31,7 +31,8 @@ class ReportNotifier extends StateNotifier<List<Report>> {
           .post(url, headers: header, body: jsonEncode(newReport))
           .timeout(Duration(seconds: 10));
       if (response.statusCode == 201) {
-        final data = jsonDecode(response.body);
+        String decodedResponse = utf8.decode(response.bodyBytes);
+        final data = jsonDecode(decodedResponse);
         final newReport = Report.fromJson(data);
         state = [newReport, ...state];
       } else {
@@ -52,7 +53,7 @@ class ReportNotifier extends StateNotifier<List<Report>> {
         final report = jsonData.map((item) => Report.fromJson(item)).toList();
         state = report;
       } else {
-      throw Exception('Failed to load reports');
+        throw Exception('Failed to load reports');
       }
     } catch (e) {
       throw Exception('Error: $e');

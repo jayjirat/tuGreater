@@ -212,7 +212,8 @@ class UserNotifier extends StateNotifier<User?> {
           )
           .timeout(Duration(seconds: 10));
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
+        String decodedResponse = utf8.decode(response.bodyBytes);
+        final data = json.decode(decodedResponse);
         state = User(
           id: data['id'],
           studentId: data['studentId'],

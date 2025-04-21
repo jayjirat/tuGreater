@@ -33,7 +33,8 @@ class CommentNotifier extends StateNotifier<List<Comment>> {
           .post((url), headers: header, body: jsonEncode(commentBody))
           .timeout(Duration(seconds: 10));
       if (response.statusCode == 201) {
-        final newComment = Comment.fromJson(jsonDecode(response.body));
+        String decodedResponse = utf8.decode(response.bodyBytes);
+        final newComment = Comment.fromJson(jsonDecode(decodedResponse));
         state = [...state, newComment];
       } else {
         showToast(
@@ -51,7 +52,8 @@ class CommentNotifier extends StateNotifier<List<Comment>> {
     try {
       final response = await http.get(url).timeout(Duration(seconds: 15));
       if (response.statusCode == 200) {
-        final List<dynamic> data = jsonDecode(response.body);
+        String decodedResponse = utf8.decode(response.bodyBytes);
+        final List<dynamic> data = jsonDecode(decodedResponse);
         final commentsData =
             data.map((json) => Comment.fromJson(json)).toList();
         state = commentsData;

@@ -20,7 +20,8 @@ class DisplaynameApiService {
       );
 
       if (response.statusCode == 200) {
-        final Map<String, dynamic> data = json.decode(response.body);
+        String decodedResponse = utf8.decode(response.bodyBytes);
+        final Map<String, dynamic> data = json.decode(decodedResponse);
         return data['displayName'];
       } else {
         throw Exception('Failed to get display name: ${response.statusCode}');
