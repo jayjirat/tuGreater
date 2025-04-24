@@ -94,7 +94,7 @@ class ReportState extends ConsumerState<ReportedPost> {
 
   AppBar appBar() {
     return AppBar(
-      backgroundColor: Color(0xFFFF9000),
+      backgroundColor: Color(0xFFE95C00),
       title: Text(
         "Delete Post", 
         style: TextStyle(

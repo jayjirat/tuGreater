@@ -87,4 +87,14 @@ public class ProductsService {
             throw new NoSuchElementException("Product not found with productOwnerId: " + productOwnerId + " and productId: " + productId);
         }
     }
+
+
+    public boolean deleteProductById(String productId){
+        Optional<Products> product = productsRepository.findById(productId);
+        if(product.isPresent()){
+            productsRepository.delete(product.get());
+            return true;
+        }
+        return false;
+    }
 }

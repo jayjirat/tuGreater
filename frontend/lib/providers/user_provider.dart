@@ -257,7 +257,36 @@ class UserNotifier extends StateNotifier<User?> {
     final user = await UserApi.fetchUser(studentId);
     state = user;
   }
+
+  Future<List<User>> fetchAllUsers() async {
+    final url = Uri.parse('$userDBUrl');
+    try {
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      final List<dynamic> data = json.decode(response.body);
+      return data.map((userJson) {
+        return User(
+          id: userJson['id'],
+          studentId: userJson['studentId'],
+          username: userJson['username'],
+          displayName: userJson['displayName'],
+          profileImageUrl: userJson['profileImageUrl'],
+          role: parseStringtoRole(userJson['role']),
+        );
+      }).toList();
+    } else {
+      throw Exception("Failed to load users: ${response.statusCode}");
+    }
+  } catch (e) {
+    throw Exception("Error fetching users: $e");
+  }
+
+  }
 }
 
 final userProvider =
     StateNotifierProvider<UserNotifier, User?>((ref) => UserNotifier());
+
+final fetchAllUsersProvider = FutureProvider<List<User>>((ref) async {
+  return await ref.read(userProvider.notifier).fetchAllUsers();
+});

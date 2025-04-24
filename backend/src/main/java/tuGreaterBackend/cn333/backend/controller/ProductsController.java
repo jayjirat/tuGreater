@@ -83,4 +83,14 @@ public class ProductsController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @DeleteMapping("/{productId}")
+    public ResponseEntity<String> deleteProductById(@PathVariable String productId) {
+        boolean isDeleted = productsService.deleteProductById(productId);
+        if (isDeleted) {
+            return ResponseEntity.ok("Product deleted successfully.");
+        } else {
+            return ResponseEntity.status(404).body("Product not found.");
+        }
+    }
 }
