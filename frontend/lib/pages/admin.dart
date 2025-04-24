@@ -20,7 +20,7 @@ class AdminPage extends StatelessWidget {
 
   AppBar appBar() {
     return AppBar(
-      backgroundColor: Color(0xFFFF9000),
+      backgroundColor: Color(0xFFE95C00),
       title: Text(
         "Admin Control", 
         style: TextStyle(
@@ -43,7 +43,7 @@ class AdminPage extends StatelessWidget {
           alignment: Alignment.center,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
-            color: Color(0xFFFF9000),
+            color: Color(0xFFE95C00),
           ),
           child: Text(
             "Ban Account",
@@ -68,7 +68,7 @@ class AdminPage extends StatelessWidget {
           alignment: Alignment.center,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
-            color: Color(0xFFFF9000),
+            color: Color(0xFFE95C00),
           ),
           child: Text(
             "Delete Post",

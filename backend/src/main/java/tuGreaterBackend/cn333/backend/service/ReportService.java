@@ -34,5 +34,13 @@ public class ReportService {
             throw new Exception("Unexpected error occurred while fetching all posts", e);
         }
     }
+
+    public void deleteReport(String id){
+        try{
+            reportRepository.deleteById(id);
+        } catch (Exception e){
+            throw new RuntimeException("Failed to delete report by id: " + id, e);
+        }
+    }
 }
 
