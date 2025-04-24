@@ -75,7 +75,7 @@ class ReportNotifier extends StateNotifier<List<Report>> {
   }
 
   Future<void> deleteCommunityPost(String postId) async {
-    final url = Uri.parse('$baseURL/community/$postId');
+    final url = Uri.parse('$baseURL/community/${postId}?isRepost=false');
     try {
       final response = await http.delete(url);
       if (response.statusCode == 200) {

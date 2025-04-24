@@ -58,7 +58,7 @@ class MyApp extends StatelessWidget {
         theme: themeProvider.lightTheme,
         darkTheme: themeProvider.darkTheme,
         title: 'Flutter Demo',
-        initialRoute: '/admin',
+        initialRoute: '/',
         routes: {
           '/': (context) => Login(),
           '/set-display-name': (context) => ConfirmationPage(),
