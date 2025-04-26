@@ -57,7 +57,7 @@ class MyApp extends StatelessWidget {
         themeMode: themeProvider.themeMode,
         theme: themeProvider.lightTheme,
         darkTheme: themeProvider.darkTheme,
-        title: 'Flutter Demo',
+        title: 'TU GREATER',
         initialRoute: '/',
         routes: {
           '/': (context) => Login(),
