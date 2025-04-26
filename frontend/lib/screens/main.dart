@@ -6,6 +6,7 @@ import 'package:frontend/screens/community/community_manage_post.dart';
 import 'package:frontend/screens/profile/profile_page.dart';
 import 'package:frontend/screens/shop/add_items.dart';
 import 'package:frontend/screens/shop/shop.dart';
+import 'package:frontend/screens/admin/admin.dart';
 
 class Main extends ConsumerStatefulWidget {
   const Main({super.key});
@@ -21,7 +22,8 @@ class MainState extends ConsumerState<Main> {
     final screens = [
       Community(), 
       Shop(), 
-      ProfilePage()
+      ProfilePage(),
+      AdminPage(),
       ];
 
     return Scaffold(
@@ -33,7 +35,9 @@ class MainState extends ConsumerState<Main> {
             setState(() {
               currentIndex = index;
             });
-          }),
+          },
+          ref: ref,
+          ),
       floatingActionButton: (currentIndex == 0 || currentIndex == 1)
           ? FloatingActionButton(
               onPressed: () {

@@ -94,11 +94,12 @@ class ReportState extends ConsumerState<ReportedPost> {
 
   AppBar appBar() {
     return AppBar(
-      backgroundColor: Color(0xFFE95C00),
+      backgroundColor: Theme.of(context).primaryColor,
       title: Text(
         "Delete Post", 
         style: TextStyle(
-          fontWeight: FontWeight.bold),),
+          fontWeight: FontWeight.bold,
+          ),),
       centerTitle: true,
     );
   }
