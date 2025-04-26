@@ -140,7 +140,7 @@ public class CommunityService {
 
     public List<CommunityPost> getUserPosts(String userId) throws Exception {
         try {
-            List<CommunityPost> userPosts = communityRepository.findByUserIdOrderByCreatedAtDesc(userId);
+            List<CommunityPost> userPosts = communityRepository.findByUserIdAndRepostedUserIdIsNullOrderByCreatedAtDesc(userId);
             List<CommunityPost> userRepost = communityRepository.findByRepostedUserIdOrderByCreatedAtDesc(userId);
             userPosts.addAll(userRepost);
             userPosts.sort((p1, p2) -> 

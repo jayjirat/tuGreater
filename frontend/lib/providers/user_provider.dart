@@ -14,7 +14,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class UserNotifier extends StateNotifier<User?> {
   UserNotifier() : super(null);
-  
 
   Role parseStringtoRole(String role) {
     return role == "admin" ? Role.admin : Role.user;
@@ -352,29 +351,28 @@ class UserNotifier extends StateNotifier<User?> {
     return false;
   }
 
-    Future<List<User>> fetchAllUsers() async {
+  Future<List<User>> fetchAllUsers() async {
     final url = Uri.parse('$userDBUrl');
     try {
-    final response = await http.get(url);
-    if (response.statusCode == 200) {
-      final List<dynamic> data = json.decode(response.body);
-      return data.map((userJson) {
-        return User(
-          id: userJson['id'],
-          studentId: userJson['studentId'],
-          username: userJson['username'],
-          displayName: userJson['displayName'],
-          profileImageUrl: userJson['profileImageUrl'],
-          role: parseStringtoRole(userJson['role']),
-        );
-      }).toList();
-    } else {
-      throw Exception("Failed to load users: ${response.statusCode}");
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        return data.map((userJson) {
+          return User(
+            id: userJson['id'],
+            studentId: userJson['studentId'],
+            username: userJson['username'],
+            displayName: userJson['displayName'],
+            profileImageUrl: userJson['profileImageUrl'],
+            role: parseStringtoRole(userJson['role']),
+          );
+        }).toList();
+      } else {
+        throw Exception("Failed to load users: ${response.statusCode}");
+      }
+    } catch (e) {
+      throw Exception("Error fetching users: $e");
     }
-  } catch (e) {
-    throw Exception("Error fetching users: $e");
-  }
-
   }
 }
 

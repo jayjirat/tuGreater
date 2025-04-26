@@ -12,7 +12,8 @@ public interface CommunityRepository extends MongoRepository<CommunityPost,Strin
     public List<CommunityPost> findAllByOrderByCreatedAtDesc();
     public List<CommunityPost> findByCategoryOrderByCreatedAtDesc(String category);
     public List<CommunityPost> findByTitleContainingIgnoreCaseOrderByCreatedAtDesc(String title);
-    public List<CommunityPost> findByUserIdOrderByCreatedAtDesc(String userId);
+    List<CommunityPost> findByUserIdAndRepostedUserIdIsNullOrderByCreatedAtDesc(String userId);
+
     public List<CommunityPost> findByRepostedUserIdOrderByCreatedAtDesc(String repostedUserId);
     public boolean existsByRepostedUserIdAndRepostedPostId(String userId, String repostedPostId);
     public void deleteByRepostedPostId(String repostedPostId);
